@@ -1,6 +1,5 @@
 import { lazy, Suspense, memo, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { Header } from './components/Header';
 import { DynamicHeader } from './components/DynamicHeader';
 import { Footer } from './components/Footer';
 import { HeroSection } from './components/HeroSection';
@@ -81,22 +80,12 @@ const PageLoader = memo(() => (
 
 const PageWrapper = memo(({ children }: { children: React.ReactNode }) => {
   const { isAdmin } = useAdmin()
-  const navigate = useNavigate()
+  const location = useLocation()
 
-  const handleNavigate = (page: string) => {
-    const routes: Record<string, string> = {
-      home: '/',
-      services: '/services',
-      'content-marketing': '/content-marketing',
-      'google-ads': '/google-ads',
-      'meta-ads': '/meta-ads',
-      shopify: '/shopify-development',
-      'social-media': '/social-media-marketing',
-      'build-a-brand': '/branding-pr',
-    }
-
-    navigate(routes[page] || '/')
-  }
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   return (
     <>
@@ -119,21 +108,8 @@ const PageWrapper = memo(({ children }: { children: React.ReactNode }) => {
 /* ---------- Home Page ---------- */
 
 const HomePage = memo(() => {
-  const navigate = useNavigate()
-
-  const handleNavigate = (page: string) => {
-    const routes: Record<string, string> = {
-      home: '/',
-      services: '/services',
-      'content-marketing': '/content-marketing',
-      'google-ads': '/google-ads',
-      'meta-ads': '/meta-ads',
-      shopify: '/shopify-development',
-      'social-media': '/social-media-marketing',
-      'build-a-brand': '/branding-pr',
-    }
-
-    navigate(routes[page] || '/')
+  const scrollToHero = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -141,7 +117,7 @@ const HomePage = memo(() => {
       <HeroSection />
       <MarqueeSection />
       <AboutSection />
-      <ServicesSection onNavigate={handleNavigate} />
+      <ServicesSection onCardClick={scrollToHero} />
       <BusinessGrowthSection />
       <PerformanceSection />
       <ClientsSection />

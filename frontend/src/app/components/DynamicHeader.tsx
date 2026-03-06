@@ -1,7 +1,7 @@
 import { Mail, Phone, Menu, ChevronDown, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { OptimizedImage } from '@/components/OptimizedImage';
+import { getAbsoluteUploadUrl } from '@/utils/urlHelper';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'; // Python server
 
@@ -119,23 +119,29 @@ export function DynamicHeader(_props: HeaderProps) {
 
   const visibleItems = navItems.filter(item => item.isVisible).sort((a, b) => a.order - b.order);
 
+  // Get absolute logo URL
+  const logoSrc = settings.logo ? getAbsoluteUploadUrl(settings.logo) : '/src/assets/shared/logo.png';
+
   return (
     <header className="bg-white border-b sticky top-0 z-50" data-testid="header">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-3 md:py-4">
           {/* Logo */}
           <div 
-            className="cursor-pointer"
+            className="cursor-pointer flex-shrink-0"
             onClick={() => handleNavClick('/')}
             data-testid="header-logo"
+            style={{ minWidth: '120px', width: '120px' }}
           >
-            <OptimizedImage
-              src={settings.logo || '/src/assets/shared/logo.png'} 
+            <img
+              src={logoSrc} 
               alt={settings.logoAlt || 'InsAPI Marketing'} 
               width={120}
               height={48}
-              priority={true}
-              className="h-8 md:h-10 lg:h-12 w-auto" 
+              loading="eager"
+              fetchPriority="high"
+              className="h-8 md:h-10 lg:h-12"
+              style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
             />
           </div>
           

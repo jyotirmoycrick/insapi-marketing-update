@@ -2,18 +2,18 @@ import { memo } from "react";
 import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface ServicesSectionProps {
-  onNavigate?: (page: string) => void;
+  onCardClick?: () => void;
 }
 
 const services = [
-  { id: "social-media", page: "social-media" },
+  { id: "social-media", page: null },
   { id: "seo", page: null },
-  { id: "google-ads", page: "google-ads" },
-  { id: "meta-ads", page: "meta-ads" },
+  { id: "google-ads", page: null },
+  { id: "meta-ads", page: null },
   { id: "website", page: null },
-  { id: "shopify", page: "shopify" },
-  { id: "content", page: "content-marketing" },
-  { id: "branding", page: "build-a-brand" }
+  { id: "shopify", page: null },
+  { id: "content", page: null },
+  { id: "branding", page: null }
 ];
 
 const serviceImages = import.meta.glob(
@@ -34,13 +34,13 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer transition-all duration-300 hover:-translate-y-1"
+      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105"
     >
       <OptimizedImage
         src={src}
         alt={`${alt} - InsAPI Marketing Service`}
-        width={400}
-        height={300}
+        width={800}
+        height={600}
         priority={isAboveFold}
         className="w-full h-auto object-contain"
       />
@@ -48,7 +48,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
   );
 });
 
-export const ServicesSection = memo(function ServicesSection({ onNavigate }: ServicesSectionProps) {
+export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
   return (
     <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -77,8 +77,9 @@ export const ServicesSection = memo(function ServicesSection({ onNavigate }: Ser
                 alt={service.id}
                 index={index}
                 onClick={() => {
-                  if (service.page && onNavigate) {
-                    onNavigate(service.page);
+                  // All cards scroll to hero section
+                  if (onCardClick) {
+                    onCardClick();
                   }
                 }}
               />
