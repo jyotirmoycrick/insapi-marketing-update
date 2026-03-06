@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { EditableSection } from './EditableSection';
 import { contentAPI } from '../services/api';
-import { OptimizedImage } from './OptimizedImage';
 import faqImage from '@/assets/shared/shared-002-faq.png';
 
 interface UniversalFAQProps {
@@ -117,14 +116,7 @@ export function UniversalFAQ({
       }}
     >
       <section className="relative w-full">
-        <OptimizedImage
-          src={faqImage}
-          alt="FAQ - Frequently Asked Questions"
-          width={1920}
-          height={800}
-          priority={false}
-          className="w-full h-auto block"
-        />
+        <img src={faqImage} alt="FAQ" className="w-full h-auto block" />
         
         <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">
           <div className="w-full md:w-1/2 lg:w-2/5 p-6 md:p-8 lg:p-10">

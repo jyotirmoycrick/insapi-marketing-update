@@ -1,5 +1,6 @@
 import { lazy, Suspense, memo, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Header } from './components/Header';
 import { DynamicHeader } from './components/DynamicHeader';
 import { Footer } from './components/Footer';
 import { HeroSection } from './components/HeroSection';
@@ -80,12 +81,22 @@ const PageLoader = memo(() => (
 
 const PageWrapper = memo(({ children }: { children: React.ReactNode }) => {
   const { isAdmin } = useAdmin()
-  const location = useLocation()
+  const navigate = useNavigate()
 
-  // Scroll to top on route change
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
+  const handleNavigate = (page: string) => {
+    const routes: Record<string, string> = {
+      home: '/',
+      services: '/services',
+      'content-marketing': '/content-marketing',
+      'google-ads': '/google-ads',
+      'meta-ads': '/meta-ads',
+      shopify: '/shopify-development',
+      'social-media': '/social-media-marketing',
+      'build-a-brand': '/branding-pr',
+    }
+
+    navigate(routes[page] || '/')
+  }
 
   return (
     <>
@@ -125,19 +136,12 @@ const HomePage = memo(() => {
     navigate(routes[page] || '/')
   }
 
-  const scrollToForm = () => {
-    const formSection = document.getElementById('ready-to-grow-section')
-    if (formSection) {
-      formSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }
-
   return (
     <>
       <HeroSection />
       <MarqueeSection />
       <AboutSection />
-      <ServicesSection onNavigate={handleNavigate} onCardClick={scrollToForm} />
+      <ServicesSection onNavigate={handleNavigate} />
       <BusinessGrowthSection />
       <PerformanceSection />
       <ClientsSection />

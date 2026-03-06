@@ -19,19 +19,12 @@
     
     <title>InsAPI Marketing - Digital Marketing That Actually Drives Sales</title>
     
-    <!-- Critical resource hints for instant LCP -->
-    <link rel="dns-prefetch" href="//187.124.99.185" />
-    <link rel="preconnect" href="http://187.124.99.185:8000" crossorigin />
-    
-    <!-- Preload critical hero images for instant LCP - highest priority -->
+    <!-- Preload critical hero images for instant LCP -->
     <link rel="preload" href="/src/assets/home/hero-desktop.png" as="image" media="(min-width: 768px)" fetchpriority="high" />
     <link rel="preload" href="/src/assets/home/hero-mobile.png" as="image" media="(max-width: 767px)" fetchpriority="high" />
     
-    <!-- Preload logo - always visible -->
-    <link rel="preload" href="/src/assets/shared/logo.png" as="image" fetchpriority="high" />
-    
-    <!-- Preload critical fonts if any -->
-    <!-- <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin /> -->
+    <!-- Preload logo -->
+    <link rel="preload" href="/src/assets/shared/logo.png" as="image" />
   </head>
 
   <body>

@@ -48,7 +48,7 @@ export function ReadyToGrowSection() {
   };
 
   return (
-    <section id="ready-to-grow-section" className="relative w-full">
+    <section className="relative w-full">
       {/* Desktop Image */}
       <EditableImage
           src={readyToGrowImageDesktopSrc}
