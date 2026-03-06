@@ -95,7 +95,28 @@ export function AdminDashboard() {
   const loadPages = async () => {
     try {
       const res = await fetch(`${API_URL}/pages?token=${token}`);
+      
+      // Handle 401 Unauthorized
+      if (res.status === 401) {
+        toast.error('Session expired. Please login again.');
+        handleLogout();
+        return;
+      }
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
+      
+      // Validate data is an array
+      if (!Array.isArray(data)) {
+        console.error('Pages data is not an array:', data);
+        setPages([]);
+        toast.error('Failed to load pages');
+        return;
+      }
+      
       setPages(data);
       if (data.length > 0 && !selectedPage) {
         setSelectedPage(data[0]);
@@ -108,8 +129,32 @@ export function AdminDashboard() {
   const loadContacts = async () => {
     try {
       const res = await fetch(`${API_URL}/contacts?token=${token}`);
-      setContacts(await res.json());
-    } catch (e) {}
+      
+      // Handle 401 Unauthorized
+      if (res.status === 401) {
+        toast.error('Session expired. Please login again.');
+        handleLogout();
+        return;
+      }
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      
+      // Validate data is an array
+      if (!Array.isArray(data)) {
+        console.error('Contacts data is not an array:', data);
+        setContacts([]);
+        return;
+      }
+      
+      setContacts(data);
+    } catch (e) {
+      console.error('Failed to load contacts:', e);
+      setContacts([]);
+    }
   };
 
   const loadSmtpSettings = async () => {
@@ -123,8 +168,32 @@ export function AdminDashboard() {
   const loadUploads = async () => {
     try {
       const res = await fetch(`${API_URL}/uploads?token=${token}`);
-      setUploads(await res.json());
-    } catch (e) {}
+      
+      // Handle 401 Unauthorized
+      if (res.status === 401) {
+        toast.error('Session expired. Please login again.');
+        handleLogout();
+        return;
+      }
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      
+      // Validate data is an array
+      if (!Array.isArray(data)) {
+        console.error('Uploads data is not an array:', data);
+        setUploads([]);
+        return;
+      }
+      
+      setUploads(data);
+    } catch (e) {
+      console.error('Failed to load uploads:', e);
+      setUploads([]);
+    }
   };
 
   const handleLogout = () => {

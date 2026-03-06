@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAdmin } from '../contexts/AdminContext';
 import { Edit2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
+import { getAbsoluteUploadUrl } from '../utils/urlHelper';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -282,7 +283,7 @@ export function LivePageRenderer() {
         return (
           <div key={comp.id} className="relative group">
             <img 
-              src={comp.props.src} 
+              src={getAbsoluteUploadUrl(comp.props.src)} 
               alt={comp.props.alt || ''} 
               style={style}
             />

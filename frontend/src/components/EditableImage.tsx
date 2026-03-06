@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useAdmin } from '../contexts/AdminContext';
 import { Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { getAbsoluteUploadUrl } from '../utils/urlHelper';
+import { preloadImage, isImageCached } from '../utils/imagePreloader';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -31,7 +33,7 @@ export function EditableImage({
   priority = false
 }: EditableImageProps) {
   const { isEditMode } = useAdmin();
-  const [currentSrc, setCurrentSrc] = useState(src);
+  const [currentSrc, setCurrentSrc] = useState(getAbsoluteUploadUrl(src));
   const [isUploading, setIsUploading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -40,8 +42,23 @@ export function EditableImage({
 
   // Sync with parent's src prop changes
   useEffect(() => {
-    setCurrentSrc(src);
+    const newSrc = getAbsoluteUploadUrl(src);
+    setCurrentSrc(newSrc);
+    
+    // Check if already cached
+    if (newSrc && isImageCached(newSrc)) {
+      setImageLoaded(true);
+    }
   }, [src]);
+
+  // Preload priority images
+  useEffect(() => {
+    if (priority && currentSrc) {
+      preloadImage(currentSrc).then(() => {
+        setImageLoaded(true);
+      });
+    }
+  }, [priority, currentSrc]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -106,7 +123,7 @@ export function EditableImage({
       console.log('✅ Image saved to database:', { page, section, key: imageKey, value: newImageUrl });
 
       // Update UI
-      setCurrentSrc(newImageUrl);
+      setCurrentSrc(getAbsoluteUploadUrl(newImageUrl));
       if (onImageChange) {
         onImageChange(newImageUrl);
       }
@@ -200,15 +217,16 @@ export function EditableImage({
         alt={alt}
         loading={priority ? 'eager' : loading}
         decoding="async"
-        className={`w-full h-auto block transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full h-auto block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         style={{ verticalAlign: 'bottom' }}
         onLoad={() => setImageLoaded(true)}
         fetchPriority={priority ? 'high' : 'auto'}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
 
-      {/* Loading skeleton */}
+      {/* Loading skeleton with shimmer effect */}
       {!imageLoaded && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%]" />
       )}
 
       {/* Edit controls - only render in edit mode */}

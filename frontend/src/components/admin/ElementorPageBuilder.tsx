@@ -11,6 +11,7 @@ import { BackgroundPanel } from './panels/BackgroundPanel';
 import { BorderPanel } from './panels/BorderPanel';
 import { ShadowPanel } from './panels/ShadowPanel';
 import { TypographyPanel } from './panels/TypographyPanel';
+import { getAbsoluteUploadUrl } from '../../utils/urlHelper';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -232,7 +233,8 @@ export function ElementorPageBuilder({ pageId, token, onBack }: ElementorPageBui
       
       if (data.success) {
         toast.success('✅ Image uploaded');
-        return data.url;
+        // Convert relative URL to absolute URL
+        return getAbsoluteUploadUrl(data.url);
       }
       throw new Error('Upload failed');
     } catch (error) {
@@ -552,7 +554,7 @@ export function ElementorPageBuilder({ pageId, token, onBack }: ElementorPageBui
         
         case 'image':
           return comp.props.src ? (
-            <img src={comp.props.src} alt={comp.props.alt} style={{ width: '100%', objectFit: comp.props.objectFit }} />
+            <img src={getAbsoluteUploadUrl(comp.props.src)} alt={comp.props.alt} style={{ width: '100%', objectFit: comp.props.objectFit }} />
           ) : (
             <div className="bg-gray-200 h-40 flex items-center justify-center text-gray-500">
               <ImageIcon size={40} />
