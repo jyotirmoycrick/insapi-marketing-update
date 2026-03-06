@@ -602,7 +602,7 @@ async def upload_file(file: UploadFile = File(...), token: str = Form(...)):
         # Return URL
         return {
             "success": True,
-            "url": f"http://localhost:8000/uploads/{filename}",
+            "url": f"/uploads/{filename}",
             "filename": filename
         }
     except Exception as e:
@@ -637,7 +637,7 @@ async def list_uploads(token: str):
             filepath = os.path.join(UPLOAD_DIR, filename)
             files.append({
                 "filename": filename,
-                "url": f"http://localhost:8000/uploads/{filename}",
+                "url": f"/uploads/{filename}",
                 "size": os.path.getsize(filepath),
                 "modified": datetime.fromtimestamp(os.path.getmtime(filepath)).isoformat()
             })
