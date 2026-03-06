@@ -18,6 +18,11 @@ interface EditableImageProps {
   onImageChange?: (newUrl: string) => void;
   loading?: 'lazy' | 'eager';
   priority?: boolean;
+  width?: number;
+  height?: number;
+  fetchPriority?: 'high' | 'low' | 'auto';
+  decoding?: 'async' | 'sync' | 'auto';
+  sizes?: string;
 }
 
 export function EditableImage({
@@ -30,7 +35,12 @@ export function EditableImage({
   section,
   onImageChange,
   loading = 'lazy',
-  priority = false
+  priority = false,
+  width,
+  height,
+  fetchPriority,
+  decoding = 'async',
+  sizes
 }: EditableImageProps) {
   const { isEditMode } = useAdmin();
   const [currentSrc, setCurrentSrc] = useState(getAbsoluteUploadUrl(src));
@@ -211,17 +221,19 @@ export function EditableImage({
       onMouseEnter={() => isEditMode && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Optimized image with loading states */}
+      {/* Optimized image with all performance attributes preserved */}
       <img
         src={currentSrc}
         alt={alt}
+        width={width}
+        height={height}
         loading={priority ? 'eager' : loading}
-        decoding="async"
-        fetchPriority={priority ? 'high' : 'auto'}
+        decoding={decoding}
+        fetchPriority={fetchPriority || (priority ? 'high' : 'auto')}
+        sizes={sizes}
         className={`w-full h-auto block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         style={{ verticalAlign: 'bottom', ...style }}
         onLoad={() => setImageLoaded(true)}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
 
       {/* Loading skeleton with shimmer effect */}

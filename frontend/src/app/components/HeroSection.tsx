@@ -1,11 +1,11 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { EditableSection } from '@/components/EditableSection';
-import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
 import { UniversalForm } from '@/components/UniversalForm';
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
+import { useAdmin } from '@/contexts/AdminContext';
 
-// Default hero images - render immediately
+// Default hero images - WebP format for better performance
 const heroImageDesktop = new URL('@/assets/home/hero-desktop.png', import.meta.url).href;
 const heroImageMobile = new URL('@/assets/home/hero-mobile.png', import.meta.url).href;
 
@@ -13,12 +13,57 @@ const heroImageMobile = new URL('@/assets/home/hero-mobile.png', import.meta.url
 const DEFAULT_FORM_HEADING = 'Talk To Our Expert';
 const DEFAULT_BUTTON_TEXT = 'GET STARTED NOW';
 
+// Hero image dimensions for aspect ratio calculation (prevent layout shift)
+const DESKTOP_WIDTH = 1920;
+const DESKTOP_HEIGHT = 800;
+const MOBILE_WIDTH = 768;
+const MOBILE_HEIGHT = 1024;
+
 export function HeroSection() {
+  const { isEditMode } = useAdmin();
+  
   // Initialize with default content immediately - no loading state
   const [formHeading, setFormHeading] = useState(DEFAULT_FORM_HEADING);
   const [buttonText, setButtonText] = useState(DEFAULT_BUTTON_TEXT);
   const [heroDesktopSrc, setHeroDesktopSrc] = useState(heroImageDesktop);
   const [heroMobileSrc, setHeroMobileSrc] = useState(heroImageMobile);
+  const preloadLinkRef = useRef<HTMLLinkElement | null>(null);
+
+  // Runtime preload injection - preload the hero image as soon as we know the URL
+  useEffect(() => {
+    // Determine which image to preload based on viewport
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const imageToPreload = isMobile ? heroMobileSrc : heroDesktopSrc;
+    
+    // Remove existing preload link if any
+    if (preloadLinkRef.current) {
+      preloadLinkRef.current.remove();
+    }
+    
+    // Inject new preload link
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = imageToPreload;
+    link.fetchPriority = 'high';
+    
+    // Add media query for responsive preloading
+    if (isMobile) {
+      link.media = '(max-width: 767px)';
+    } else {
+      link.media = '(min-width: 768px)';
+    }
+    
+    document.head.appendChild(link);
+    preloadLinkRef.current = link;
+    
+    // Cleanup on unmount
+    return () => {
+      if (preloadLinkRef.current) {
+        preloadLinkRef.current.remove();
+      }
+    };
+  }, [heroDesktopSrc, heroMobileSrc]);
 
   // Load CMS content in background - updates after initial render
   useEffect(() => {
@@ -52,6 +97,50 @@ export function HeroSection() {
     
     loadContent();
   }, []);
+
+  // Handle image upload in edit mode
+  const handleImageUpload = async (file: File, type: 'desktop' | 'mobile') => {
+    if (!isEditMode) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('token', localStorage.getItem('admin_token') || '');
+    
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || '/api';
+      const res = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        // Update state with new image URL
+        if (type === 'desktop') {
+          setHeroDesktopSrc(data.url);
+        } else {
+          setHeroMobileSrc(data.url);
+        }
+        
+        // Save to CMS
+        const imageKey = type === 'desktop' ? 'hero-desktop' : 'hero-mobile';
+        await fetch(`${API_URL}/content`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            page: 'home',
+            section: 'hero',
+            key: imageKey,
+            value: data.url,
+            type: 'image',
+            token: localStorage.getItem('admin_token')
+          })
+        });
+      }
+    } catch (error) {
+      console.error('Image upload failed:', error);
+    }
+  };
 
   // No loading state - render immediately with defaults
 
@@ -88,18 +177,26 @@ export function HeroSection() {
           aspectRatio: 'auto' // Let image determine final aspect ratio
         }}
       >
-        {/* Desktop Hero Image - Highest Priority */}
-        <div className="hidden md:block w-full m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <EditableImage
+        {/* Responsive Picture Element - Browser downloads only one image */}
+        <picture className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
+          {/* Mobile source - loads on small screens */}
+          <source
+            media="(max-width: 767px)"
+            srcSet={heroMobileSrc}
+            width={MOBILE_WIDTH}
+            height={MOBILE_HEIGHT}
+          />
+          
+          {/* Desktop fallback - loads on larger screens */}
+          <img
             src={heroDesktopSrc}
             alt="Build A Brand People Trust - InsAPI Marketing"
-            className="w-full"
-            imageKey="hero-desktop"
-            page="home"
-            section="hero"
-            onImageChange={(newUrl) => setHeroDesktopSrc(newUrl)}
-            priority={true}
+            width={DESKTOP_WIDTH}
+            height={DESKTOP_HEIGHT}
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="w-full h-auto block m-0 p-0"
             style={{ 
               display: 'block',
               width: '100%',
@@ -107,28 +204,37 @@ export function HeroSection() {
               verticalAlign: 'bottom'
             }}
           />
-        </div>
+        </picture>
         
-        {/* Mobile Hero Image - Highest Priority */}
-        <div className="block md:hidden w-full m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <EditableImage
-            src={heroMobileSrc}
-            alt="Build A Brand People Trust - InsAPI Marketing"
-            className="w-full"
-            imageKey="hero-mobile"
-            page="home"
-            section="hero"
-            onImageChange={(newUrl) => setHeroMobileSrc(newUrl)}
-            priority={true}
-            loading="eager"
-            style={{ 
-              display: 'block',
-              width: '100%',
-              height: 'auto',
-              verticalAlign: 'bottom'
-            }}
-          />
-        </div>
+        {/* Edit overlay for CMS - only visible in edit mode */}
+        {isEditMode && (
+          <div className="absolute top-4 left-4 z-50 flex gap-2">
+            <label className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700">
+              📱 Upload Mobile
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file, 'mobile');
+                }}
+              />
+            </label>
+            <label className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700">
+              🖥️ Upload Desktop
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file, 'desktop');
+                }}
+              />
+            </label>
+          </div>
+        )}
         
         {/* Form Overlay - Desktop */}
         <div className="hidden md:flex absolute top-0 right-0 w-full h-full items-start justify-end pt-2 sm:pt-3 md:pt-4 lg:pt-5 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 pointer-events-none">
