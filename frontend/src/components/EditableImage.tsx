@@ -48,7 +48,9 @@ export function EditableImage({
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const token = localStorage.getItem('admin_token');
+  
+  // Check for both admin_token (FastAdmin) and authToken (regular admin)
+  const token = localStorage.getItem('admin_token') || localStorage.getItem('authToken');
 
   // Sync with parent's src prop changes
   useEffect(() => {
@@ -72,7 +74,13 @@ export function EditableImage({
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !token) return;
+    if (!file) return;
+    
+    // Check for token with helpful message
+    if (!token) {
+      toast.error('❌ Please login through /fast-admin to edit images');
+      return;
+    }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
@@ -99,6 +107,13 @@ export function EditableImage({
         method: 'POST',
         body: formData
       });
+      
+      // Check for 401 Unauthorized
+      if (uploadRes.status === 401) {
+        toast.error('❌ Session expired. Please login again at /fast-admin', { id: 'upload' });
+        return;
+      }
+      
       const uploadData = await uploadRes.json();
 
       if (!uploadData.success) {
