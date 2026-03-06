@@ -1,6 +1,7 @@
 import { Mail, Phone, Menu, ChevronDown, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'; // Python server
 
@@ -128,9 +129,12 @@ export function DynamicHeader(_props: HeaderProps) {
             onClick={() => handleNavClick('/')}
             data-testid="header-logo"
           >
-            <img 
+            <OptimizedImage
               src={settings.logo || '/src/assets/shared/logo.png'} 
-              alt={settings.logoAlt || 'Logo'} 
+              alt={settings.logoAlt || 'InsAPI Marketing'} 
+              width={120}
+              height={48}
+              priority={true}
               className="h-8 md:h-10 lg:h-12 w-auto" 
             />
           </div>

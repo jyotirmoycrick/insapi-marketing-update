@@ -1,4 +1,5 @@
-import React, { memo, useState, useEffect } from "react";
+import { memo } from "react";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface ServicesSectionProps {
   onNavigate?: (page: string) => void;
@@ -20,31 +21,28 @@ const serviceImages = import.meta.glob(
   { eager: true }
 ) as Record<string, { default: string }>;
 
-// Memoized lazy image component
-const LazyServiceImage = memo(({ src, alt, onClick }: { 
+// Memoized service image component with performance optimization
+const LazyServiceImage = memo(({ src, alt, onClick, index }: { 
   src: string; 
   alt: string; 
   onClick?: () => void;
+  index: number;
 }) => {
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => setLoaded(true);
-    img.src = src;
-  }, [src]);
+  // First 3 service cards are above the fold on desktop, load eagerly
+  const isAboveFold = index < 3;
 
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer transition-all duration-300 hover:-translate-y-1 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      className="cursor-pointer transition-all duration-300 hover:-translate-y-1"
     >
-      <img
+      <OptimizedImage
         src={src}
-        alt={alt}
+        alt={`${alt} - InsAPI Marketing Service`}
+        width={400}
+        height={300}
+        priority={isAboveFold}
         className="w-full h-auto object-contain"
-        loading="lazy"
-        decoding="async"
       />
     </div>
   );
@@ -63,7 +61,7 @@ export const ServicesSection = memo(function ServicesSection({ onNavigate }: Ser
         {/* Responsive Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
 
-          {services.map((service) => {
+          {services.map((service, index) => {
 
             const imagePath =
               serviceImages[
@@ -77,6 +75,7 @@ export const ServicesSection = memo(function ServicesSection({ onNavigate }: Ser
                 key={service.id}
                 src={imagePath}
                 alt={service.id}
+                index={index}
                 onClick={() => {
                   if (service.page && onNavigate) {
                     onNavigate(service.page);

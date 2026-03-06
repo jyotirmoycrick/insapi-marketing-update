@@ -31,12 +31,17 @@ export function AboutSection() {
       <div className="hidden md:block">
         <EditableImage
           src={aboutImageDesktopSrc}
-          alt="About Us"
+          alt="About Us - InsAPI Marketing Team"
           className="w-full h-auto block"
           imageKey="image-0"
           page="home"
           section="about-section"
           onImageChange={setAboutimagedesktopSrc}
+          width={1920}
+          height={800}
+          priority={true}
+          loading="eager"
+          fetchPriority="high"
         />
       </div>
 
@@ -44,12 +49,17 @@ export function AboutSection() {
       <div className="block md:hidden">
         <EditableImage
           src={aboutImageMobileSrc}
-          alt="About Us"
+          alt="About Us - InsAPI Marketing Team"
           className="w-full h-auto block"
           imageKey="image-1"
           page="home"
           section="about-section"
           onImageChange={setAboutimagemobileSrc}
+          width={768}
+          height={600}
+          priority={true}
+          loading="eager"
+          fetchPriority="high"
         />
       </div>
 
