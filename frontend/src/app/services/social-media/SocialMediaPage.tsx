@@ -5,7 +5,6 @@ import { WhyChooseSection } from './WhyChooseSection';
 import { ResultsSection } from './ResultsSection';
 import { ReadyToTurnSection } from './ReadyToTurnSection';
 import { SocialMediaFAQSection } from './SocialMediaFAQSection';
-import { Footer } from '../../components/Footer';
 import { SocialMediaMobilePage } from './SocialMediaMobilePage';
 
 export function SocialMediaPage() {
@@ -25,7 +24,6 @@ export function SocialMediaPage() {
         <ResultsSection />
         <ReadyToTurnSection />
         <SocialMediaFAQSection />
-        <Footer />
       </div>
     </>
   );

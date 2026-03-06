@@ -1,15 +1,52 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import footerImageDesktop from '@/assets/home/home-008-footer-logo.png';
 import footerImageMobile from '@/assets/home/home-011-footer-mobile.png';
 
 export function Footer() {
+  const [desktopSrc, setDesktopSrc] = useState(footerImageDesktop);
+  const [mobileSrc, setMobileSrc] = useState(footerImageMobile);
+
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('home');
+        const desktop = content.find((c: any) => c.section === 'footer' && c.key === 'desktop');
+        const mobile = content.find((c: any) => c.section === 'footer' && c.key === 'mobile');
+        if (desktop?.value) setDesktopSrc(desktop.value);
+        if (mobile?.value) setMobileSrc(mobile.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <footer className="relative bg-gradient-to-r from-[#0A1F44] to-[#0D2E5C]">
       <div className="relative">
         {/* Desktop Footer Image */}
-        <img src={footerImageDesktop} alt="Footer" className="hidden md:block w-full" />
+        <EditableImage
+          src={desktopSrc}
+          alt="Footer"
+          className="hidden md:block w-full"
+          imageKey="desktop"
+          page="home"
+          section="footer"
+          onImageChange={setDesktopSrc}
+        />
         
         {/* Mobile Footer Image */}
-        <img src={footerImageMobile} alt="Footer" className="block md:hidden w-full" />
+        <EditableImage
+          src={mobileSrc}
+          alt="Footer"
+          className="block md:hidden w-full"
+          imageKey="mobile"
+          page="home"
+          section="footer"
+          onImageChange={setMobileSrc}
+        />
         
         {/* Social Media Icons Overlay - Positioned at bottom */}
         <div className="absolute bottom-[30%] md:bottom-[15%] left-[50%] transform -translate-x-[50%] flex gap-2 md:gap-3">

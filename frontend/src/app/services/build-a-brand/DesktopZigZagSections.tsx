@@ -1,15 +1,48 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import { Check } from 'lucide-react';
 import brandingImage from '@/assets/services/build-a-brand/branding-services.png';
 import prImage from '@/assets/services/build-a-brand/pr-services.png';
 import strengthImage from '@/assets/services/build-a-brand/strength-branding-pr.png';
 
 export function DesktopZigZagSections() {
+  const [brandingImageSrc, setBrandingimageSrc] = useState(brandingImage);
+  const [prImageSrc, setPrimageSrc] = useState(prImage);
+  const [strengthImageSrc, setStrengthimageSrc] = useState(strengthImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const brandingImageSaved = content.find((c: any) => c.section === 'desktop-zig-zag-sections' && c.key === 'image-0');
+        if (brandingImageSaved?.value) setBrandingimageSrc(brandingImageSaved.value);
+        const prImageSaved = content.find((c: any) => c.section === 'desktop-zig-zag-sections' && c.key === 'image-1');
+        if (prImageSaved?.value) setPrimageSrc(prImageSaved.value);
+        const strengthImageSaved = content.find((c: any) => c.section === 'desktop-zig-zag-sections' && c.key === 'image-2');
+        if (strengthImageSaved?.value) setStrengthimageSrc(strengthImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <div className="bg-white">
       {/* Section 1: Image Left (touching left edge), Text Right */}
       <section className="flex items-center py-16">
         <div className="w-5/12">
-          <img src={brandingImage} alt="Our Branding Services" className="w-full h-auto" />
+          <EditableImage
+          src={brandingImageSrc}
+          alt="Our Branding Services"
+          className="w-full h-auto"
+          imageKey="image-0"
+          page="build-a-brand"
+          section="desktop-zig-zag-sections"
+          onImageChange={setBrandingimageSrc}
+        />
         </div>
         <div className="w-7/12 px-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Branding Services</h2>
@@ -110,14 +143,30 @@ export function DesktopZigZagSections() {
           </p>
         </div>
         <div className="w-5/12">
-          <img src={prImage} alt="Our PR Services" className="w-full h-auto" />
+          <EditableImage
+          src={prImageSrc}
+          alt="Our PR Services"
+          className="w-full h-auto"
+          imageKey="image-1"
+          page="build-a-brand"
+          section="desktop-zig-zag-sections"
+          onImageChange={setPrimageSrc}
+        />
         </div>
       </section>
 
       {/* Section 3: Image Left (touching left edge), Text Right */}
       <section className="flex items-center py-16">
         <div className="w-5/12">
-          <img src={strengthImage} alt="Our Strength In Branding & PR" className="w-full h-auto" />
+          <EditableImage
+          src={strengthImageSrc}
+          alt="Our Strength In Branding & PR"
+          className="w-full h-auto"
+          imageKey="image-2"
+          page="build-a-brand"
+          section="desktop-zig-zag-sections"
+          onImageChange={setStrengthimageSrc}
+        />
         </div>
         <div className="w-7/12 px-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-8">Our Strength In Branding & PR</h2>

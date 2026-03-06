@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import readyToTurnImage from '@/assets/services/social-media/social-media-006-ready-to-turn.png';
 
 export function ReadyToTurnSection() {
+  const [readyToTurnImageSrc, setReadytoturnimageSrc] = useState(readyToTurnImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('social-media');
+        
+        const readyToTurnImageSaved = content.find((c: any) => c.section === 'ready-to-turn-section' && c.key === 'image');
+        if (readyToTurnImageSaved?.value) setReadytoturnimageSrc(readyToTurnImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [buttonText, setButtonText] = useState('Contact Us');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,10 +58,14 @@ export function ReadyToTurnSection() {
       onSave={(data) => setButtonText(data.buttonText)}
     >
       <section className="relative w-full">
-        <img 
-          src={readyToTurnImage} 
-          alt="Ready To Turn Social Media Into A Growth Channel?" 
-          className="w-full h-auto block" 
+        <EditableImage
+          src={readyToTurnImageSrc}
+          alt="Ready To Turn Social Media Into A Growth Channel?"
+          className="w-full h-auto block"
+          imageKey="image"
+          page="social-media"
+          section="ready-to-turn-section"
+          onImageChange={setReadytoturnimageSrc}
         />
         
         {/* Button Overlay - Centered at bottom */}

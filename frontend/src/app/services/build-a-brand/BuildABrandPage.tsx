@@ -6,7 +6,6 @@ import { DesktopNextSection } from './DesktopNextSection';
 import { DesktopAfterNextSection } from './DesktopAfterNextSection';
 import { DesktopFAQSection } from './DesktopFAQSection';
 import { BuildABrandMobilePage } from './BuildABrandMobilePage';
-import { Footer } from '../../components/Footer';
 
 export function BuildABrandPage() {
   return (
@@ -20,7 +19,6 @@ export function BuildABrandPage() {
         <DesktopNextSection />
         <DesktopAfterNextSection />
         <DesktopFAQSection />
-        <Footer />
       </div>
 
       {/* Mobile View */}

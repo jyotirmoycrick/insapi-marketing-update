@@ -1,17 +1,40 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import strengthImage from '@/assets/services/build-a-brand/build-a-brand-004-strength-creative-flow.png';
 
 export function StrengthShowcase() {
+  const [strengthImageSrc, setStrengthimageSrc] = useState(strengthImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const strengthImageSaved = content.find((c: any) => c.section === 'strength-showcase' && c.key === 'image');
+        if (strengthImageSaved?.value) setStrengthimageSrc(strengthImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="bg-white py-12 md:py-16 lg:py-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-center">
         
         {/* Left Side - Image (No padding, touches left edge) */}
         <div className="w-full">
-          <img 
-            src={strengthImage} 
-            alt="Our Strength in Branding & PR" 
-            className="w-full h-auto"
-          />
+          <EditableImage
+          src={strengthImageSrc}
+          alt="Our Strength in Branding & PR"
+          className="w-full h-auto"
+          imageKey="image"
+          page="services"
+          section="strength-showcase"
+          onImageChange={setStrengthimageSrc}
+        />
         </div>
 
         {/* Right Side - Content (With padding) */}

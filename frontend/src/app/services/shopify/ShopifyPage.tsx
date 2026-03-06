@@ -9,7 +9,6 @@ import { Section6 } from './Section6';
 import { OurStrengthSection } from './OurStrengthSection';
 import { ReadyToLaunchSection } from './ReadyToLaunchSection';
 import { ShopifyFAQSection } from './ShopifyFAQSection';
-import { Footer } from '../../components/Footer';
 import { ShopifyMobilePage } from './ShopifyMobilePage';
 
 export function ShopifyPage() {
@@ -33,7 +32,6 @@ export function ShopifyPage() {
         <OurStrengthSection />
         <ReadyToLaunchSection />
         <ShopifyFAQSection />
-        <Footer />
       </div>
     </>
   );

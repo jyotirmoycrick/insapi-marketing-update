@@ -1,30 +1,27 @@
-import { lazy, Suspense, memo, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-
-import { Header } from './components/Header'
-import { Footer } from './components/Footer'
-import { HeroSection } from './components/HeroSection'
-import { MarqueeSection } from './components/MarqueeSection'
-import { AboutSection } from './components/AboutSection'
-import { ServicesSection } from './components/ServicesSection'
-import { BusinessGrowthSection } from './components/BusinessGrowthSection'
-import { PerformanceSection } from './components/PerformanceSection'
-import { ClientsSection } from './components/ClientsSection'
-import { WhyChooseSection } from './components/WhyChooseSection'
-import { PartnersSection } from './components/PartnersSection'
-import { ReadyToGrowSection } from './components/ReadyToGrowSection'
-import { CertificationsSection } from './components/CertificationsSection'
-import { FAQSection } from './components/FAQSection'
-
-import { AdminProvider, useAdmin } from '../contexts/AdminContext'
-import { AdminToolbar } from '../components/AdminToolbar'
-import { AdminLogin } from '../components/AdminLogin'
-import { FastAdmin } from '../components/admin/FastAdmin'
-import { ImprovedAdminDashboard as AdminDashboard } from '../components/admin/ImprovedAdminDashboard'
-import { PageRenderer } from '../components/PageRenderer'
-
-import { Toaster } from 'sonner'
-
+import { lazy, Suspense, memo, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Header } from './components/Header';
+import { DynamicHeader } from './components/DynamicHeader';
+import { Footer } from './components/Footer';
+import { HeroSection } from './components/HeroSection';
+import { MarqueeSection } from './components/MarqueeSection';
+import { AboutSection } from './components/AboutSection';
+import { ServicesSection } from './components/ServicesSection';
+import { BusinessGrowthSection } from './components/BusinessGrowthSection';
+import { PerformanceSection } from './components/PerformanceSection';
+import { ClientsSection } from './components/ClientsSection';
+import { WhyChooseSection } from './components/WhyChooseSection';
+import { PartnersSection } from './components/PartnersSection';
+import { ReadyToGrowSection } from './components/ReadyToGrowSection';
+import { CertificationsSection } from './components/CertificationsSection';
+import { FAQSection } from './components/FAQSection';
+import { AdminProvider, useAdmin } from '../contexts/AdminContext';
+import { AdminToolbar } from '../components/AdminToolbar';
+import { AdminLogin } from '../components/AdminLogin';
+import { FastAdmin } from '../components/admin/FastAdmin';
+import { ImprovedAdminDashboard as AdminDashboard } from '../components/admin/ImprovedAdminDashboard';
+import { PageRenderer } from '../components/PageRenderer';
+import { Toaster } from 'sonner';
 /* ---------- Lazy Loaded Pages ---------- */
 
 const ContentMarketingPage = lazy(() =>
@@ -109,7 +106,7 @@ const PageWrapper = memo(({ children }: { children: React.ReactNode }) => {
         className="min-h-screen bg-white"
         style={isAdmin ? { paddingTop: '48px' } : {}}
       >
-        <Header onNavigate={handleNavigate} />
+        <DynamicHeader />
 
         <Suspense fallback={<PageLoader />}>{children}</Suspense>
 

@@ -9,7 +9,6 @@ import { OptimizationSection } from './OptimizationSection';
 import { OurStrengthSection } from './OurStrengthSection';
 import { GoogleAdsFAQSection } from './GoogleAdsFAQSection';
 import { GoogleAdsMobilePage } from './GoogleAdsMobilePage';
-import { Footer } from '../../components/Footer';
 
 export function GoogleAdsPage() {
   return (
@@ -26,7 +25,6 @@ export function GoogleAdsPage() {
         <OptimizationSection />
         <OurStrengthSection />
         <GoogleAdsFAQSection />
-        <Footer />
       </div>
 
       {/* Mobile View */}

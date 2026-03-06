@@ -1,6 +1,25 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import creativeFlowImage from '@/assets/services/build-a-brand/build-a-brand-004-strength-creative-flow.png';
 
 export function CreativeFlowShowcase() {
+  const [creativeFlowImageSrc, setCreativeflowimageSrc] = useState(creativeFlowImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const creativeFlowImageSaved = content.find((c: any) => c.section === 'creative-flow-showcase' && c.key === 'image');
+        if (creativeFlowImageSaved?.value) setCreativeflowimageSrc(creativeFlowImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const strengths = [
     "Industry-specific expertise",
     "Results-driven approach",
@@ -14,7 +33,15 @@ export function CreativeFlowShowcase() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Side - Image */}
           <div>
-            <img src={creativeFlowImage} alt="Our Strength in Branding & PR" className="w-full max-w-lg mx-auto rounded-lg shadow-lg" />
+            <EditableImage
+          src={creativeFlowImageSrc}
+          alt="Our Strength in Branding & PR"
+          className="w-full max-w-lg mx-auto rounded-lg shadow-lg"
+          imageKey="image"
+          page="services"
+          section="creative-flow-showcase"
+          onImageChange={setCreativeflowimageSrc}
+        />
           </div>
 
           {/* Right Side - Content */}

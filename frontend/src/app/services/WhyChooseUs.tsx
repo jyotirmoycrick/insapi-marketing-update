@@ -1,6 +1,25 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import whyChooseImage from '@/assets/services/build-a-brand/build-a-brand-003-why-choose-us.png';
 
 export function WhyChooseUs() {
+  const [whyChooseImageSrc, setWhychooseimageSrc] = useState(whyChooseImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const whyChooseImageSaved = content.find((c: any) => c.section === 'why-choose-us' && c.key === 'image');
+        if (whyChooseImageSaved?.value) setWhychooseimageSrc(whyChooseImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const reasons = [
     "Business-Focused Branding, Not Just Creative Work",
     "Clear Communication And Realistic Promises",
@@ -23,7 +42,15 @@ export function WhyChooseUs() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Side - Image */}
           <div>
-            <img src={whyChooseImage} alt="Why Choose Digital Advento" className="w-full max-w-lg mx-auto" />
+            <EditableImage
+          src={whyChooseImageSrc}
+          alt="Why Choose Digital Advento"
+          className="w-full max-w-lg mx-auto"
+          imageKey="image"
+          page="services"
+          section="why-choose-us"
+          onImageChange={setWhychooseimageSrc}
+        />
           </div>
 
           {/* Right Side - Reasons */}

@@ -1,10 +1,27 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import strengthImage from '@/assets/services/meta-ads/meta-ads-008-our-strength.png';
 import { Check } from 'lucide-react';
 
 export function OurStrengthSection() {
+  const [strengthImageSrc, setStrengthimageSrc] = useState(strengthImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('meta-ads');
+        
+        const strengthImageSaved = content.find((c: any) => c.section === 'our-strength-section' && c.key === 'image');
+        if (strengthImageSaved?.value) setStrengthimageSrc(strengthImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('Our Strength in Meta Ads');
   const [point1, setPoint1] = useState('Meta Blueprint certified experts');
   const [point2, setPoint2] = useState('Creative excellence');
@@ -66,10 +83,14 @@ export function OurStrengthSection() {
       }}
     >
       <section className="relative w-full">
-        <img 
-          src={strengthImage} 
-          alt="Our Strength in Meta Ads" 
+        <EditableImage
+          src={strengthImageSrc}
+          alt="Our Strength in Meta Ads"
           className="w-full h-auto block"
+          imageKey="image"
+          page="meta-ads"
+          section="our-strength-section"
+          onImageChange={setStrengthimageSrc}
         />
         
         <div className="absolute top-1/2 right-[200px] transform -translate-y-1/2 w-full max-w-[400px] md:max-w-[450px] lg:max-w-[500px] px-4 md:px-0">

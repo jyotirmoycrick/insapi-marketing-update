@@ -8,7 +8,6 @@ import { HowWeWorkShowcase } from './HowWeWorkShowcase';
 import { WhyBusinessesChooseShowcase } from './WhyBusinessesChooseShowcase';
 import { ReadyToBuildShowcase } from './ReadyToBuildShowcase';
 import { ServiceFAQShowcase } from './ServiceFAQShowcase';
-import { Footer } from '../components/Footer';
 
 export function ServicesPage() {
   return (
@@ -25,7 +24,6 @@ export function ServicesPage() {
       <WhyBusinessesChooseShowcase />
       <ReadyToBuildShowcase />
       <ServiceFAQShowcase />
-      <Footer />
     </div>
   );
 }

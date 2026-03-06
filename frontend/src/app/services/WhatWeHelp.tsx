@@ -1,14 +1,37 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import whatWeHelpImage from '@/assets/services/content-marketing/content-marketing-002-channels.png';
 
 export function WhatWeHelp() {
+  const [whatWeHelpImageSrc, setWhatwehelpimageSrc] = useState(whatWeHelpImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const whatWeHelpImageSaved = content.find((c: any) => c.section === 'what-we-help' && c.key === 'image');
+        if (whatWeHelpImageSaved?.value) setWhatwehelpimageSrc(whatWeHelpImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="relative w-full">
       {/* Background Image */}
-      <img 
-        src={whatWeHelpImage} 
-        alt="What We Help You Achieve" 
-        className="w-full h-auto block"
-      />
+      <EditableImage
+          src={whatWeHelpImageSrc}
+          alt="What We Help You Achieve"
+          className="w-full h-auto block"
+          imageKey="image"
+          page="services"
+          section="what-we-help"
+          onImageChange={setWhatwehelpimageSrc}
+        />
       
       {/* Text Overlay - Positioned center-right, upper area */}
       <div className="absolute inset-0 flex items-start justify-center pt-16 md:pt-20 lg:pt-24">

@@ -1,5 +1,4 @@
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
-import { Footer } from '../../components/Footer';
 import { Check } from 'lucide-react';
 import heroImage from '@/assets/services/content-marketing/hero-mobile.png';
 import afterHero from '@/assets/services/content-marketing/after-hero-section.png';
@@ -12,9 +11,57 @@ import section06 from '@/assets/services/content-marketing/section-06.png';
 import section07 from '@/assets/services/content-marketing/section-07.png';
 import section08 from '@/assets/services/content-marketing/section-08.png';
 import faqImage from '@/assets/services/content-marketing/faq-mobile.png';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 
 export function ContentMarketingMobilePage() {
+  const [heroImageSrc, setHeroimageSrc] = useState(heroImage);
+  const [afterHeroSrc, setAfterheroSrc] = useState(afterHero);
+  const [section01Src, setSection01Src] = useState(section01);
+  const [section02Src, setSection02Src] = useState(section02);
+  const [section03Src, setSection03Src] = useState(section03);
+  const [section04Src, setSection04Src] = useState(section04);
+  const [section05Src, setSection05Src] = useState(section05);
+  const [section06Src, setSection06Src] = useState(section06);
+  const [section07Src, setSection07Src] = useState(section07);
+  const [section08Src, setSection08Src] = useState(section08);
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('content-marketing');
+        
+        const heroImageSaved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-0');
+        if (heroImageSaved?.value) setHeroimageSrc(heroImageSaved.value);
+        const afterHeroSaved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-1');
+        if (afterHeroSaved?.value) setAfterheroSrc(afterHeroSaved.value);
+        const section01Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-2');
+        if (section01Saved?.value) setSection01Src(section01Saved.value);
+        const section02Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-3');
+        if (section02Saved?.value) setSection02Src(section02Saved.value);
+        const section03Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-4');
+        if (section03Saved?.value) setSection03Src(section03Saved.value);
+        const section04Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-5');
+        if (section04Saved?.value) setSection04Src(section04Saved.value);
+        const section05Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-6');
+        if (section05Saved?.value) setSection05Src(section05Saved.value);
+        const section06Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-7');
+        if (section06Saved?.value) setSection06Src(section06Saved.value);
+        const section07Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-8');
+        if (section07Saved?.value) setSection07Src(section07Saved.value);
+        const section08Saved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-9');
+        if (section08Saved?.value) setSection08Src(section08Saved.value);
+        const faqImageSaved = content.find((c: any) => c.section === 'content-marketing-mobile-page' && c.key === 'image-10');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -45,12 +92,15 @@ export function ContentMarketingMobilePage() {
       {/* Hero Section */}
       <section className="relative w-full block m-0 p-0 leading-none">
         <div className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <img 
-            src={heroImage} 
-            alt="Content Marketing Services" 
-            className="w-full h-auto block m-0 p-0 leading-none"
-            style={{ verticalAlign: 'bottom', display: 'block' }}
-          />
+          <EditableImage
+          src={heroImageSrc}
+          alt="Content Marketing Services"
+          className="w-full h-auto block m-0 p-0 leading-none"
+          imageKey="image-0"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setHeroimageSrc}
+        />
         </div>
         
         {/* Form Overlay */}
@@ -67,7 +117,15 @@ export function ContentMarketingMobilePage() {
 
       {/* After Hero Section */}
       <section className="relative bg-white">
-        <img src={afterHero} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={afterHeroSrc}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-1"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setAfterheroSrc}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-8">
@@ -131,7 +189,15 @@ export function ContentMarketingMobilePage() {
 
       {/* Section 01 */}
       <section className="relative bg-white">
-        <img src={section01} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section01Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-2"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection01Src}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-2">
@@ -159,7 +225,15 @@ export function ContentMarketingMobilePage() {
 
       {/* Section 02 */}
       <section className="relative bg-white">
-        <img src={section02} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section02Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-3"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection02Src}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-6">
@@ -187,7 +261,15 @@ export function ContentMarketingMobilePage() {
 
       {/* Section 03 */}
       <section className="relative bg-white">
-        <img src={section03} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section03Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-4"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection03Src}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-2">
@@ -215,7 +297,15 @@ export function ContentMarketingMobilePage() {
 
       {/* Section 04 */}
       <section className="relative bg-white">
-        <img src={section04} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section04Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-5"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection04Src}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-1">
@@ -243,7 +333,15 @@ export function ContentMarketingMobilePage() {
 
       {/* Section 05 */}
       <section className="relative bg-white">
-        <img src={section05} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section05Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-6"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection05Src}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-4">
@@ -271,7 +369,15 @@ export function ContentMarketingMobilePage() {
 
       {/* Section 06 */}
       <section className="relative bg-white">
-        <img src={section06} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section06Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-7"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection06Src}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-8">
@@ -324,12 +430,28 @@ export function ContentMarketingMobilePage() {
 
       {/* Section 07 */}
       <section className="bg-white">
-        <img src={section07} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section07Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-8"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection07Src}
+        />
       </section>
 
       {/* Section 08 with Button */}
       <section className="relative bg-white">
-        <img src={section08} alt="Content Marketing Section" className="w-full block" />
+        <EditableImage
+          src={section08Src}
+          alt="Content Marketing Section"
+          className="w-full block"
+          imageKey="image-9"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setSection08Src}
+        />
         
         {/* Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center pt-40">
@@ -345,7 +467,15 @@ export function ContentMarketingMobilePage() {
 
       {/* FAQ Section */}
       <section className="relative bg-white">
-        <img src={faqImage} alt="Content Marketing FAQ" className="w-full block" />
+        <EditableImage
+          src={faqImageSrc}
+          alt="Content Marketing FAQ"
+          className="w-full block"
+          imageKey="image-10"
+          page="content-marketing"
+          section="content-marketing-mobile-page"
+          onImageChange={setFaqimageSrc}
+        />
         
         {/* FAQ Overlay */}
         <div className="absolute left-0 right-0 px-6" style={{ top: '38%' }}>
@@ -376,8 +506,6 @@ export function ContentMarketingMobilePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

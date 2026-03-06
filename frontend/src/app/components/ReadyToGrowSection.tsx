@@ -1,10 +1,30 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import readyToGrowImageDesktop from '@/assets/home/growDesktop.png';
 import readyToGrowImageMobile from '@/assets/home/grow-mobile.png';
 
 export function ReadyToGrowSection() {
+  const [readyToGrowImageDesktopSrc, setReadytogrowimagedesktopSrc] = useState(readyToGrowImageDesktop);
+  const [readyToGrowImageMobileSrc, setReadytogrowimagemobileSrc] = useState(readyToGrowImageMobile);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('home');
+        
+        const readyToGrowImageDesktopSaved = content.find((c: any) => c.section === 'ready-to-grow-section' && c.key === 'image-0');
+        if (readyToGrowImageDesktopSaved?.value) setReadytogrowimagedesktopSrc(readyToGrowImageDesktopSaved.value);
+        const readyToGrowImageMobileSaved = content.find((c: any) => c.section === 'ready-to-grow-section' && c.key === 'image-1');
+        if (readyToGrowImageMobileSaved?.value) setReadytogrowimagemobileSrc(readyToGrowImageMobileSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [buttonText, setButtonText] = useState('Contact Us');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,18 +50,26 @@ export function ReadyToGrowSection() {
   return (
     <section className="relative w-full">
       {/* Desktop Image */}
-      <img 
-        src={readyToGrowImageDesktop} 
-        alt="Ready To Grow? Talk To Our Experts" 
-        className="hidden md:block w-full h-auto" 
-      />
+      <EditableImage
+          src={readyToGrowImageDesktopSrc}
+          alt="Ready To Grow? Talk To Our Experts"
+          className="hidden md:block w-full h-auto"
+          imageKey="image-0"
+          page="home"
+          section="ready-to-grow-section"
+          onImageChange={setReadytogrowimagedesktopSrc}
+        />
       
       {/* Mobile Image */}
-      <img 
-        src={readyToGrowImageMobile} 
-        alt="Ready To Grow? Talk To Our Experts" 
-        className="block md:hidden w-full h-auto" 
-      />
+      <EditableImage
+          src={readyToGrowImageMobileSrc}
+          alt="Ready To Grow? Talk To Our Experts"
+          className="block md:hidden w-full h-auto"
+          imageKey="image-1"
+          page="home"
+          section="ready-to-grow-section"
+          onImageChange={setReadytogrowimagemobileSrc}
+        />
       
       {/* Button Overlay - Centered at bottom - Desktop only */}
       <div className="hidden md:flex absolute inset-0 items-end justify-center pb-12 md:pb-16 lg:pb-20">

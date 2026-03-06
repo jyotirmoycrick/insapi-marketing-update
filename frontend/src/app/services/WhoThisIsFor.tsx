@@ -1,6 +1,25 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import whoThisIsForImage from '@/assets/services/build-a-brand/build-a-brand-002-who-this-is-for.png';
 
 export function WhoThisIsFor() {
+  const [whoThisIsForImageSrc, setWhothisisforimageSrc] = useState(whoThisIsForImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const whoThisIsForImageSaved = content.find((c: any) => c.section === 'who-this-is-for' && c.key === 'image');
+        if (whoThisIsForImageSaved?.value) setWhothisisforimageSrc(whoThisIsForImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const targetAudience = [
     "Growing businesses",
     "Founders building authority",
@@ -15,7 +34,15 @@ export function WhoThisIsFor() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Side - Image */}
           <div>
-            <img src={whoThisIsForImage} alt="Who This Is For" className="w-full max-w-sm mx-auto" />
+            <EditableImage
+          src={whoThisIsForImageSrc}
+          alt="Who This Is For"
+          className="w-full max-w-sm mx-auto"
+          imageKey="image"
+          page="services"
+          section="who-this-is-for"
+          onImageChange={setWhothisisforimageSrc}
+        />
           </div>
 
           {/* Right Side - Content */}

@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import processImage from '@/assets/services/social-media/social-media-003-process.png';
 
 export function ProcessSection() {
+  const [processImageSrc, setProcessimageSrc] = useState(processImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('social-media');
+        
+        const processImageSaved = content.find((c: any) => c.section === 'process-section' && c.key === 'image');
+        if (processImageSaved?.value) setProcessimageSrc(processImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('Our Social Media Process');
   const [point1, setPoint1] = useState('Social Media Strategy');
   const [point2, setPoint2] = useState('Content Planning & Calendars');
@@ -74,11 +91,15 @@ export function ProcessSection() {
           
           {/* Image LEFT */}
           <div className="w-full">
-            <img 
-              src={processImage} 
-              alt="Our Social Media Process" 
-              className="w-[85%] h-auto"
-            />
+            <EditableImage
+          src={processImageSrc}
+          alt="Our Social Media Process"
+          className="w-[85%] h-auto"
+          imageKey="image"
+          page="social-media"
+          section="process-section"
+          onImageChange={setProcessimageSrc}
+        />
           </div>
 
           {/* Text RIGHT */}

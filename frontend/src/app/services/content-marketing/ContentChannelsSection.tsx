@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import channelsImage from '@/assets/services/content-marketing/content-marketing-002-channels.png';
 
 export function ContentChannelsSection() {
+  const [channelsImageSrc, setChannelsimageSrc] = useState(channelsImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('content-marketing');
+        
+        const channelsImageSaved = content.find((c: any) => c.section === 'content-channels-section' && c.key === 'image');
+        if (channelsImageSaved?.value) setChannelsimageSrc(channelsImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('Content Channels We Work With');
   const [intro, setIntro] = useState('We create content across formats that support both visibility and conversions:');
   const [channel1, setChannel1] = useState('Website Content');
@@ -81,10 +98,14 @@ export function ContentChannelsSection() {
     >
       <section className="relative w-full">
         {/* Background Image */}
-        <img 
-          src={channelsImage} 
-          alt="Content Channels We Work With" 
+        <EditableImage
+          src={channelsImageSrc}
+          alt="Content Channels We Work With"
           className="w-full h-auto block"
+          imageKey="image"
+          page="content-marketing"
+          section="content-channels-section"
+          onImageChange={setChannelsimageSrc}
         />
         
         {/* Text Overlay - Positioned center, upper area */}

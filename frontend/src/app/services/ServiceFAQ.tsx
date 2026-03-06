@@ -1,7 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import faqImage from '@/assets/shared/shared-001-branding-desk.png';
 
 export function ServiceFAQ() {
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const faqImageSaved = content.find((c: any) => c.section === 'service-faq' && c.key === 'image');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const faqs = [
@@ -30,11 +48,15 @@ export function ServiceFAQ() {
   return (
     <section className="relative w-full">
       {/* Full-width background image */}
-      <img 
-        src={faqImage} 
-        alt="FAQ" 
-        className="w-full h-auto block" 
-      />
+      <EditableImage
+          src={faqImageSrc}
+          alt="FAQ"
+          className="w-full h-auto block"
+          imageKey="image"
+          page="services"
+          section="service-faq"
+          onImageChange={setFaqimageSrc}
+        />
       
       {/* FAQ Content Overlay - NO WHITE BACKGROUND */}
       <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">

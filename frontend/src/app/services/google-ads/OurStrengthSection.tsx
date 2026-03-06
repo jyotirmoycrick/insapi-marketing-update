@@ -1,10 +1,27 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import strengthImage from '@/assets/services/google-ads/google-ads-009-our-strength.png';
 import { Check } from 'lucide-react';
 
 export function OurStrengthSection() {
+  const [strengthImageSrc, setStrengthimageSrc] = useState(strengthImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('google-ads');
+        
+        const strengthImageSaved = content.find((c: any) => c.section === 'our-strength-section' && c.key === 'image');
+        if (strengthImageSaved?.value) setStrengthimageSrc(strengthImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('Our Strength in Google Ads');
   const [point1, setPoint1] = useState('Certified Google Ads experts');
   const [point2, setPoint2] = useState('Data-driven optimization');
@@ -66,10 +83,14 @@ export function OurStrengthSection() {
       }}
     >
       <section className="relative w-full">
-        <img 
-          src={strengthImage} 
-          alt="Our Strength in Google Ads" 
+        <EditableImage
+          src={strengthImageSrc}
+          alt="Our Strength in Google Ads"
           className="w-full h-auto block"
+          imageKey="image"
+          page="google-ads"
+          section="our-strength-section"
+          onImageChange={setStrengthimageSrc}
         />
         
         {/* Text Overlay */}

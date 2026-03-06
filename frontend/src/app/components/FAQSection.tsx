@@ -1,10 +1,30 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import faqImageDesktop from '@/assets/shared/shared-002-faq.png';
 import faqImageMobile from '@/assets/home/home-010-faq-mobile.png';
 
 export function FAQSection() {
+  const [faqImageDesktopSrc, setFaqimagedesktopSrc] = useState(faqImageDesktop);
+  const [faqImageMobileSrc, setFaqimagemobileSrc] = useState(faqImageMobile);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('home');
+        
+        const faqImageDesktopSaved = content.find((c: any) => c.section === 'faq-section' && c.key === 'image-0');
+        if (faqImageDesktopSaved?.value) setFaqimagedesktopSrc(faqImageDesktopSaved.value);
+        const faqImageMobileSaved = content.find((c: any) => c.section === 'faq-section' && c.key === 'image-1');
+        if (faqImageMobileSaved?.value) setFaqimagemobileSrc(faqImageMobileSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [heading, setHeading] = useState('FAQs');
   const [subheading, setSubheading] = useState('Find answers to common questions');
@@ -107,7 +127,15 @@ export function FAQSection() {
       <section className="relative w-full">
         {/* Desktop Image with Interactive FAQ */}
         <div className="hidden md:block relative">
-          <img src={faqImageDesktop} alt="FAQ" className="w-full h-auto block" />
+          <EditableImage
+          src={faqImageDesktopSrc}
+          alt="FAQ"
+          className="w-full h-auto block"
+          imageKey="image-0"
+          page="home"
+          section="faq-section"
+          onImageChange={setFaqimagedesktopSrc}
+        />
           
           <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">
             <div className="w-full md:w-1/2 lg:w-2/5 p-6 md:p-8 lg:p-10">
@@ -140,7 +168,15 @@ export function FAQSection() {
         
         {/* Mobile Image with Text Overlay */}
         <div className="block md:hidden relative">
-          <img src={faqImageMobile} alt="FAQ" className="w-full h-auto" />
+          <EditableImage
+          src={faqImageMobileSrc}
+          alt="FAQ"
+          className="w-full h-auto"
+          imageKey="image-1"
+          page="home"
+          section="faq-section"
+          onImageChange={setFaqimagemobileSrc}
+        />
           
           {/* FAQ Text Overlay for Mobile - Positioned in lower half */}
           <div className="absolute left-0 right-0 px-6" style={{ top: '42%' }}>

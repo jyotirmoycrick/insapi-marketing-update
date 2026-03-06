@@ -56,8 +56,11 @@ client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
 
 # Ensure uploads directory exists
-UPLOAD_DIR = "/app/backend/uploads"
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# Mount uploads directory for static file serving
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # Admin credentials
 ADMIN_USERNAME = "malo"
@@ -599,7 +602,7 @@ async def upload_file(file: UploadFile = File(...), token: str = Form(...)):
         # Return URL
         return {
             "success": True,
-            "url": f"/api/uploads/{filename}",
+            "url": f"http://localhost:8000/uploads/{filename}",
             "filename": filename
         }
     except Exception as e:
@@ -634,7 +637,7 @@ async def list_uploads(token: str):
             filepath = os.path.join(UPLOAD_DIR, filename)
             files.append({
                 "filename": filename,
-                "url": f"/api/uploads/{filename}",
+                "url": f"http://localhost:8000/uploads/{filename}",
                 "size": os.path.getsize(filepath),
                 "modified": datetime.fromtimestamp(os.path.getmtime(filepath)).isoformat()
             })
@@ -742,6 +745,87 @@ async def delete_contact(contact_id: str, token: str):
     
     await db.contacts.delete_one({"_id": ObjectId(contact_id)})
     return {"success": True}
+
+
+# ============== CONTENT MANAGEMENT ==============
+
+class ContentItem(BaseModel):
+    page: str  # e.g., 'home', 'services', 'about'
+    section: str  # e.g., 'hero', 'about', 'services'
+    key: str  # e.g., 'heading', 'description', 'image'
+    value: Any  # The actual content
+    type: str  # 'text', 'textarea', 'image', 'number'
+    token: str
+
+@app.get("/api/content")
+async def get_page_content(page: str):
+    """Get all content for a specific page"""
+    try:
+        content_items = []
+        async for item in db.content.find({"page": page}):
+            item["_id"] = str(item["_id"])
+            content_items.append(item)
+        return content_items
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/content")
+async def create_or_update_content(content: ContentItem):
+    """Create or update content item"""
+    if not verify_token(content.token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    try:
+        # Check if content already exists
+        existing = await db.content.find_one({
+            "page": content.page,
+            "section": content.section,
+            "key": content.key
+        })
+        
+        content_doc = {
+            "page": content.page,
+            "section": content.section,
+            "key": content.key,
+            "value": content.value,
+            "type": content.type,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        if existing:
+            # Update existing
+            await db.content.update_one(
+                {"_id": existing["_id"]},
+                {"$set": content_doc}
+            )
+        else:
+            # Create new
+            content_doc["created_at"] = datetime.now(timezone.utc).isoformat()
+            await db.content.insert_one(content_doc)
+        
+        return {"success": True, "message": "Content saved"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/content/{page}/{section}/{key}")
+async def get_content_item(page: str, section: str, key: str):
+    """Get specific content item"""
+    try:
+        item = await db.content.find_one({
+            "page": page,
+            "section": section,
+            "key": key
+        })
+        
+        if not item:
+            raise HTTPException(status_code=404, detail="Content not found")
+        
+        item["_id"] = str(item["_id"])
+        return item
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # ============== PAGE BUILDER ROUTES ==============
@@ -865,6 +949,61 @@ async def section_templates():
     return await get_section_templates()
 
 
+# ============== NAVIGATION ROUTES ==============
+
+@app.get("/api/navigation/main-menu")
+async def get_main_navigation():
+    """Get main navigation menu"""
+    try:
+        nav = await db.navigation.find_one({"menu_id": "main-menu"})
+        if not nav:
+            # Return default navigation
+            return {
+                "items": [
+                    {"label": "Home", "path": "/", "type": "link", "isVisible": True, "order": 0}
+                ],
+                "settings": {
+                    "logo": "/src/assets/shared/logo.png",
+                    "logoAlt": "InsAPI Marketing",
+                    "contactEmail": "malojyotirmoy@gmail.com",
+                    "contactPhone": "+91 1234567890",
+                    "showContactInfo": True
+                }
+            }
+        
+        return {
+            "items": nav.get("items", []),
+            "settings": nav.get("settings", {})
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/api/navigation/main-menu")
+async def update_main_navigation(data: Dict[str, Any], token: str):
+    """Update main navigation menu"""
+    if not verify_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    try:
+        update_data = {
+            "menu_id": "main-menu",
+            "items": data.get("items", []),
+            "settings": data.get("settings", {}),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        
+        await db.navigation.update_one(
+            {"menu_id": "main-menu"},
+            {"$set": update_data},
+            upsert=True
+        )
+        
+        return {"success": True, "message": "Navigation updated"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ============== HEALTH CHECK ==============
 
 @app.get("/api/health")
@@ -877,4 +1016,4 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

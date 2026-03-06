@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import authRoutes from './routes/auth.js';
 import contentRoutes from './routes/content.js';
+import navigationRoutes from './routes/navigation.js';
+import pagesRoutes from './routes/pages.js';
 
 dotenv.config();
 
@@ -344,6 +346,8 @@ contactRouter.get('/all', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/contact', contactRouter);
+app.use('/api/navigation', navigationRoutes);
+app.use('/api/pages', pagesRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -1,10 +1,27 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import focusImage from '@/assets/services/content-marketing/content-marketing-009-what-we-focus-on.png';
 import { Check } from 'lucide-react';
 
 export function WhatWeFocusOnSection() {
+  const [focusImageSrc, setFocusimageSrc] = useState(focusImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('content-marketing');
+        
+        const focusImageSaved = content.find((c: any) => c.section === 'what-we-focus-on-section' && c.key === 'image');
+        if (focusImageSaved?.value) setFocusimageSrc(focusImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('What We Focus On');
   const [point1, setPoint1] = useState('Content that ranks and converts');
   const [point2, setPoint2] = useState('Audience-first messaging');
@@ -66,10 +83,14 @@ export function WhatWeFocusOnSection() {
       }}
     >
       <section className="relative w-full">
-        <img 
-          src={focusImage} 
-          alt="What We Focus On" 
+        <EditableImage
+          src={focusImageSrc}
+          alt="What We Focus On"
           className="w-full h-auto block"
+          imageKey="image"
+          page="content-marketing"
+          section="what-we-focus-on-section"
+          onImageChange={setFocusimageSrc}
         />
         
         {/* Text Overlay */}

@@ -1,7 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import faqImage from '@/assets/services/build-a-brand/faq-desktop.png';
 
 export function DesktopFAQ() {
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const faqImageSaved = content.find((c: any) => c.section === 'desktop-faq' && c.key === 'image');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -29,7 +47,15 @@ export function DesktopFAQ() {
 
   return (
     <section className="relative bg-white">
-      <img src={faqImage} alt="FAQ Background" className="w-full block" />
+      <EditableImage
+          src={faqImageSrc}
+          alt="FAQ Background"
+          className="w-full block"
+          imageKey="image"
+          page="build-a-brand"
+          section="desktop-faq"
+          onImageChange={setFaqimageSrc}
+        />
       
       {/* FAQ Overlay */}
       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center py-16">

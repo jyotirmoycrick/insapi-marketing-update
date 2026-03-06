@@ -1,7 +1,8 @@
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
-import { Footer } from '../../components/Footer';
 import { Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import heroImage from '@/assets/services/build-a-brand/hero-mobile.png';
 import section01 from '@/assets/services/build-a-brand/section-01.png';
 import section02 from '@/assets/services/build-a-brand/section-02.png';
@@ -12,6 +13,43 @@ import section08 from '@/assets/services/build-a-brand/section-08.png';
 import faqImage from '@/assets/services/build-a-brand/faq-mobile.png';
 
 export function BuildABrandMobilePage() {
+  const [heroImageSrc, setHeroimageSrc] = useState(heroImage);
+  const [section01Src, setSection01Src] = useState(section01);
+  const [section02Src, setSection02Src] = useState(section02);
+  const [section03Src, setSection03Src] = useState(section03);
+  const [section04Src, setSection04Src] = useState(section04);
+  const [section07Src, setSection07Src] = useState(section07);
+  const [section08Src, setSection08Src] = useState(section08);
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const heroImageSaved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-0');
+        if (heroImageSaved?.value) setHeroimageSrc(heroImageSaved.value);
+        const section01Saved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-1');
+        if (section01Saved?.value) setSection01Src(section01Saved.value);
+        const section02Saved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-2');
+        if (section02Saved?.value) setSection02Src(section02Saved.value);
+        const section03Saved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-3');
+        if (section03Saved?.value) setSection03Src(section03Saved.value);
+        const section04Saved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-4');
+        if (section04Saved?.value) setSection04Src(section04Saved.value);
+        const section07Saved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-5');
+        if (section07Saved?.value) setSection07Src(section07Saved.value);
+        const section08Saved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-6');
+        if (section08Saved?.value) setSection08Src(section08Saved.value);
+        const faqImageSaved = content.find((c: any) => c.section === 'build-a-brand-mobile-page' && c.key === 'image-7');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -42,12 +80,15 @@ export function BuildABrandMobilePage() {
       {/* Hero Section */}
       <section className="relative w-full block m-0 p-0 leading-none">
         <div className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <img 
-            src={heroImage} 
-            alt="Build a Brand - Branding & Digital PR" 
-            className="w-full h-auto block m-0 p-0 leading-none"
-            style={{ verticalAlign: 'bottom', display: 'block' }}
-          />
+          <EditableImage
+          src={heroImageSrc}
+          alt="Build a Brand - Branding & Digital PR"
+          className="w-full h-auto block m-0 p-0 leading-none"
+          imageKey="image-0"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setHeroimageSrc}
+        />
         </div>
         
         {/* Form Overlay */}
@@ -64,7 +105,15 @@ export function BuildABrandMobilePage() {
 
       {/* Section 01 */}
       <section className="relative bg-white">
-        <img src={section01} alt="Build a Brand Section" className="w-full block" />
+        <EditableImage
+          src={section01Src}
+          alt="Build a Brand Section"
+          className="w-full block"
+          imageKey="image-1"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setSection01Src}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full px-6 py-6">
@@ -182,7 +231,15 @@ export function BuildABrandMobilePage() {
         
         {/* Image Section */}
         <div className="w-full">
-          <img src={section02} alt="Branding Services" className="w-full block" />
+          <EditableImage
+          src={section02Src}
+          alt="Branding Services"
+          className="w-full block"
+          imageKey="image-2"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setSection02Src}
+        />
         </div>
       </section>
 
@@ -249,7 +306,15 @@ export function BuildABrandMobilePage() {
         
         {/* Image Section */}
         <div className="w-full">
-          <img src={section03} alt="PR Services" className="w-full block" />
+          <EditableImage
+          src={section03Src}
+          alt="PR Services"
+          className="w-full block"
+          imageKey="image-3"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setSection03Src}
+        />
         </div>
       </section>
 
@@ -300,18 +365,42 @@ export function BuildABrandMobilePage() {
         
         {/* Image Section */}
         <div className="w-full">
-          <img src={section04} alt="Our Strength" className="w-full block" />
+          <EditableImage
+          src={section04Src}
+          alt="Our Strength"
+          className="w-full block"
+          imageKey="image-4"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setSection04Src}
+        />
         </div>
       </section>
 
       {/* Section 07 */}
       <section className="bg-white">
-        <img src={section07} alt="Build a Brand Section" className="w-full block" />
+        <EditableImage
+          src={section07Src}
+          alt="Build a Brand Section"
+          className="w-full block"
+          imageKey="image-5"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setSection07Src}
+        />
       </section>
 
       {/* Section 08 with Button */}
       <section className="relative bg-white">
-        <img src={section08} alt="Ready to Build" className="w-full block" />
+        <EditableImage
+          src={section08Src}
+          alt="Ready to Build"
+          className="w-full block"
+          imageKey="image-6"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setSection08Src}
+        />
         
         {/* Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center pt-40">
@@ -327,7 +416,15 @@ export function BuildABrandMobilePage() {
 
       {/* FAQ Section */}
       <section className="relative bg-white">
-        <img src={faqImage} alt="Build a Brand FAQ" className="w-full block" />
+        <EditableImage
+          src={faqImageSrc}
+          alt="Build a Brand FAQ"
+          className="w-full block"
+          imageKey="image-7"
+          page="build-a-brand"
+          section="build-a-brand-mobile-page"
+          onImageChange={setFaqimageSrc}
+        />
         
         {/* FAQ Overlay */}
         <div className="absolute left-0 right-0 px-6" style={{ top: '38%' }}>
@@ -358,8 +455,6 @@ export function BuildABrandMobilePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

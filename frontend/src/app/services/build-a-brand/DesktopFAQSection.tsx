@@ -1,7 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import faqDesktopImage from '@/assets/services/build-a-brand/faq-desktop.png';
 
 export function DesktopFAQSection() {
+  const [faqDesktopImageSrc, setFaqdesktopimageSrc] = useState(faqDesktopImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const faqDesktopImageSaved = content.find((c: any) => c.section === 'desktop-faq-section' && c.key === 'image');
+        if (faqDesktopImageSaved?.value) setFaqdesktopimageSrc(faqDesktopImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const faqs = [
@@ -30,11 +48,15 @@ export function DesktopFAQSection() {
   return (
     <section className="relative w-full">
       {/* Full-width background image */}
-      <img 
-        src={faqDesktopImage} 
-        alt="FAQ Background" 
-        className="w-full h-auto block brightness-90" 
-      />
+      <EditableImage
+          src={faqDesktopImageSrc}
+          alt="FAQ Background"
+          className="w-full h-auto block brightness-90"
+          imageKey="image"
+          page="build-a-brand"
+          section="desktop-faq-section"
+          onImageChange={setFaqdesktopimageSrc}
+        />
       
       {/* FAQ Content Overlay */}
       <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">

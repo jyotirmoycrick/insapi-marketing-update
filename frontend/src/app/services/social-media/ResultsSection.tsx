@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import resultsImage from '@/assets/services/social-media/social-media-005-results.png';
 
 export function ResultsSection() {
+  const [resultsImageSrc, setResultsimageSrc] = useState(resultsImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('social-media');
+        
+        const resultsImageSaved = content.find((c: any) => c.section === 'results-section' && c.key === 'image');
+        if (resultsImageSaved?.value) setResultsimageSrc(resultsImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('What Results We Focus On');
   const [point1, setPoint1] = useState('Consistent follower growth');
   const [point2, setPoint2] = useState('Higher engagement rates');
@@ -60,10 +77,14 @@ export function ResultsSection() {
       }}
     >
       <section className="relative w-full">
-        <img 
-          src={resultsImage} 
-          alt="What Results We Focus On" 
+        <EditableImage
+          src={resultsImageSrc}
+          alt="What Results We Focus On"
           className="w-full h-auto block"
+          imageKey="image"
+          page="social-media"
+          section="results-section"
+          onImageChange={setResultsimageSrc}
         />
         
         <div className="absolute top-1/2 left-[800px] transform -translate-y-1/2 w-full max-w-[400px] md:max-w-[450px] lg:max-w-[500px] px-4 md:px-0">

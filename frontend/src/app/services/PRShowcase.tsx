@@ -1,6 +1,25 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import prImage from '@/assets/services/marketing/marketing-001-pr-showcase.png';
 
 export function PRShowcase() {
+  const [prImageSrc, setPrimageSrc] = useState(prImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const prImageSaved = content.find((c: any) => c.section === 'pr-showcase' && c.key === 'image');
+        if (prImageSaved?.value) setPrimageSrc(prImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="bg-white py-12 md:py-16 lg:py-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-center">
@@ -60,11 +79,15 @@ export function PRShowcase() {
 
         {/* Right Side - Image (No padding, touches right edge) */}
         <div className="w-full lg:-ml-8">
-          <img 
-            src={prImage} 
-            alt="Our PR Services" 
-            className="w-full h-auto"
-          />
+          <EditableImage
+          src={prImageSrc}
+          alt="Our PR Services"
+          className="w-full h-auto"
+          imageKey="image"
+          page="services"
+          section="pr-showcase"
+          onImageChange={setPrimageSrc}
+        />
         </div>
         
       </div>

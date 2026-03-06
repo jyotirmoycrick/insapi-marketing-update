@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Builder Diagnostics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .test h3 {
+            margin-top: 0;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Page Builder Diagnostics</h1>
+    <p>This page will help diagnose issues with the page builder.</p>
+
+    <div id="results"></div>
+
+    <script>
+        const API_URL = 'http://localhost:8000/api';
+        const results = document.getElementById('results');
+
+        function addResult(title, status, message, data = null) {
+            const div = document.createElement('div');
+            div.className = `test ${status}`;
+            div.innerHTML = `
+                <h3>${status === 'success' ? '✅' : status === 'error' ? '❌' : 'ℹ️'} ${title}</h3>
+                <p>${message}</p>
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+            results.appendChild(div);
+        }
+
+        async function runDiagnostics() {
+            results.innerHTML = '<div class="info test"><h3>Running diagnostics...</h3></div>';
+
+            // Test 1: Backend Connection
+            try {
+                const response = await fetch(`${API_URL}/components/templates`);
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(
+                        'Backend Connection',
+                        'success',
+                        `Backend is running and responding. Found ${data.components.length} component templates.`,
+                        { componentCount: data.components.length, components: data.components.map(c => c.name) }
+                    );
+
+                    // Test 2: Text Component Template
+                    const textTemplate = data.components.find(c => c.type === 'text');
+                    if (textTemplate) {
+                        addResult(
+                            'Text Component Template',
+                            'success',
+                            'Text Block template found in backend.',
+                            textTemplate
+                        );
+                    } else {
+                        addResult(
+                            'Text Component Template',
+                            'error',
+                            'Text Block template NOT found in backend!',
+                            { availableTypes: data.components.map(c => c.type) }
+                        );
+                    }
+
+                    // Test 3: Heading Component Template
+                    const headingTemplate = data.components.find(c => c.type === 'heading');
+                    if (headingTemplate) {
+                        addResult(
+                            'Heading Component Template',
+                            'success',
+                            'Heading template found in backend.',
+                            headingTemplate
+                        );
+                    } else {
+                        addResult(
+                            'Heading Component Template',
+                            'error',
+                            'Heading template NOT found in backend!'
+                        );
+                    }
+                } else {
+                    addResult(
+                        'Backend Connection',
+                        'error',
+                        `Backend responded with status ${response.status}. Check if backend is running on port 8000.`
+                    );
+                }
+            } catch (error) {
+                addResult(
+                    'Backend Connection',
+                    'error',
+                    `Cannot connect to backend: ${error.message}. Make sure backend is running on http://localhost:8000`,
+                    { error: error.toString() }
+                );
+            }
+
+            // Test 4: Check Pages Endpoint
+            try {
+                const response = await fetch(`${API_URL}/pages`);
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(
+                        'Pages Endpoint',
+                        'success',
+                        `Pages endpoint working. Found ${data.pages ? data.pages.length : 0} pages.`,
+                        { pageCount: data.pages ? data.pages.length : 0 }
+                    );
+                } else {
+                    addResult(
+                        'Pages Endpoint',
+                        'error',
+                        `Pages endpoint returned status ${response.status}`
+                    );
+                }
+            } catch (error) {
+                addResult(
+                    'Pages Endpoint',
+                    'error',
+                    `Cannot access pages endpoint: ${error.message}`
+                );
+            }
+
+            // Test 5: Frontend Build
+            addResult(
+                'Frontend',
+                'info',
+                'If you can see this page, the frontend is working. Check the page builder at http://localhost:5173/admin'
+            );
+
+            // Test 6: Browser Compatibility
+            const features = {
+                'Fetch API': typeof fetch !== 'undefined',
+                'LocalStorage': typeof localStorage !== 'undefined',
+                'ES6 Support': typeof Promise !== 'undefined',
+                'Drag and Drop': 'draggable' in document.createElement('div')
+            };
+            
+            const allSupported = Object.values(features).every(v => v);
+            addResult(
+                'Browser Compatibility',
+                allSupported ? 'success' : 'error',
+                allSupported ? 'Browser supports all required features.' : 'Browser missing some features!',
+                features
+            );
+
+            // Summary
+            addResult(
+                'Diagnostic Complete',
+                'info',
+                'Check the results above. If backend connection failed, start the backend with: cd backend && python server.py'
+            );
+        }
+
+        // Run diagnostics on page load
+        runDiagnostics();
+    </script>
+
+    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+        <h2>Quick Fixes</h2>
+        
+        <h3>If Backend Connection Failed:</h3>
+        <pre>cd backend
+python server.py</pre>
+
+        <h3>If Frontend Not Working:</h3>
+        <pre>cd frontend
+npm run dev</pre>
+
+        <h3>If Text Component Not Showing:</h3>
+        <ol>
+            <li>Make sure backend is running (see above)</li>
+            <li>Hard refresh the page builder (Ctrl+Shift+F5)</li>
+            <li>Check browser console for errors (F12)</li>
+            <li>Try clicking on "Text Block" in the left sidebar</li>
+        </ol>
+
+        <h3>If Text Align Not Working:</h3>
+        <ol>
+            <li>Select the text/heading component</li>
+            <li>Open Typography panel in right sidebar</li>
+            <li>Click the center align button</li>
+            <li>Click "Save" button in top bar</li>
+            <li>Click "Publish" button in top bar</li>
+            <li>Hard refresh the live page (Ctrl+Shift+F5)</li>
+        </ol>
+
+        <h3>Clear Cache:</h3>
+        <button onclick="localStorage.clear(); alert('LocalStorage cleared! Refresh the page.');">
+            Clear LocalStorage
+        </button>
+        <button onclick="location.reload(true);">
+            Hard Refresh
+        </button>
+    </div>
+</body>
+</html>

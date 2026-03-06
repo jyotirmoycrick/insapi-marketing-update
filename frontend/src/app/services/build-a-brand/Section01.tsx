@@ -1,10 +1,37 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import sectionImage from '@/assets/services/build-a-brand/section-01.png';
 import { Check } from 'lucide-react';
 
 export function Section01() {
+  const [sectionImageSrc, setSectionimageSrc] = useState(sectionImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const sectionImageSaved = content.find((c: any) => c.section === 'section01' && c.key === 'image');
+        if (sectionImageSaved?.value) setSectionimageSrc(sectionImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="relative bg-white">
-      <img src={sectionImage} alt="Build a Brand Section" className="w-full block" />
+      <EditableImage
+          src={sectionImageSrc}
+          alt="Build a Brand Section"
+          className="w-full block"
+          imageKey="image"
+          page="build-a-brand"
+          section="section01"
+          onImageChange={setSectionimageSrc}
+        />
       
       {/* Text Overlay */}
       <div className="absolute top-0 left-0 w-full px-6 py-6">

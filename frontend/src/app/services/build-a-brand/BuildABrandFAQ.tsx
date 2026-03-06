@@ -1,7 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import faqImage from '@/assets/services/build-a-brand/faq-mobile.png';
 
 export function BuildABrandFAQ() {
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const faqImageSaved = content.find((c: any) => c.section === 'build-a-brand-faq' && c.key === 'image');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -29,7 +47,15 @@ export function BuildABrandFAQ() {
 
   return (
     <section className="relative bg-white">
-      <img src={faqImage} alt="Build a Brand FAQ" className="w-full block" />
+      <EditableImage
+          src={faqImageSrc}
+          alt="Build a Brand FAQ"
+          className="w-full block"
+          imageKey="image"
+          page="build-a-brand"
+          section="build-a-brand-faq"
+          onImageChange={setFaqimageSrc}
+        />
       
       {/* FAQ Overlay */}
       <div className="absolute left-0 right-0 px-6" style={{ top: '38%' }}>

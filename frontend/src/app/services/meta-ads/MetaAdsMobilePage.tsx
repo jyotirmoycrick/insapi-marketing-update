@@ -10,11 +10,58 @@ import section08 from '@/assets/services/meta-ads/section-08.png';
 import whatWeFocusOn from '@/assets/services/meta-ads/what-we-focus-on.png';
 import faqImage from '@/assets/services/meta-ads/faq-mobile.png';
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
-import { Footer } from '../../components/Footer';
 import { Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 
 export function MetaAdsMobilePage() {
+  const [heroMobileImageSrc, setHeromobileimageSrc] = useState(heroMobileImage);
+  const [section01Src, setSection01Src] = useState(section01);
+  const [section02Src, setSection02Src] = useState(section02);
+  const [section03Src, setSection03Src] = useState(section03);
+  const [section04Src, setSection04Src] = useState(section04);
+  const [section05Src, setSection05Src] = useState(section05);
+  const [section06Src, setSection06Src] = useState(section06);
+  const [section07Src, setSection07Src] = useState(section07);
+  const [section08Src, setSection08Src] = useState(section08);
+  const [whatWeFocusOnSrc, setWhatwefocusonSrc] = useState(whatWeFocusOn);
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('meta-ads');
+        
+        const heroMobileImageSaved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-0');
+        if (heroMobileImageSaved?.value) setHeromobileimageSrc(heroMobileImageSaved.value);
+        const section01Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-1');
+        if (section01Saved?.value) setSection01Src(section01Saved.value);
+        const section02Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-2');
+        if (section02Saved?.value) setSection02Src(section02Saved.value);
+        const section03Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-3');
+        if (section03Saved?.value) setSection03Src(section03Saved.value);
+        const section04Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-4');
+        if (section04Saved?.value) setSection04Src(section04Saved.value);
+        const section05Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-5');
+        if (section05Saved?.value) setSection05Src(section05Saved.value);
+        const section06Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-6');
+        if (section06Saved?.value) setSection06Src(section06Saved.value);
+        const section07Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-7');
+        if (section07Saved?.value) setSection07Src(section07Saved.value);
+        const section08Saved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-8');
+        if (section08Saved?.value) setSection08Src(section08Saved.value);
+        const whatWeFocusOnSaved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-9');
+        if (whatWeFocusOnSaved?.value) setWhatwefocusonSrc(whatWeFocusOnSaved.value);
+        const faqImageSaved = content.find((c: any) => c.section === 'meta-ads-mobile-page' && c.key === 'image-10');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -45,12 +92,15 @@ export function MetaAdsMobilePage() {
       {/* Hero Section with Form Overlay */}
       <section className="relative w-full block m-0 p-0 leading-none">
         <div className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <img 
-            src={heroMobileImage} 
-            alt="Meta Ads Services" 
-            className="w-full h-auto block m-0 p-0 leading-none"
-            style={{ verticalAlign: 'bottom', display: 'block' }}
-          />
+          <EditableImage
+          src={heroMobileImageSrc}
+          alt="Meta Ads Services"
+          className="w-full h-auto block m-0 p-0 leading-none"
+          imageKey="image-0"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setHeromobileimageSrc}
+        />
         </div>
         
         {/* Form Overlay */}
@@ -100,7 +150,15 @@ export function MetaAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section01} alt="Section 01" className="w-full block" />
+        <EditableImage
+          src={section01Src}
+          alt="Section 01"
+          className="w-full block"
+          imageKey="image-1"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection01Src}
+        />
       </section>
 
       {/* Section 02 */}
@@ -128,7 +186,15 @@ export function MetaAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section02} alt="Section 02" className="w-full block" />
+        <EditableImage
+          src={section02Src}
+          alt="Section 02"
+          className="w-full block"
+          imageKey="image-2"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection02Src}
+        />
       </section>
 
       {/* Section 03 */}
@@ -156,7 +222,15 @@ export function MetaAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section03} alt="Section 03" className="w-full block" />
+        <EditableImage
+          src={section03Src}
+          alt="Section 03"
+          className="w-full block"
+          imageKey="image-3"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection03Src}
+        />
       </section>
 
       {/* Section 04 */}
@@ -184,7 +258,15 @@ export function MetaAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section04} alt="Section 04" className="w-full block" />
+        <EditableImage
+          src={section04Src}
+          alt="Section 04"
+          className="w-full block"
+          imageKey="image-4"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection04Src}
+        />
       </section>
 
       {/* Section 05 */}
@@ -212,7 +294,15 @@ export function MetaAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section05} alt="Section 05" className="w-full block" />
+        <EditableImage
+          src={section05Src}
+          alt="Section 05"
+          className="w-full block"
+          imageKey="image-5"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection05Src}
+        />
       </section>
 
       {/* Section 06 */}
@@ -240,12 +330,28 @@ export function MetaAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section06} alt="Section 06" className="w-full block" />
+        <EditableImage
+          src={section06Src}
+          alt="Section 06"
+          className="w-full block"
+          imageKey="image-6"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection06Src}
+        />
       </section>
 
       {/* What We Focus On Section */}
       <section className="relative bg-white">
-        <img src={whatWeFocusOn} alt="What We Focus On" className="w-full block" />
+        <EditableImage
+          src={whatWeFocusOnSrc}
+          alt="What We Focus On"
+          className="w-full block"
+          imageKey="image-9"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setWhatwefocusonSrc}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-16">
@@ -297,12 +403,28 @@ export function MetaAdsMobilePage() {
 
       {/* Section 07 */}
       <section className="bg-white">
-        <img src={section07} alt="Section 07" className="w-full block" />
+        <EditableImage
+          src={section07Src}
+          alt="Section 07"
+          className="w-full block"
+          imageKey="image-7"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection07Src}
+        />
       </section>
 
       {/* Section 08 with Button */}
       <section className="relative bg-white">
-        <img src={section08} alt="Ready to Grow" className="w-full block" />
+        <EditableImage
+          src={section08Src}
+          alt="Ready to Grow"
+          className="w-full block"
+          imageKey="image-8"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setSection08Src}
+        />
         
         {/* Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center pt-40">
@@ -318,7 +440,15 @@ export function MetaAdsMobilePage() {
 
       {/* FAQ Section */}
       <section className="relative bg-white">
-        <img src={faqImage} alt="Meta Ads FAQ" className="w-full block" />
+        <EditableImage
+          src={faqImageSrc}
+          alt="Meta Ads FAQ"
+          className="w-full block"
+          imageKey="image-10"
+          page="meta-ads"
+          section="meta-ads-mobile-page"
+          onImageChange={setFaqimageSrc}
+        />
         
         {/* FAQ Overlay */}
         <div className="absolute left-0 right-0 px-6" style={{ top: '38%' }}>
@@ -349,8 +479,6 @@ export function MetaAdsMobilePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

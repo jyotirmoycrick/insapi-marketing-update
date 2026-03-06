@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import readyToGrowImage from '@/assets/shared/shared-003-ready-to-grow.png';
 
 export function ReadyToGrowSection() {
+  const [readyToGrowImageSrc, setReadytogrowimageSrc] = useState(readyToGrowImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('meta-ads');
+        
+        const readyToGrowImageSaved = content.find((c: any) => c.section === 'ready-to-grow-section' && c.key === 'image');
+        if (readyToGrowImageSaved?.value) setReadytogrowimageSrc(readyToGrowImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [buttonText, setButtonText] = useState('Contact Us');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,10 +58,14 @@ export function ReadyToGrowSection() {
       onSave={(data) => setButtonText(data.buttonText)}
     >
       <section className="relative w-full">
-        <img 
-          src={readyToGrowImage} 
-          alt="Ready To Grow? Talk To Our Experts" 
-          className="w-full h-auto block" 
+        <EditableImage
+          src={readyToGrowImageSrc}
+          alt="Ready To Grow? Talk To Our Experts"
+          className="w-full h-auto block"
+          imageKey="image"
+          page="meta-ads"
+          section="ready-to-grow-section"
+          onImageChange={setReadytogrowimageSrc}
         />
         
         {/* Button Overlay - Centered at bottom */}

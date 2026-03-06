@@ -1,7 +1,26 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import sectionImage from '@/assets/services/build-a-brand/section-04.png';
 import { Check } from 'lucide-react';
 
 export function Section04() {
+  const [sectionImageSrc, setSectionimageSrc] = useState(sectionImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const sectionImageSaved = content.find((c: any) => c.section === 'section04' && c.key === 'image');
+        if (sectionImageSaved?.value) setSectionimageSrc(sectionImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="bg-white">
       {/* White Background Text Section */}
@@ -58,7 +77,15 @@ export function Section04() {
       
       {/* Image Section */}
       <div className="w-full">
-        <img src={sectionImage} alt="Our Strength In Branding & PR" className="w-full block" />
+        <EditableImage
+          src={sectionImageSrc}
+          alt="Our Strength In Branding & PR"
+          className="w-full block"
+          imageKey="image"
+          page="build-a-brand"
+          section="section04"
+          onImageChange={setSectionimageSrc}
+        />
       </div>
     </section>
   );

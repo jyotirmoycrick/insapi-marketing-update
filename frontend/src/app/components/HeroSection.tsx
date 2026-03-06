@@ -1,5 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
 import { UniversalForm } from '@/components/UniversalForm';
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
@@ -8,61 +9,14 @@ import { UniversalFormMobile } from '@/components/UniversalFormMobile';
 const heroImageDesktop = new URL('@/assets/home/hero-desktop.png', import.meta.url).href;
 const heroImageMobile = new URL('@/assets/home/hero-mobile.png', import.meta.url).href;
 
-// Preload images for faster subsequent loads
-const preloadImage = (src: string) => {
-  const img = new Image();
-  img.src = src;
-};
-
-// Memoized image component with lazy loading
-const LazyImage = memo(({ src, alt, className, style }: { 
-  src: string; 
-  alt: string; 
-  className?: string;
-  style?: React.CSSProperties;
-}) => {
-  const [loaded, setLoaded] = useState(false);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Check if image is cached in browser
-    const img = new Image();
-    img.onload = () => {
-      setImageSrc(src);
-      setLoaded(true);
-    };
-    img.src = src;
-  }, [src]);
-
-  return (
-    <div className={`relative ${className}`} style={style}>
-      {!loaded && (
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] to-[#2D5A87] animate-pulse" />
-      )}
-      {imageSrc && (
-        <img 
-          src={imageSrc} 
-          alt={alt} 
-          className={`w-full h-auto block m-0 p-0 leading-none transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-          style={{ verticalAlign: 'bottom', display: 'block' }}
-          loading="eager"
-          decoding="async"
-        />
-      )}
-    </div>
-  );
-});
-
 export function HeroSection() {
   const [formHeading, setFormHeading] = useState('Talk To Our Expert');
   const [buttonText, setButtonText] = useState('GET STARTED NOW');
   const [isLoading, setIsLoading] = useState(true);
+  const [heroDesktopSrc, setHeroDesktopSrc] = useState(heroImageDesktop);
+  const [heroMobileSrc, setHeroMobileSrc] = useState(heroImageMobile);
 
   useEffect(() => {
-    // Preload both images immediately
-    preloadImage(heroImageDesktop);
-    preloadImage(heroImageMobile);
-
     const loadContent = async () => {
       try {
         const content = await contentAPI.getPageContent('home');
@@ -73,9 +27,17 @@ export function HeroSection() {
         const heroButton = content.find(
           (c: any) => c.section === 'hero' && c.key === 'buttonText'
         );
+        const desktopImage = content.find(
+          (c: any) => c.section === 'hero' && c.key === 'hero-desktop'
+        );
+        const mobileImage = content.find(
+          (c: any) => c.section === 'hero' && c.key === 'hero-mobile'
+        );
         
         if (heroHeading) setFormHeading(heroHeading.value);
         if (heroButton) setButtonText(heroButton.value);
+        if (desktopImage && desktopImage.value) setHeroDesktopSrc(desktopImage.value);
+        if (mobileImage && mobileImage.value) setHeroMobileSrc(mobileImage.value);
       } catch (error) {
         // Silently use default content
       } finally {
@@ -123,19 +85,31 @@ export function HeroSection() {
       <section className="relative w-full block m-0 p-0 leading-none" data-testid="hero-section">
         {/* Desktop Hero Image */}
         <div className="hidden md:block w-full m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <LazyImage 
-            src={heroImageDesktop} 
-            alt="Build A Brand People Trust" 
+          <EditableImage
+            src={heroDesktopSrc}
+            alt="Build A Brand People Trust"
             className="w-full"
+            imageKey="hero-desktop"
+            page="home"
+            section="hero"
+            onImageChange={(newUrl) => setHeroDesktopSrc(newUrl)}
+            priority={true}
+            loading="eager"
           />
         </div>
         
         {/* Mobile Hero Image */}
         <div className="block md:hidden w-full m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <LazyImage 
-            src={heroImageMobile} 
-            alt="Build A Brand People Trust" 
+          <EditableImage
+            src={heroMobileSrc}
+            alt="Build A Brand People Trust"
             className="w-full"
+            imageKey="hero-mobile"
+            page="home"
+            section="hero"
+            onImageChange={(newUrl) => setHeroMobileSrc(newUrl)}
+            priority={true}
+            loading="eager"
           />
         </div>
         

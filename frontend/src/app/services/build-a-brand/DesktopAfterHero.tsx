@@ -1,10 +1,37 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import sectionImage from '@/assets/services/build-a-brand/after-hero-section.png';
 import { Check } from 'lucide-react';
 
 export function DesktopAfterHero() {
+  const [sectionImageSrc, setSectionimageSrc] = useState(sectionImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const sectionImageSaved = content.find((c: any) => c.section === 'desktop-after-hero' && c.key === 'image');
+        if (sectionImageSaved?.value) setSectionimageSrc(sectionImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="relative bg-white">
-      <img src={sectionImage} alt="What We Help You Achieve" className="w-full block" />
+      <EditableImage
+          src={sectionImageSrc}
+          alt="What We Help You Achieve"
+          className="w-full block"
+          imageKey="image"
+          page="build-a-brand"
+          section="desktop-after-hero"
+          onImageChange={setSectionimageSrc}
+        />
       
       {/* Text Overlay */}
       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">

@@ -1,10 +1,27 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import platformsImage from '@/assets/services/shopify/shopify-002-platforms.png';
 import { Check } from 'lucide-react';
 
 export function ShopifyPlatformsSection() {
+  const [platformsImageSrc, setPlatformsimageSrc] = useState(platformsImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('shopify');
+        
+        const platformsImageSaved = content.find((c: any) => c.section === 'shopify-platforms-section' && c.key === 'image');
+        if (platformsImageSaved?.value) setPlatformsimageSrc(platformsImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('Platforms & Tools We Use');
   const [point1, setPoint1] = useState('Shopify & Shopify Plus');
   const [point2, setPoint2] = useState('Liquid & Shopify CLI');
@@ -67,10 +84,14 @@ export function ShopifyPlatformsSection() {
     >
       <section className="relative w-full">
         {/* Full-width background image */}
-        <img 
-          src={platformsImage} 
-          alt="Platforms & Tools We Use" 
+        <EditableImage
+          src={platformsImageSrc}
+          alt="Platforms & Tools We Use"
           className="w-full h-auto block"
+          imageKey="image"
+          page="shopify"
+          section="shopify-platforms-section"
+          onImageChange={setPlatformsimageSrc}
         />
         
         {/* Text Overlay - positioned 400px from right */}

@@ -1,6 +1,25 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import readyToBuildImage from '@/assets/shared/shared-003-ready-to-grow.png';
 
 export function ReadyToBuildShowcase() {
+  const [readyToBuildImageSrc, setReadytobuildimageSrc] = useState(readyToBuildImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const readyToBuildImageSaved = content.find((c: any) => c.section === 'ready-to-build-showcase' && c.key === 'image');
+        if (readyToBuildImageSaved?.value) setReadytobuildimageSrc(readyToBuildImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const handleButtonClick = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -8,11 +27,15 @@ export function ReadyToBuildShowcase() {
   return (
     <section className="relative w-full">
       {/* Background Image */}
-      <img 
-        src={readyToBuildImage} 
-        alt="Ready to Build a Strong Brand" 
-        className="w-full h-auto block"
-      />
+      <EditableImage
+          src={readyToBuildImageSrc}
+          alt="Ready to Build a Strong Brand"
+          className="w-full h-auto block"
+          imageKey="image"
+          page="services"
+          section="ready-to-build-showcase"
+          onImageChange={setReadytobuildimageSrc}
+        />
       
       {/* Button Overlay - Centered at bottom */}
       <div className="absolute inset-0 flex items-end justify-center pb-12 md:pb-16 lg:pb-20">

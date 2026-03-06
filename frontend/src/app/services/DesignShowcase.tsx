@@ -1,17 +1,40 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import designImage from '@/assets/shared/shared-001-branding-desk.png';
 
 export function DesignShowcase() {
+  const [designImageSrc, setDesignimageSrc] = useState(designImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('services');
+        
+        const designImageSaved = content.find((c: any) => c.section === 'design-showcase' && c.key === 'image');
+        if (designImageSaved?.value) setDesignimageSrc(designImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="bg-white py-12 md:py-16 lg:py-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-center">
         
         {/* Left Side - Image (No padding, touches left edge) */}
         <div className="w-full">
-          <img 
-            src={designImage} 
-            alt="Our Branding Services" 
-            className="w-full h-auto"
-          />
+          <EditableImage
+          src={designImageSrc}
+          alt="Our Branding Services"
+          className="w-full h-auto"
+          imageKey="image"
+          page="services"
+          section="design-showcase"
+          onImageChange={setDesignimageSrc}
+        />
         </div>
 
         {/* Right Side - Content (With padding) */}

@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import readyToLaunchImage from '@/assets/services/shopify/shopify-010-ready-to-launch.png';
 
 export function ReadyToLaunchSection() {
+  const [readyToLaunchImageSrc, setReadytolaunchimageSrc] = useState(readyToLaunchImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('shopify');
+        
+        const readyToLaunchImageSaved = content.find((c: any) => c.section === 'ready-to-launch-section' && c.key === 'image');
+        if (readyToLaunchImageSaved?.value) setReadytolaunchimageSrc(readyToLaunchImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [buttonText, setButtonText] = useState('Contact Us');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,10 +58,14 @@ export function ReadyToLaunchSection() {
       onSave={(data) => setButtonText(data.buttonText)}
     >
       <section className="relative w-full">
-        <img 
-          src={readyToLaunchImage} 
-          alt="Ready To Launch Or Upgrade Your Shopify Store?" 
-          className="w-full h-auto block" 
+        <EditableImage
+          src={readyToLaunchImageSrc}
+          alt="Ready To Launch Or Upgrade Your Shopify Store?"
+          className="w-full h-auto block"
+          imageKey="image"
+          page="shopify"
+          section="ready-to-launch-section"
+          onImageChange={setReadytolaunchimageSrc}
         />
         
         {/* Button Overlay - Centered at bottom */}

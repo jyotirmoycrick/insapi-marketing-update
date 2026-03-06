@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import girlImage from "@/assets/home/girl.png";
 
 // --- Decorative SVGs ---
@@ -20,6 +22,22 @@ const ChatBubble = ({ text, className = '' }) => (
 );
 
 export function WhyChooseSection() {
+  const [girlImageSrc, setGirlimageSrc] = useState(girlImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('home');
+        
+        const girlImageSaved = content.find((c: any) => c.section === 'why-choose-section' && c.key === 'image');
+        if (girlImageSaved?.value) setGirlimageSrc(girlImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [activeNumber, setActiveNumber] = useState(1);
   const [reason1, setReason1] = useState('Meta Partner Certified');
   const [reason2, setReason2] = useState('10+ Years Of Proven Experience');
@@ -116,12 +134,15 @@ export function WhyChooseSection() {
              
 
               {/* Girl photo */}
-              <img
-                src={girlImage}
-                alt="Why Businesses Choose Insapi Marketing"
-                className="relative z-10 w-full object-cover rounded-2xl"
-                style={{ maxHeight: '370px', objectPosition: 'top' }}
-              />
+              <EditableImage
+          src={girlImageSrc}
+          alt="Why Businesses Choose Insapi Marketing"
+          className="relative z-10 w-full object-cover rounded-2xl"
+          imageKey="image"
+          page="home"
+          section="why-choose-section"
+          onImageChange={setGirlimageSrc}
+        />
 
               {/* Chat bubbles */}
               <div className="absolute z-20 right-[-16px] bottom-[28%] flex flex-col gap-2">
@@ -164,12 +185,15 @@ export function WhyChooseSection() {
             
 
             {/* Girl photo */}
-            <img
-              src={girlImage}
-              alt="Why Businesses Choose Insapi Marketing"
-              className="relative z-10 w-full object-cover rounded-2xl"
-              style={{ maxHeight: '260px', objectPosition: 'top' }}
-            />
+            <EditableImage
+          src={girlImageSrc}
+          alt="Why Businesses Choose Insapi Marketing"
+          className="relative z-10 w-full object-cover rounded-2xl"
+          imageKey="image"
+          page="home"
+          section="why-choose-section"
+          onImageChange={setGirlimageSrc}
+        />
 
             {/* Chat bubbles — bottom right of image */}
             <div className="absolute z-20 right-[-28px] bottom-[18%] flex flex-col gap-1.5">

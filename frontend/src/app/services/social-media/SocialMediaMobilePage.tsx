@@ -6,11 +6,46 @@ import section02 from '@/assets/services/social-media/section-02.png';
 import resultsSection from '@/assets/services/social-media/results-section.png';
 import faqImage from '@/assets/services/social-media/faq-mobile.png';
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
-import { Footer } from '../../components/Footer';
 import { Facebook, Instagram, Youtube, Linkedin, CheckCircle2, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 
 export function SocialMediaMobilePage() {
+  const [heroMobileImageSrc, setHeromobileimageSrc] = useState(heroMobileImage);
+  const [platformsMobileSrc, setPlatformsmobileSrc] = useState(platformsMobile);
+  const [processMobileSrc, setProcessmobileSrc] = useState(processMobile);
+  const [section01Src, setSection01Src] = useState(section01);
+  const [section02Src, setSection02Src] = useState(section02);
+  const [resultsSectionSrc, setResultssectionSrc] = useState(resultsSection);
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('social-media');
+        
+        const heroMobileImageSaved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-0');
+        if (heroMobileImageSaved?.value) setHeromobileimageSrc(heroMobileImageSaved.value);
+        const platformsMobileSaved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-1');
+        if (platformsMobileSaved?.value) setPlatformsmobileSrc(platformsMobileSaved.value);
+        const processMobileSaved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-2');
+        if (processMobileSaved?.value) setProcessmobileSrc(processMobileSaved.value);
+        const section01Saved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-3');
+        if (section01Saved?.value) setSection01Src(section01Saved.value);
+        const section02Saved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-4');
+        if (section02Saved?.value) setSection02Src(section02Saved.value);
+        const resultsSectionSaved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-5');
+        if (resultsSectionSaved?.value) setResultssectionSrc(resultsSectionSaved.value);
+        const faqImageSaved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-6');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -41,12 +76,15 @@ export function SocialMediaMobilePage() {
       {/* Hero Section with Form Overlay */}
       <section className="relative w-full block m-0 p-0 leading-none">
         <div className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <img 
-            src={heroMobileImage} 
-            alt="Social Media Marketing Services" 
-            className="w-full h-auto block m-0 p-0 leading-none"
-            style={{ verticalAlign: 'bottom', display: 'block' }}
-          />
+          <EditableImage
+          src={heroMobileImageSrc}
+          alt="Social Media Marketing Services"
+          className="w-full h-auto block m-0 p-0 leading-none"
+          imageKey="image-0"
+          page="social-media"
+          section="social-media-mobile-page"
+          onImageChange={setHeromobileimageSrc}
+        />
         </div>
         
         {/* Form Overlay */}
@@ -63,7 +101,15 @@ export function SocialMediaMobilePage() {
 
       {/* Platforms We Work With Section */}
       <section className="relative bg-white">
-        <img src={platformsMobile} alt="Platforms We Work With" className="w-full block" />
+        <EditableImage
+          src={platformsMobileSrc}
+          alt="Platforms We Work With"
+          className="w-full block"
+          imageKey="image-1"
+          page="social-media"
+          section="social-media-mobile-page"
+          onImageChange={setPlatformsmobileSrc}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-8">
@@ -162,17 +208,41 @@ export function SocialMediaMobilePage() {
           </div>
         </div>
         
-        <img src={processMobile} alt="Our Social Media Process" className="w-full block" />
+        <EditableImage
+          src={processMobileSrc}
+          alt="Our Social Media Process"
+          className="w-full block"
+          imageKey="image-2"
+          page="social-media"
+          section="social-media-mobile-page"
+          onImageChange={setProcessmobileSrc}
+        />
       </section>
 
       {/* Section 01 */}
       <section className="bg-white">
-        <img src={section01} alt="Section 01" className="w-full block" />
+        <EditableImage
+          src={section01Src}
+          alt="Section 01"
+          className="w-full block"
+          imageKey="image-3"
+          page="social-media"
+          section="social-media-mobile-page"
+          onImageChange={setSection01Src}
+        />
       </section>
 
       {/* What Results We Focus On Section */}
       <section className="relative bg-white">
-        <img src={resultsSection} alt="What Results We Focus On" className="w-full block" />
+        <EditableImage
+          src={resultsSectionSrc}
+          alt="What Results We Focus On"
+          className="w-full block"
+          imageKey="image-5"
+          page="social-media"
+          section="social-media-mobile-page"
+          onImageChange={setResultssectionSrc}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-8">
@@ -224,7 +294,15 @@ export function SocialMediaMobilePage() {
 
       {/* Section 02 with Button */}
       <section className="relative bg-white">
-        <img src={section02} alt="Ready to Grow" className="w-full block" />
+        <EditableImage
+          src={section02Src}
+          alt="Ready to Grow"
+          className="w-full block"
+          imageKey="image-4"
+          page="social-media"
+          section="social-media-mobile-page"
+          onImageChange={setSection02Src}
+        />
         
         {/* Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center pt-40">
@@ -240,7 +318,15 @@ export function SocialMediaMobilePage() {
 
       {/* FAQ Section */}
       <section className="relative bg-white">
-        <img src={faqImage} alt="Social Media FAQ" className="w-full block" />
+        <EditableImage
+          src={faqImageSrc}
+          alt="Social Media FAQ"
+          className="w-full block"
+          imageKey="image-6"
+          page="social-media"
+          section="social-media-mobile-page"
+          onImageChange={setFaqimageSrc}
+        />
         
         {/* FAQ Overlay */}
         <div className="absolute left-0 right-0 px-6" style={{ top: '38%' }}>
@@ -271,8 +357,6 @@ export function SocialMediaMobilePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

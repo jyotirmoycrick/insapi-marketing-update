@@ -22,10 +22,22 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     // Check if user is already logged in
     const checkAuth = async () => {
       try {
+        // Check if admin token exists (for dashboard)
+        const adminToken = localStorage.getItem('admin_token');
+        if (adminToken) {
+          // Dashboard uses token-based auth, not /auth/me
+          setIsAdmin(true);
+          setUser({ token: adminToken });
+          setIsLoading(false);
+          return;
+        }
+        
+        // Try to get current user (for other admin features)
         const userData = await authAPI.getCurrentUser();
         setUser(userData);
         setIsAdmin(true);
       } catch (error) {
+        // Silently fail - user is not logged in
         setIsAdmin(false);
         setUser(null);
       } finally {

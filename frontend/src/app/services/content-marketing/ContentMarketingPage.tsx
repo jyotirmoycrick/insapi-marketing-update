@@ -11,7 +11,6 @@ import { OurStrengthSection } from './OurStrengthSection';
 import { ReadyToBuildSection } from './ReadyToBuildSection';
 import { ContentMarketingFAQSection } from './ContentMarketingFAQSection';
 import { ContentMarketingMobilePage } from './ContentMarketingMobilePage';
-import { Footer } from '../../components/Footer';
 
 export function ContentMarketingPage() {
   return (
@@ -30,7 +29,6 @@ export function ContentMarketingPage() {
         <OurStrengthSection />
         <ReadyToBuildSection />
         <ContentMarketingFAQSection />
-        <Footer />
       </div>
 
       {/* Mobile View */}

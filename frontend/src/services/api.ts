@@ -68,7 +68,7 @@ export const authAPI = {
 
 export const contentAPI = {
   getPageContent: async (page: string) => {
-    return apiRequest(`/content/page/${page}`);
+    return apiRequest(`/content?page=${page}`);
   },
 
   getContent: async (page: string, section: string, key: string) => {

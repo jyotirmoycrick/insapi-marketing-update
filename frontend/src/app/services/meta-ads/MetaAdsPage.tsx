@@ -10,7 +10,6 @@ import { OurStrengthSection } from './OurStrengthSection';
 import { ReadyToGrowSection } from './ReadyToGrowSection';
 import { MetaAdsFAQSection } from './MetaAdsFAQSection';
 import { MetaAdsMobilePage } from './MetaAdsMobilePage';
-import { Footer } from '../../components/Footer';
 
 export function MetaAdsPage() {
   return (
@@ -28,7 +27,6 @@ export function MetaAdsPage() {
         <OurStrengthSection />
         <ReadyToGrowSection />
         <MetaAdsFAQSection />
-        <Footer />
       </div>
 
       {/* Mobile View */}

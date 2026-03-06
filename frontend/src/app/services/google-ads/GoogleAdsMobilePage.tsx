@@ -8,11 +8,52 @@ import section05 from '@/assets/services/google-ads/section-05.png';
 import section06 from '@/assets/services/google-ads/section-06.png';
 import faqImage from '@/assets/services/google-ads/faq-mobile.png';
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
-import { Footer } from '../../components/Footer';
 import { Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 
 export function GoogleAdsMobilePage() {
+  const [heroMobileImageSrc, setHeromobileimageSrc] = useState(heroMobileImage);
+  const [afterHeroImageSrc, setAfterheroimageSrc] = useState(afterHeroImage);
+  const [section01Src, setSection01Src] = useState(section01);
+  const [section02Src, setSection02Src] = useState(section02);
+  const [section03Src, setSection03Src] = useState(section03);
+  const [section04Src, setSection04Src] = useState(section04);
+  const [section05Src, setSection05Src] = useState(section05);
+  const [section06Src, setSection06Src] = useState(section06);
+  const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('google-ads');
+        
+        const heroMobileImageSaved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-0');
+        if (heroMobileImageSaved?.value) setHeromobileimageSrc(heroMobileImageSaved.value);
+        const afterHeroImageSaved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-1');
+        if (afterHeroImageSaved?.value) setAfterheroimageSrc(afterHeroImageSaved.value);
+        const section01Saved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-2');
+        if (section01Saved?.value) setSection01Src(section01Saved.value);
+        const section02Saved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-3');
+        if (section02Saved?.value) setSection02Src(section02Saved.value);
+        const section03Saved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-4');
+        if (section03Saved?.value) setSection03Src(section03Saved.value);
+        const section04Saved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-5');
+        if (section04Saved?.value) setSection04Src(section04Saved.value);
+        const section05Saved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-6');
+        if (section05Saved?.value) setSection05Src(section05Saved.value);
+        const section06Saved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-7');
+        if (section06Saved?.value) setSection06Src(section06Saved.value);
+        const faqImageSaved = content.find((c: any) => c.section === 'google-ads-mobile-page' && c.key === 'image-8');
+        if (faqImageSaved?.value) setFaqimageSrc(faqImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -43,12 +84,15 @@ export function GoogleAdsMobilePage() {
       {/* Hero Section with Form Overlay */}
       <section className="relative w-full block m-0 p-0 leading-none">
         <div className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <img 
-            src={heroMobileImage} 
-            alt="Google Ads Services" 
-            className="w-full h-auto block m-0 p-0 leading-none"
-            style={{ verticalAlign: 'bottom', display: 'block' }}
-          />
+          <EditableImage
+          src={heroMobileImageSrc}
+          alt="Google Ads Services"
+          className="w-full h-auto block m-0 p-0 leading-none"
+          imageKey="image-0"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setHeromobileimageSrc}
+        />
         </div>
         
         {/* Form Overlay */}
@@ -65,7 +109,15 @@ export function GoogleAdsMobilePage() {
 
       {/* After Hero Section */}
       <section className="relative bg-white">
-        <img src={afterHeroImage} alt="After Hero Section" className="w-full block" />
+        <EditableImage
+          src={afterHeroImageSrc}
+          alt="After Hero Section"
+          className="w-full block"
+          imageKey="image-1"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setAfterheroimageSrc}
+        />
         
         {/* Text Overlay */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-8">
@@ -137,7 +189,15 @@ export function GoogleAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section01} alt="Google Ads Strategy" className="w-full block" />
+        <EditableImage
+          src={section01Src}
+          alt="Google Ads Strategy"
+          className="w-full block"
+          imageKey="image-2"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setSection01Src}
+        />
       </section>
 
       {/* Section 02 - Keyword Research & Targeting */}
@@ -165,7 +225,15 @@ export function GoogleAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section02} alt="Keyword Research" className="w-full block" />
+        <EditableImage
+          src={section02Src}
+          alt="Keyword Research"
+          className="w-full block"
+          imageKey="image-3"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setSection02Src}
+        />
       </section>
 
       {/* Section 03 - Ad Copywriting */}
@@ -193,7 +261,15 @@ export function GoogleAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section03} alt="Ad Copywriting" className="w-full block" />
+        <EditableImage
+          src={section03Src}
+          alt="Ad Copywriting"
+          className="w-full block"
+          imageKey="image-4"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setSection03Src}
+        />
       </section>
 
       {/* Section 04 - Landing Page Alignment */}
@@ -221,7 +297,15 @@ export function GoogleAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section04} alt="Landing Page Alignment" className="w-full block" />
+        <EditableImage
+          src={section04Src}
+          alt="Landing Page Alignment"
+          className="w-full block"
+          imageKey="image-5"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setSection04Src}
+        />
       </section>
 
       {/* Section 05 - Conversion Tracking Setup */}
@@ -249,7 +333,15 @@ export function GoogleAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section05} alt="Conversion Tracking Setup" className="w-full block" />
+        <EditableImage
+          src={section05Src}
+          alt="Conversion Tracking Setup"
+          className="w-full block"
+          imageKey="image-6"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setSection05Src}
+        />
       </section>
 
       {/* Section 06 - Optimization & Scaling */}
@@ -277,12 +369,28 @@ export function GoogleAdsMobilePage() {
           </div>
         </div>
         
-        <img src={section06} alt="Optimization & Scaling" className="w-full block" />
+        <EditableImage
+          src={section06Src}
+          alt="Optimization & Scaling"
+          className="w-full block"
+          imageKey="image-7"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setSection06Src}
+        />
       </section>
 
       {/* FAQ Section */}
       <section className="relative bg-white">
-        <img src={faqImage} alt="Google Ads FAQ" className="w-full block" />
+        <EditableImage
+          src={faqImageSrc}
+          alt="Google Ads FAQ"
+          className="w-full block"
+          imageKey="image-8"
+          page="google-ads"
+          section="google-ads-mobile-page"
+          onImageChange={setFaqimageSrc}
+        />
         
         {/* FAQ Overlay */}
         <div className="absolute left-0 right-0 px-6" style={{ top: '38%' }}>
@@ -313,8 +421,6 @@ export function GoogleAdsMobilePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

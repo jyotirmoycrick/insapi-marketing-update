@@ -1,6 +1,24 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import clientsImage from '@/assets/home/clients.svg';
 
 export function ClientsSection() {
+  const [imageSrc, setImageSrc] = useState(clientsImage);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const content = await contentAPI.getPageContent('home');
+        const saved = content.find((c: any) => c.section === 'clients' && c.key === 'image');
+        if (saved?.value) setImageSrc(saved.value);
+      } catch (error) {
+        // Use default
+      }
+    };
+    loadImage();
+  }, []);
+
   return (
     <section className="bg-white py-8 md:py-12 lg:py-16">
       <div className="container mx-auto px-4 mb-6 md:mb-8">
@@ -15,11 +33,19 @@ export function ClientsSection() {
         <div className="clients-scroll-wrapper">
           <div className="clients-scroll-track">
             {/* First set */}
-            <img src={clientsImage} alt="Our Clients" className="clients-image" />
+            <EditableImage
+              src={imageSrc}
+              alt="Our Clients"
+              className="clients-image"
+              imageKey="image"
+              page="home"
+              section="clients"
+              onImageChange={setImageSrc}
+            />
             {/* Second set for seamless loop */}
-            <img src={clientsImage} alt="Our Clients" className="clients-image" />
+            <img src={imageSrc} alt="Our Clients" className="clients-image" />
             {/* Third set for extra smoothness */}
-            <img src={clientsImage} alt="Our Clients" className="clients-image" />
+            <img src={imageSrc} alt="Our Clients" className="clients-image" />
           </div>
         </div>
       </div>

@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import readyToBuildImage from '@/assets/services/content-marketing/content-marketing-011-ready-to-build.png';
 
 export function ReadyToBuildSection() {
+  const [readyToBuildImageSrc, setReadytobuildimageSrc] = useState(readyToBuildImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('content-marketing');
+        
+        const readyToBuildImageSaved = content.find((c: any) => c.section === 'ready-to-build-section' && c.key === 'image');
+        if (readyToBuildImageSaved?.value) setReadytobuildimageSrc(readyToBuildImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [buttonText, setButtonText] = useState('Contact Us');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,10 +58,14 @@ export function ReadyToBuildSection() {
       onSave={(data) => setButtonText(data.buttonText)}
     >
       <section className="relative w-full">
-        <img 
-          src={readyToBuildImage} 
-          alt="Ready to Build Your Content Strategy?" 
-          className="w-full h-auto block" 
+        <EditableImage
+          src={readyToBuildImageSrc}
+          alt="Ready to Build Your Content Strategy?"
+          className="w-full h-auto block"
+          imageKey="image"
+          page="content-marketing"
+          section="ready-to-build-section"
+          onImageChange={setReadytobuildimageSrc}
         />
         
         {/* Button Overlay - Centered at bottom */}

@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
-import { EditableSection } from '@/components/EditableSection';
+import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { EditableSection } from '@/components/EditableSection';
 import platformsImage from '@/assets/services/social-media/social-media-002-platforms.png';
 
 export function PlatformsSection() {
+  const [platformsImageSrc, setPlatformsimageSrc] = useState(platformsImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('social-media');
+        
+        const platformsImageSaved = content.find((c: any) => c.section === 'platforms-section' && c.key === 'image');
+        if (platformsImageSaved?.value) setPlatformsimageSrc(platformsImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   const [heading, setHeading] = useState('Platforms We Work With');
   const [platforms, setPlatforms] = useState('Facebook, Instagram, LinkedIn, Twitter, TikTok, YouTube');
   const [isLoading, setIsLoading] = useState(true);
@@ -45,10 +62,14 @@ export function PlatformsSection() {
       }}
     >
       <section className="relative w-full">
-        <img 
-          src={platformsImage} 
-          alt="Platforms We Work With" 
+        <EditableImage
+          src={platformsImageSrc}
+          alt="Platforms We Work With"
           className="w-full h-auto block"
+          imageKey="image"
+          page="social-media"
+          section="platforms-section"
+          onImageChange={setPlatformsimageSrc}
         />
         
         <div className="absolute top-1/2 right-[400px] transform -translate-y-1/2 w-full max-w-[400px] md:max-w-[450px] lg:max-w-[500px] px-4 md:px-0">

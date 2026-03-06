@@ -1,10 +1,37 @@
+import { useState, useEffect } from 'react';
+import { EditableImage } from '@/components/EditableImage';
+import { contentAPI } from '@/services/api';
 import { Check } from 'lucide-react';
 import whoThisIsForImage from '@/assets/services/build-a-brand/who-this-is-for.png';
 
 export function DesktopWhoThisIsFor() {
+  const [whoThisIsForImageSrc, setWhothisisforimageSrc] = useState(whoThisIsForImage);
+  
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const content = await contentAPI.getPageContent('build-a-brand');
+        
+        const whoThisIsForImageSaved = content.find((c: any) => c.section === 'desktop-who-this-is-for' && c.key === 'image');
+        if (whoThisIsForImageSaved?.value) setWhothisisforimageSrc(whoThisIsForImageSaved.value);
+      } catch (error) {
+        // Use defaults
+      }
+    };
+    loadImages();
+  }, []);
+
   return (
     <section className="relative w-full">
-      <img src={whoThisIsForImage} alt="Who This Is For" className="w-full h-auto" />
+      <EditableImage
+          src={whoThisIsForImageSrc}
+          alt="Who This Is For"
+          className="w-full h-auto"
+          imageKey="image"
+          page="build-a-brand"
+          section="desktop-who-this-is-for"
+          onImageChange={setWhothisisforimageSrc}
+        />
       
       <div className="absolute inset-0 flex items-center justify-center pl-32">
         <div className="max-w-2xl px-8">
