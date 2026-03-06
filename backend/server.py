@@ -13,6 +13,7 @@ import smtplib
 import json
 import uuid
 import copy
+import jwt
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -66,8 +67,10 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 ADMIN_USERNAME = "malo"
 ADMIN_PASSWORD_HASH = hashlib.sha256("1234567890".encode()).hexdigest()
 
-# Active sessions
-active_sessions: Dict[str, dict] = {}
+# JWT Configuration - Worker-safe authentication
+JWT_SECRET = os.environ.get("JWT_SECRET", "insapi-marketing-secret-key-change-in-production")
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRATION_DAYS = 7
 
 
 # ============== MODELS ==============
@@ -118,17 +121,40 @@ class ContactFormRequest(BaseModel):
 def verify_password(password: str) -> bool:
     return hashlib.sha256(password.encode()).hexdigest() == ADMIN_PASSWORD_HASH
 
-def create_session_token() -> str:
-    return secrets.token_urlsafe(32)
+def create_session_token(username: str) -> str:
+    """
+    Create JWT token - WORKER-SAFE
+    
+    This token can be verified by any Gunicorn worker without shared memory.
+    The token is self-contained and cryptographically signed.
+    """
+    payload = {
+        "username": username,
+        "exp": datetime.now(timezone.utc) + timedelta(days=JWT_EXPIRATION_DAYS),
+        "iat": datetime.now(timezone.utc)
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 def verify_token(token: str) -> bool:
-    if token in active_sessions:
-        session = active_sessions[token]
-        if datetime.now(timezone.utc) < session["expires"]:
-            return True
-        else:
-            del active_sessions[token]
-    return False
+    """
+    Verify JWT token - WORKER-SAFE
+    
+    This works across all Gunicorn workers because it only needs:
+    1. The token itself (provided in request)
+    2. The JWT_SECRET (shared via environment variable)
+    
+    No in-memory session storage required!
+    """
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        # Token is valid and not expired
+        return True
+    except jwt.ExpiredSignatureError:
+        # Token has expired
+        return False
+    except jwt.InvalidTokenError:
+        # Token is invalid (wrong signature, malformed, etc.)
+        return False
 
 
 # ============== SMTP HELPERS ==============
@@ -179,18 +205,14 @@ async def send_email_async(to_email: str, subject: str, html_content: str):
 @app.post("/api/admin/login", response_model=LoginResponse)
 async def admin_login(request: LoginRequest):
     if request.username == ADMIN_USERNAME and verify_password(request.password):
-        token = create_session_token()
-        active_sessions[token] = {
-            "username": request.username,
-            "expires": datetime.now(timezone.utc) + timedelta(days=7)  # 7 days instead of 24 hours
-        }
+        token = create_session_token(request.username)
         return LoginResponse(success=True, token=token, message="Login successful")
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.post("/api/admin/logout")
 async def admin_logout(token: str):
-    if token in active_sessions:
-        del active_sessions[token]
+    # With JWT, logout is handled client-side by removing the token
+    # No server-side session to delete
     return {"success": True}
 
 @app.get("/api/admin/verify")
