@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { EditableSection } from './EditableSection';
+import { EditableImage } from './EditableImage';
 import { contentAPI } from '../services/api';
 import { UniversalForm } from './UniversalForm';
 
@@ -21,6 +22,7 @@ export function UniversalHero({
   // Initialize with defaults immediately - no loading state
   const [formHeading, setFormHeading] = useState(defaultHeading);
   const [buttonText, setButtonText] = useState(defaultButtonText);
+  const [heroImage, setHeroImage] = useState(imageSrc);
 
   // Load CMS content in background - updates after initial render
   useEffect(() => {
@@ -29,10 +31,12 @@ export function UniversalHero({
         const content = await contentAPI.getPageContent(page);
         const heroHeading = content.find((c: any) => c.section === 'hero' && c.key === 'formHeading');
         const heroButton = content.find((c: any) => c.section === 'hero' && c.key === 'buttonText');
+        const heroImageSaved = content.find((c: any) => c.section === 'hero' && c.key === 'heroImage');
         
         // Only update if CMS has custom content
         if (heroHeading?.value) setFormHeading(heroHeading.value);
         if (heroButton?.value) setButtonText(heroButton.value);
+        if (heroImageSaved?.value) setHeroImage(heroImageSaved.value);
       } catch (error) {
         console.log('Using default content for', page);
       }
@@ -60,13 +64,19 @@ export function UniversalHero({
         style={{ minHeight: '400px' }} // Reserve space to prevent layout shift
       >
         <div className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
-          <img 
-            src={imageSrc} 
-            alt={imageAlt} 
+          <EditableImage
+            src={heroImage}
+            alt={imageAlt}
             className="w-full h-auto block m-0 p-0 leading-none"
+            imageKey="heroImage"
+            page={page}
+            section="hero"
+            onImageChange={setHeroImage}
             loading="eager"
+            priority={true}
+            width={1920}
+            height={800}
             fetchPriority="high"
-            decoding="async"
             style={{ verticalAlign: 'bottom', display: 'block' }}
           />
         </div>

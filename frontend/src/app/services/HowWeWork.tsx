@@ -18,13 +18,13 @@ export function HowWeWork() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
           {steps.map((step, index) => (
-            <div key={index} className="bg-white rounded-lg p-6 shadow-md text-center">
-              <div className="w-10 h-10 bg-[#1E3A8A] text-white rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-4">
+            <div key={index} className="bg-white rounded-lg p-8 shadow-md text-center">
+              <div className="w-12 h-12 bg-[#1E3A8A] text-white rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-4">
                 {index + 1}
               </div>
-              <p className="text-gray-800 font-semibold text-sm">
+              <p className="text-gray-800 font-semibold text-base">
                 {step.title}
               </p>
             </div>
