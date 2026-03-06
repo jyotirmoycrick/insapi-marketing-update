@@ -5,17 +5,22 @@ import { contentAPI } from '@/services/api';
 import { UniversalForm } from '@/components/UniversalForm';
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
 
-// Lazy load images with caching
+// Default hero images - render immediately
 const heroImageDesktop = new URL('@/assets/home/hero-desktop.png', import.meta.url).href;
 const heroImageMobile = new URL('@/assets/home/hero-mobile.png', import.meta.url).href;
 
+// Default content - render immediately
+const DEFAULT_FORM_HEADING = 'Talk To Our Expert';
+const DEFAULT_BUTTON_TEXT = 'GET STARTED NOW';
+
 export function HeroSection() {
-  const [formHeading, setFormHeading] = useState('Talk To Our Expert');
-  const [buttonText, setButtonText] = useState('GET STARTED NOW');
-  const [isLoading, setIsLoading] = useState(true);
+  // Initialize with default content immediately - no loading state
+  const [formHeading, setFormHeading] = useState(DEFAULT_FORM_HEADING);
+  const [buttonText, setButtonText] = useState(DEFAULT_BUTTON_TEXT);
   const [heroDesktopSrc, setHeroDesktopSrc] = useState(heroImageDesktop);
   const [heroMobileSrc, setHeroMobileSrc] = useState(heroImageMobile);
 
+  // Load CMS content in background - updates after initial render
   useEffect(() => {
     const loadContent = async () => {
       try {
@@ -34,29 +39,21 @@ export function HeroSection() {
           (c: any) => c.section === 'hero' && c.key === 'hero-mobile'
         );
         
-        if (heroHeading) setFormHeading(heroHeading.value);
-        if (heroButton) setButtonText(heroButton.value);
-        if (desktopImage && desktopImage.value) setHeroDesktopSrc(desktopImage.value);
-        if (mobileImage && mobileImage.value) setHeroMobileSrc(mobileImage.value);
+        // Only update if CMS has custom content
+        if (heroHeading?.value) setFormHeading(heroHeading.value);
+        if (heroButton?.value) setButtonText(heroButton.value);
+        if (desktopImage?.value) setHeroDesktopSrc(desktopImage.value);
+        if (mobileImage?.value) setHeroMobileSrc(mobileImage.value);
       } catch (error) {
-        // Silently use default content
-      } finally {
-        setIsLoading(false);
+        // Silently keep default content
+        console.log('Using default hero content');
       }
     };
     
     loadContent();
   }, []);
 
-  if (isLoading) {
-    return (
-      <section className="relative w-full bg-gradient-to-br from-[#1E3A5F] to-[#2D5A87] min-h-[400px] md:min-h-[500px]">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-        </div>
-      </section>
-    );
-  }
+  // No loading state - render immediately with defaults
 
   return (
     <EditableSection
@@ -82,12 +79,20 @@ export function HeroSection() {
         setButtonText(data.buttonText);
       }}
     >
-      <section className="relative w-full block m-0 p-0 leading-none" data-testid="hero-section">
-        {/* Desktop Hero Image */}
+      {/* Reserve space to prevent layout shift - aspect ratio based on actual image dimensions */}
+      <section 
+        className="relative w-full block m-0 p-0 leading-none" 
+        data-testid="hero-section"
+        style={{ 
+          minHeight: '400px', // Reserve minimum space
+          aspectRatio: 'auto' // Let image determine final aspect ratio
+        }}
+      >
+        {/* Desktop Hero Image - Highest Priority */}
         <div className="hidden md:block w-full m-0 p-0 leading-none" style={{ fontSize: 0 }}>
           <EditableImage
             src={heroDesktopSrc}
-            alt="Build A Brand People Trust"
+            alt="Build A Brand People Trust - InsAPI Marketing"
             className="w-full"
             imageKey="hero-desktop"
             page="home"
@@ -95,14 +100,20 @@ export function HeroSection() {
             onImageChange={(newUrl) => setHeroDesktopSrc(newUrl)}
             priority={true}
             loading="eager"
+            style={{ 
+              display: 'block',
+              width: '100%',
+              height: 'auto',
+              verticalAlign: 'bottom'
+            }}
           />
         </div>
         
-        {/* Mobile Hero Image */}
+        {/* Mobile Hero Image - Highest Priority */}
         <div className="block md:hidden w-full m-0 p-0 leading-none" style={{ fontSize: 0 }}>
           <EditableImage
             src={heroMobileSrc}
-            alt="Build A Brand People Trust"
+            alt="Build A Brand People Trust - InsAPI Marketing"
             className="w-full"
             imageKey="hero-mobile"
             page="home"
@@ -110,6 +121,12 @@ export function HeroSection() {
             onImageChange={(newUrl) => setHeroMobileSrc(newUrl)}
             priority={true}
             loading="eager"
+            style={{ 
+              display: 'block',
+              width: '100%',
+              height: 'auto',
+              verticalAlign: 'bottom'
+            }}
           />
         </div>
         

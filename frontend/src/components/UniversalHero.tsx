@@ -18,10 +18,11 @@ export function UniversalHero({
   defaultHeading = 'Talk To Our Expert',
   defaultButtonText = 'GET STARTED NOW'
 }: UniversalHeroProps) {
+  // Initialize with defaults immediately - no loading state
   const [formHeading, setFormHeading] = useState(defaultHeading);
   const [buttonText, setButtonText] = useState(defaultButtonText);
-  const [isLoading, setIsLoading] = useState(true);
 
+  // Load CMS content in background - updates after initial render
   useEffect(() => {
     const loadContent = async () => {
       try {
@@ -29,25 +30,17 @@ export function UniversalHero({
         const heroHeading = content.find((c: any) => c.section === 'hero' && c.key === 'formHeading');
         const heroButton = content.find((c: any) => c.section === 'hero' && c.key === 'buttonText');
         
-        if (heroHeading) setFormHeading(heroHeading.value);
-        if (heroButton) setButtonText(heroButton.value);
+        // Only update if CMS has custom content
+        if (heroHeading?.value) setFormHeading(heroHeading.value);
+        if (heroButton?.value) setButtonText(heroButton.value);
       } catch (error) {
-        console.log('Using default content');
-      } finally {
-        setIsLoading(false);
+        console.log('Using default content for', page);
       }
     };
     loadContent();
   }, [page]);
 
-  if (isLoading) {
-    return (
-      <section className="relative w-full h-96 flex items-center justify-center bg-gray-100">
-        <div className="text-gray-600">Loading...</div>
-      </section>
-    );
-  }
-
+  // No loading state - render immediately with defaults
   return (
     <EditableSection
       sectionId="hero"
@@ -62,12 +55,18 @@ export function UniversalHero({
         setButtonText(data.buttonText);
       }}
     >
-      <section className="relative w-full block m-0 p-0 leading-none">
+      <section 
+        className="relative w-full block m-0 p-0 leading-none"
+        style={{ minHeight: '400px' }} // Reserve space to prevent layout shift
+      >
         <div className="w-full block m-0 p-0 leading-none" style={{ fontSize: 0 }}>
           <img 
             src={imageSrc} 
             alt={imageAlt} 
             className="w-full h-auto block m-0 p-0 leading-none"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             style={{ verticalAlign: 'bottom', display: 'block' }}
           />
         </div>

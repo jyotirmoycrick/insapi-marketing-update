@@ -217,10 +217,10 @@ export function EditableImage({
         alt={alt}
         loading={priority ? 'eager' : loading}
         decoding="async"
-        className={`w-full h-auto block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ verticalAlign: 'bottom' }}
-        onLoad={() => setImageLoaded(true)}
         fetchPriority={priority ? 'high' : 'auto'}
+        className={`w-full h-auto block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        style={{ verticalAlign: 'bottom', ...style }}
+        onLoad={() => setImageLoaded(true)}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
 

@@ -19,7 +19,11 @@
     
     <title>InsAPI Marketing - Digital Marketing That Actually Drives Sales</title>
     
-    <!-- Preload critical assets -->
+    <!-- Preload critical hero images for instant LCP -->
+    <link rel="preload" href="/src/assets/home/hero-desktop.png" as="image" media="(min-width: 768px)" fetchpriority="high" />
+    <link rel="preload" href="/src/assets/home/hero-mobile.png" as="image" media="(max-width: 767px)" fetchpriority="high" />
+    
+    <!-- Preload logo -->
     <link rel="preload" href="/src/assets/shared/logo.png" as="image" />
   </head>
 
