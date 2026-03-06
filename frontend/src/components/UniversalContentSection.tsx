@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { EditableSection } from './EditableSection';
 import { contentAPI } from '../services/api';
+import { OptimizedImage } from './OptimizedImage';
 
 interface UniversalContentSectionProps {
   page: string;
@@ -91,7 +92,14 @@ export function UniversalContentSection({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-center">
           {imagePosition === 'left' && (
             <div className="w-full">
-              <img src={imageSrc} alt={imageAlt} className="w-full h-auto" />
+              <OptimizedImage
+                src={imageSrc}
+                alt={imageAlt}
+                width={960}
+                height={720}
+                priority={false}
+                className="w-full h-auto"
+              />
             </div>
           )}
 
@@ -115,7 +123,14 @@ export function UniversalContentSection({
 
           {imagePosition === 'right' && (
             <div className="w-full">
-              <img src={imageSrc} alt={imageAlt} className="w-full h-auto" />
+              <OptimizedImage
+                src={imageSrc}
+                alt={imageAlt}
+                width={960}
+                height={720}
+                priority={false}
+                className="w-full h-auto"
+              />
             </div>
           )}
         </div>

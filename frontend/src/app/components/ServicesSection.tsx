@@ -3,6 +3,7 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface ServicesSectionProps {
   onNavigate?: (page: string) => void;
+  onCardClick?: () => void;
 }
 
 const services = [
@@ -34,13 +35,13 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer transition-all duration-300 hover:-translate-y-1"
+      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105"
     >
       <OptimizedImage
         src={src}
         alt={`${alt} - InsAPI Marketing Service`}
-        width={400}
-        height={300}
+        width={600}
+        height={450}
         priority={isAboveFold}
         className="w-full h-auto object-contain"
       />
@@ -48,7 +49,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
   );
 });
 
-export const ServicesSection = memo(function ServicesSection({ onNavigate }: ServicesSectionProps) {
+export const ServicesSection = memo(function ServicesSection({ onNavigate, onCardClick }: ServicesSectionProps) {
   return (
     <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -79,6 +80,9 @@ export const ServicesSection = memo(function ServicesSection({ onNavigate }: Ser
                 onClick={() => {
                   if (service.page && onNavigate) {
                     onNavigate(service.page);
+                  } else if (onCardClick) {
+                    // If no page route, scroll to form
+                    onCardClick();
                   }
                 }}
               />
