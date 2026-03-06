@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { NavigationManager } from './NavigationManager';
 import { PageManager } from './PageManager';
 import { ElementorPageBuilder } from './ElementorPageBuilder';
+import { getAbsoluteUploadUrl } from '../../utils/urlHelper';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -500,34 +501,42 @@ export function ImprovedAdminDashboard() {
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {uploads.map(file => (
-                  <div key={file.filename} className="group relative bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 hover:shadow-md transition-shadow">
-                    <img src={file.url} alt={file.filename} className="w-full h-40 object-cover" loading="lazy" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center gap-2 pb-3">
-                      <button
-                        onClick={() => { navigator.clipboard.writeText(file.url); toast.success('✅ URL copied'); }}
-                        className="p-2 bg-white rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
-                        title="Copy URL"
-                      >
-                        <Copy size={16} />
-                      </button>
-                      <button
-                        onClick={async () => {
-                          if (confirm('Delete this file?')) {
-                            await fetch(`${API_URL}/uploads/${file.filename}?token=${token}`, { method: 'DELETE' });
-                            loadUploads();
-                            toast.success('File deleted');
-                          }
-                        }}
-                        className="p-2 bg-white rounded-lg hover:bg-red-100 text-red-500 transition-colors shadow-lg"
-                        title="Delete"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                {uploads.map(file => {
+                  const absoluteUrl = getAbsoluteUploadUrl(file.url);
+                  return (
+                    <div key={file.filename} className="group relative bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 hover:shadow-md transition-shadow">
+                      <img src={absoluteUrl} alt={file.filename} className="w-full h-40 object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center gap-2 pb-3">
+                        <button
+                          onClick={() => { 
+                            navigator.clipboard.writeText(absoluteUrl); 
+                            toast.success('✅ Full URL copied to clipboard!'); 
+                          }}
+                          className="p-2 bg-white rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
+                          title="Copy Full URL"
+                        >
+                          <Copy size={16} />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (confirm('Delete this file?')) {
+                              await fetch(`${API_URL}/uploads/${file.filename}?token=${token}`, { method: 'DELETE' });
+                              loadUploads();
+                              toast.success('File deleted');
+                            }
+                          }}
+                          className="p-2 bg-white rounded-lg hover:bg-red-100 text-red-500 transition-colors shadow-lg"
+                          title="Delete"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                      <div className="p-2 text-xs text-gray-600 truncate border-t border-gray-100" title={absoluteUrl}>
+                        {file.filename}
+                      </div>
                     </div>
-                    <div className="p-2 text-xs text-gray-600 truncate border-t border-gray-100">{file.filename}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

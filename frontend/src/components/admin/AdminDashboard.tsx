@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import logo from '@/assets/shared/logo.png';
 import { toast } from 'sonner';
+import { getAbsoluteUploadUrl } from '../../utils/urlHelper';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -982,33 +983,41 @@ export function AdminDashboard() {
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {uploads.map(file => (
-                  <div key={file.filename} className="group relative bg-white rounded-lg shadow-sm overflow-hidden">
-                    <img src={file.url} alt={file.filename} className="w-full h-32 object-cover" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <button
-                        onClick={() => { navigator.clipboard.writeText(file.url); toast.success('URL copied'); }}
-                        className="p-2 bg-white rounded hover:bg-gray-100"
-                        title="Copy URL"
-                      >
-                        <Copy size={16} />
-                      </button>
-                      <button
-                        onClick={async () => {
-                          if (confirm('Delete this file?')) {
-                            await fetch(`${API_URL}/uploads/${file.filename}?token=${token}`, { method: 'DELETE' });
-                            loadUploads();
-                          }
-                        }}
-                        className="p-2 bg-white rounded hover:bg-red-100 text-red-500"
-                        title="Delete"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                {uploads.map(file => {
+                  const absoluteUrl = getAbsoluteUploadUrl(file.url);
+                  return (
+                    <div key={file.filename} className="group relative bg-white rounded-lg shadow-sm overflow-hidden">
+                      <img src={absoluteUrl} alt={file.filename} className="w-full h-32 object-cover" />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => { 
+                            navigator.clipboard.writeText(absoluteUrl); 
+                            toast.success('Full URL copied to clipboard!'); 
+                          }}
+                          className="p-2 bg-white rounded hover:bg-gray-100"
+                          title="Copy Full URL"
+                        >
+                          <Copy size={16} />
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (confirm('Delete this file?')) {
+                              await fetch(`${API_URL}/uploads/${file.filename}?token=${token}`, { method: 'DELETE' });
+                              loadUploads();
+                            }
+                          }}
+                          className="p-2 bg-white rounded hover:bg-red-100 text-red-500"
+                          title="Delete"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                      <div className="p-2 text-xs text-gray-600 truncate" title={absoluteUrl}>
+                        {file.filename}
+                      </div>
                     </div>
-                    <div className="p-2 text-xs text-gray-600 truncate">{file.filename}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
