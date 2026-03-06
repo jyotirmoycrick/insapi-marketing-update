@@ -69,6 +69,7 @@ export function ImprovedAdminDashboard() {
       const res = await fetch(`${API_URL}/admin/verify?token=${token}`);
       const data = await res.json();
       if (!data.valid) {
+        toast.error('Session expired. Please login again.');
         handleLogout();
         return;
       }
@@ -77,6 +78,7 @@ export function ImprovedAdminDashboard() {
       loadSmtpSettings();
       loadUploads();
     } catch (e) {
+      toast.error('Session expired. Please login again.');
       handleLogout();
     }
   };
@@ -165,6 +167,7 @@ export function ImprovedAdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
+    toast.info('Logged out successfully');
     navigate('/fast-admin');
   };
 

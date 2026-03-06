@@ -182,7 +182,7 @@ async def admin_login(request: LoginRequest):
         token = create_session_token()
         active_sessions[token] = {
             "username": request.username,
-            "expires": datetime.now(timezone.utc) + timedelta(hours=24)
+            "expires": datetime.now(timezone.utc) + timedelta(days=7)  # 7 days instead of 24 hours
         }
         return LoginResponse(success=True, token=token, message="Login successful")
     raise HTTPException(status_code=401, detail="Invalid credentials")

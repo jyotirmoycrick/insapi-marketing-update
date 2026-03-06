@@ -39,8 +39,8 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
       <OptimizedImage
         src={src}
         alt={`${alt} - InsAPI Marketing Service`}
-        width={900}
-        height={675}
+        width={1000}
+        height={750}
         priority={isAboveFold}
         className="w-full h-auto object-contain"
       />
