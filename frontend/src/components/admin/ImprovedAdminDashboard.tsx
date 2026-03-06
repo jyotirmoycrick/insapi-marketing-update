@@ -69,8 +69,9 @@ export function ImprovedAdminDashboard() {
       const res = await fetch(`${API_URL}/admin/verify?token=${token}`);
       const data = await res.json();
       if (!data.valid) {
-        toast.error('Session expired. Please login again.');
-        handleLogout();
+        // Session is invalid, logout silently
+        localStorage.removeItem('admin_token');
+        navigate('/fast-admin');
         return;
       }
       loadPages();
@@ -78,8 +79,9 @@ export function ImprovedAdminDashboard() {
       loadSmtpSettings();
       loadUploads();
     } catch (e) {
-      toast.error('Session expired. Please login again.');
-      handleLogout();
+      // Network error or server issue, logout silently
+      localStorage.removeItem('admin_token');
+      navigate('/fast-admin');
     }
   };
 
@@ -87,10 +89,10 @@ export function ImprovedAdminDashboard() {
     try {
       const res = await fetch(`${API_URL}/pages?token=${token}`);
       
-      // Handle 401 Unauthorized
+      // Handle 401 Unauthorized - session expired
       if (res.status === 401) {
-        toast.error('Session expired. Please login again.');
-        handleLogout();
+        localStorage.removeItem('admin_token');
+        navigate('/fast-admin');
         return;
       }
       
@@ -123,10 +125,10 @@ export function ImprovedAdminDashboard() {
     try {
       const res = await fetch(`${API_URL}/contacts?token=${token}`);
       
-      // Handle 401 Unauthorized
+      // Handle 401 Unauthorized - session expired
       if (res.status === 401) {
-        toast.error('Session expired. Please login again.');
-        handleLogout();
+        localStorage.removeItem('admin_token');
+        navigate('/fast-admin');
         return;
       }
       
@@ -167,7 +169,7 @@ export function ImprovedAdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
-    toast.info('Logged out successfully');
+    // Don't show toast on logout - it's expected behavior
     navigate('/fast-admin');
   };
 

@@ -138,6 +138,12 @@ export function EditableImage({
         })
       });
 
+      // Check for 401 on content save
+      if (contentRes.status === 401) {
+        toast.error('❌ Session expired. Please login again at /fast-admin', { id: 'upload' });
+        return;
+      }
+
       const contentData = await contentRes.json();
       
       if (!contentRes.ok || !contentData.success) {
