@@ -31,17 +31,23 @@ export function getAbsoluteUploadUrl(url: string): string {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  
-  // If relative URL starting with /uploads, convert to absolute
-  if (url.startsWith('/uploads/')) {
+
+  // Preserve already-versioned API upload paths
+  if (url.startsWith('/api/uploads/')) {
     const baseUrl = getApiBaseUrl();
     return `${baseUrl}${url}`;
   }
   
-  // If just filename, add /uploads/ prefix
+  // If relative URL starting with /uploads, convert to absolute
+  if (url.startsWith('/uploads/')) {
+    const baseUrl = getApiBaseUrl();
+    return `${baseUrl}/api/uploads/${getUploadFilename(url)}`;
+  }
+  
+  // If just filename, route through cache-enabled API upload endpoint
   if (!url.startsWith('/')) {
     const baseUrl = getApiBaseUrl();
-    return `${baseUrl}/uploads/${url}`;
+    return `${baseUrl}/api/uploads/${url}`;
   }
   
   // Other relative URLs
@@ -69,5 +75,5 @@ export function getUploadFilename(url: string): string {
  */
 export function isUploadUrl(url: string): boolean {
   if (!url) return false;
-  return url.includes('/uploads/');
+  return url.includes('/uploads/') || url.includes('/api/uploads/');
 }

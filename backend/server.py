@@ -6,7 +6,6 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone, timedelta
 import os
-import shutil
 import secrets
 import hashlib
 import smtplib
@@ -14,10 +13,16 @@ import json
 import uuid
 import copy
 import jwt
+from io import BytesIO
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
+try:
+    from PIL import Image, ImageOps
+    PIL_AVAILABLE = True
+except Exception:
+    PIL_AVAILABLE = False
 
 
 # Import page builder modules
@@ -60,6 +65,9 @@ db = client[DB_NAME]
 # Ensure uploads directory exists
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+MAX_IMAGE_WIDTH = 1920
+MAX_IMAGE_HEIGHT = 1920
+IMAGE_QUALITY = 82
 
 # Mount uploads directory for static file serving
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
@@ -613,19 +621,44 @@ async def upload_file(file: UploadFile = File(...), token: str = Form(...)):
         raise HTTPException(status_code=401, detail="Unauthorized")
     
     try:
-        # Generate unique filename
-        ext = os.path.splitext(file.filename)[1]
-        filename = f"{secrets.token_hex(16)}{ext}"
-        filepath = os.path.join(UPLOAD_DIR, filename)
-        
-        # Save file
-        with open(filepath, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-        
-        # Return URL
+        original_ext = os.path.splitext(file.filename)[1].lower()
+        content_type = (file.content_type or "").lower()
+        raw_bytes = await file.read()
+
+        is_image = content_type.startswith("image/") or original_ext in {
+            ".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff", ".gif"
+        }
+
+        if is_image and PIL_AVAILABLE:
+            try:
+                image = Image.open(BytesIO(raw_bytes))
+                image = ImageOps.exif_transpose(image)
+
+                # Ensure large uploaded images are resized before delivery.
+                image.thumbnail((MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT), Image.Resampling.LANCZOS)
+
+                # Convert to RGB-compatible mode for WebP output.
+                if image.mode not in ("RGB", "RGBA"):
+                    image = image.convert("RGBA" if "A" in image.getbands() else "RGB")
+
+                filename = f"{secrets.token_hex(16)}.webp"
+                filepath = os.path.join(UPLOAD_DIR, filename)
+                image.save(filepath, format="WEBP", optimize=True, quality=IMAGE_QUALITY, method=6)
+            except Exception:
+                # If image processing fails, keep upload successful using original bytes.
+                filename = f"{secrets.token_hex(16)}{original_ext or '.bin'}"
+                filepath = os.path.join(UPLOAD_DIR, filename)
+                with open(filepath, "wb") as buffer:
+                    buffer.write(raw_bytes)
+        else:
+            filename = f"{secrets.token_hex(16)}{original_ext or '.bin'}"
+            filepath = os.path.join(UPLOAD_DIR, filename)
+            with open(filepath, "wb") as buffer:
+                buffer.write(raw_bytes)
+
         return {
             "success": True,
-            "url": f"/uploads/{filename}",
+            "url": f"/api/uploads/{filename}",
             "filename": filename
         }
     except Exception as e:

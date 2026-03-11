@@ -167,7 +167,7 @@ export function LivePageRenderer() {
     // Background
     if (styles.backgroundColor) css.backgroundColor = styles.backgroundColor;
     if (styles.backgroundImage) {
-      css.backgroundImage = `url(${styles.backgroundImage})`;
+      css.backgroundImage = `url(${getAbsoluteUploadUrl(styles.backgroundImage)})`;
       css.backgroundPosition = styles.backgroundPosition || 'center center';
       css.backgroundSize = styles.backgroundSize || 'cover';
       css.backgroundRepeat = styles.backgroundRepeat || 'no-repeat';
@@ -287,6 +287,8 @@ export function LivePageRenderer() {
               src={getAbsoluteUploadUrl(comp.props.src)} 
               alt={comp.props.alt || ''} 
               style={style}
+              loading="lazy"
+              decoding="async"
             />
             {isEditable && (
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -445,7 +447,9 @@ export function LivePageRenderer() {
             className="relative group"
             style={{ 
               ...style,
-              backgroundImage: comp.props.backgroundImage ? `url(${comp.props.backgroundImage})` : undefined,
+              backgroundImage: comp.props.backgroundImage
+                ? `url(${getAbsoluteUploadUrl(comp.props.backgroundImage)})`
+                : undefined,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               position: 'relative',

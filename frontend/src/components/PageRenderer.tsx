@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAdmin } from '../contexts/AdminContext';
 import { Edit2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
+import { getAbsoluteUploadUrl } from '../utils/urlHelper';
 
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
@@ -252,9 +253,11 @@ export function PageRenderer({ pageId, isPreview = false }: PageRendererProps) {
         return (
           <div key={component.id} className="relative group">
             <img 
-              src={component.props.src} 
+              src={getAbsoluteUploadUrl(component.props.src)}
               alt={component.props.alt || ''} 
               style={component.styles}
+              loading="lazy"
+              decoding="async"
             />
             {isEditable && (
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -421,7 +424,9 @@ export function PageRenderer({ pageId, isPreview = false }: PageRendererProps) {
             className="relative group"
             style={{ 
               ...component.styles,
-              backgroundImage: component.props.backgroundImage ? `url(${component.props.backgroundImage})` : undefined,
+              backgroundImage: component.props.backgroundImage
+                ? `url(${getAbsoluteUploadUrl(component.props.backgroundImage)})`
+                : undefined,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               position: 'relative',
