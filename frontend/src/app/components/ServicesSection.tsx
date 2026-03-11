@@ -51,7 +51,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
 export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
   return (
     <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
 
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 md:mb-16">
@@ -59,7 +59,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
         </h2>
 
         {/* Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
 
           {services.map((service, index) => {
 
@@ -71,18 +71,20 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
             if (!imagePath) return null;
 
             return (
-              <LazyServiceImage
-                key={service.id}
-                src={imagePath}
-                alt={service.id}
-                index={index}
-                onClick={() => {
-                  // All cards scroll to hero section
-                  if (onCardClick) {
-                    onCardClick();
-                  }
-                }}
-              />
+              <div className="w-full max-w-[460px] mx-auto">
+                <LazyServiceImage
+                  key={service.id}
+                  src={imagePath}
+                  alt={service.id}
+                  index={index}
+                  onClick={() => {
+                    // All cards scroll to hero section
+                    if (onCardClick) {
+                      onCardClick();
+                    }
+                  }}
+                />
+              </div>
             );
           })}
 

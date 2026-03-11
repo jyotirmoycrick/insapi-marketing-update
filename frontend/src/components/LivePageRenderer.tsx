@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAdmin } from '../contexts/AdminContext';
 import { Edit2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
@@ -27,6 +27,7 @@ interface Page {
 
 export function LivePageRenderer() {
   const { pageId } = useParams<{ pageId: string }>();
+  const navigate = useNavigate();
   const [page, setPage] = useState<Page | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -389,8 +390,7 @@ export function LivePageRenderer() {
                 const result = await res.json();
                 
                 if (result.status === 'success') {
-                  alert(result.message || 'Thank you! We will contact you soon.');
-                  e.currentTarget.reset();
+                  navigate('/thank-you');
                 } else {
                   alert('Failed to submit form. Please try again.');
                 }

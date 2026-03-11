@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAdmin } from '../contexts/AdminContext';
 import { Edit2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
@@ -35,6 +35,7 @@ interface PageRendererProps {
 export function PageRenderer({ pageId, isPreview = false }: PageRendererProps) {
 
   const { slug } = useParams();
+  const navigate = useNavigate();
 
   const finalPageId = pageId || slug;
 
@@ -365,8 +366,7 @@ export function PageRenderer({ pageId, isPreview = false }: PageRendererProps) {
                 const result = await res.json();
                 
                 if (result.status === 'success') {
-                  alert(result.message || 'Thank you! We will contact you soon.');
-                  e.currentTarget.reset();
+                  navigate('/thank-you');
                 } else {
                   alert('Failed to submit form. Please try again.');
                 }

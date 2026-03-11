@@ -23,9 +23,6 @@ export function ClientsSection() {
     <section className="bg-white py-8 md:py-12 lg:py-16">
       <div className="container mx-auto px-4 mb-6 md:mb-8">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">Our Clients</h2>
-        <p className="text-center text-gray-600 mt-2 text-sm md:text-base">
-          Trusted by leading brands worldwide
-        </p>
       </div>
       
       {/* Clients Image with Animation */}

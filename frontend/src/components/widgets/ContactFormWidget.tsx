@@ -1,4 +1,5 @@
 import React, { useState, CSSProperties } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface ContactFormWidgetProps {
   content: {
@@ -17,9 +18,9 @@ interface ContactFormWidgetProps {
 }
 
 export function ContactFormWidget({ content, styles, settings, isPreview }: ContactFormWidgetProps) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,11 +33,10 @@ export function ContactFormWidget({ content, styles, settings, isPreview }: Cont
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
-        setSuccess(true);
         setFormData({});
-        setTimeout(() => setSuccess(false), 5000);
+        navigate('/thank-you');
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -54,19 +54,6 @@ export function ContactFormWidget({ content, styles, settings, isPreview }: Cont
   };
 
   const fields = content.fields || [];
-
-  if (success) {
-    return (
-      <div style={containerStyles} className="widget-contact-form">
-        <div className="p-6 bg-green-50 border-2 border-green-500 rounded-lg text-center">
-          <div className="text-4xl mb-2">✅</div>
-          <p className="text-green-700 font-medium">
-            {content.successMessage || 'Thank you! We\'ll be in touch soon.'}
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit} style={containerStyles} className="widget-contact-form space-y-4">

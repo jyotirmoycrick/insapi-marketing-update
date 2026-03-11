@@ -14,6 +14,7 @@ import { PartnersSection } from './components/PartnersSection';
 import { ReadyToGrowSection } from './components/ReadyToGrowSection';
 import { CertificationsSection } from './components/CertificationsSection';
 import { FAQSection } from './components/FAQSection';
+import { ThankYouPage } from './components/ThankYouPage';
 import { AdminProvider, useAdmin } from '../contexts/AdminContext';
 import { AdminToolbar } from '../components/AdminToolbar';
 import { AdminLogin } from '../components/AdminLogin';
@@ -158,6 +159,7 @@ function AppRoutes() {
         <Route path="/shopify-development" element={<ShopifyPage />} />
         <Route path="/social-media-marketing" element={<SocialMediaPage />} />
         <Route path="/branding-pr" element={<BuildABrandPage />} />
+        <Route path="/thank-you" element={<ThankYouPage />} />
 
         {/* CMS Dynamic Pages */}
         <Route path="/:slug" element={<PageRenderer />} />

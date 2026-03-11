@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 interface UniversalFormProps {
@@ -8,6 +9,7 @@ interface UniversalFormProps {
 }
 
 export function UniversalForm({ formHeading, buttonText, pageId }: UniversalFormProps) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -15,7 +17,6 @@ export function UniversalForm({ formHeading, buttonText, pageId }: UniversalForm
     agreedToPolicy: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -68,7 +69,6 @@ export function UniversalForm({ formHeading, buttonText, pageId }: UniversalForm
       const data = await response.json();
 
       if (response.ok) {
-        setShowSuccess(true);
         setFormData({
           fullName: '',
           email: '',
@@ -76,6 +76,7 @@ export function UniversalForm({ formHeading, buttonText, pageId }: UniversalForm
           agreedToPolicy: false,
         });
         toast.success('Form submitted successfully!');
+        navigate('/thank-you');
       } else {
         toast.error(data.message || 'Failed to submit form. Please try again.');
       }
@@ -86,34 +87,6 @@ export function UniversalForm({ formHeading, buttonText, pageId }: UniversalForm
       setIsSubmitting(false);
     }
   };
-
-  if (showSuccess) {
-    return (
-      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-5 w-full" data-testid="form-success-message">
-        <div className="text-center py-4">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Thank You!</h3>
-          <p className="text-sm text-gray-600 mb-4">
-            Thanks for your response! We will reach you soon ASAP.
-          </p>
-          <p className="text-xs text-gray-500">
-            A confirmation email has been sent to your email address.
-          </p>
-          <button
-            onClick={() => setShowSuccess(false)}
-            className="mt-4 text-sm text-blue-600 hover:text-blue-800 underline"
-            data-testid="submit-another-btn"
-          >
-            Submit another inquiry
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-4 sm:p-5 w-full" data-testid={`contact-form-${pageId}`}>
