@@ -42,7 +42,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
         width={1000}
         height={750}
         priority={isAboveFold}
-        className="w-full h-full object-cover scale-[1.08] md:scale-[1.05]"
+        className="w-full h-full object-contain scale-[1.14] sm:scale-[1.12] lg:scale-[1.08]"
       />
     </div>
   );
@@ -51,7 +51,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
 export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
   return (
     <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
-      <div className="max-w-[1900px] mx-auto px-2 sm:px-3 lg:px-6">
+      <div className="max-w-[1900px] mx-auto px-1 sm:px-3 lg:px-6">
 
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 md:mb-16">
@@ -59,7 +59,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
         </h2>
 
         {/* Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
 
           {services.map((service, index) => {
 
