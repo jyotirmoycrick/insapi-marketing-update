@@ -77,29 +77,31 @@ export const ServicesSection = memo(function ServicesSection({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
-          {services.map((service, index) => {
-            const imagePath =
-              serviceImages[
-                `../../assets/home/services/${service.id}.webp`
-              ]?.default;
+  {services.map((service, index) => {
 
-            if (!imagePath) return null;
+    const imagePath =
+      serviceImages[
+        `../../assets/home/services/${service.id}.webp`
+      ]?.default;
 
-            return (
-              <div
-                key={service.id}
-                className="w-full max-w-[700px] mx-auto h-[320px] md:h-[420px] lg:h-[460px]"
-              >
-                <LazyServiceImage
-                  src={imagePath}
-                  alt={service.id}
-                  index={index}
-                  onClick={() => onCardClick?.()}
-                />
-              </div>
-            );
-          })}
-        </div>
+    if (!imagePath) return null;
+
+    return (
+      <div
+        key={service.id}
+        className="w-full h-[320px] md:h-[420px] lg:h-[460px]"
+      >
+        <LazyServiceImage
+          src={imagePath}
+          alt={service.id}
+          index={index}
+          onClick={() => onCardClick?.()}
+        />
+      </div>
+    );
+  })}
+
+</div>
       </div>
     </section>
   );
