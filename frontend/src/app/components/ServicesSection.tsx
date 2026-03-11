@@ -51,7 +51,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
 export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
   return (
     <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
-      <div className="max-w-[1900px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="max-w-[2000px] mx-auto px-2 sm:px-4 lg:px-8">
 
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 md:mb-16">
@@ -59,7 +59,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
         </h2>
 
         {/* Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
 
           {services.map((service, index) => {
 
@@ -71,7 +71,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
             if (!imagePath) return null;
 
             return (
-              <div className="w-full max-w-[420px] sm:max-w-[480px] lg:max-w-[560px] mx-auto">
+              <div className="w-full max-w-[540px] lg:max-w-[620px] mx-auto">
                 <LazyServiceImage
                   key={service.id}
                   src={imagePath}
