@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface ServicesSectionProps {
   onCardClick?: () => void;
@@ -34,15 +33,14 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105 overflow-hidden rounded-lg"
+      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105 rounded-lg"
     >
-      <OptimizedImage
+      <img
         src={src}
         alt={`${alt} - InsAPI Marketing Service`}
-        width={1000}
-        height={750}
-        priority={isAboveFold}
-        className="w-full h-full object-contain scale-[1.14] sm:scale-[1.12] lg:scale-[1.08]"
+        loading={isAboveFold ? "eager" : "lazy"}
+        decoding="async"
+        className="block w-full h-auto object-contain object-top"
       />
     </div>
   );
@@ -71,7 +69,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
             if (!imagePath) return null;
 
             return (
-              <div className="w-full aspect-[4/3] mx-auto">
+              <div className="w-full h-auto mx-auto">
                 <LazyServiceImage
                   key={service.id}
                   src={imagePath}
