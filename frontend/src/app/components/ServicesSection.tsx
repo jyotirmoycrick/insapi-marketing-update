@@ -21,48 +21,63 @@ const serviceImages = import.meta.glob(
   { eager: true }
 ) as Record<string, { default: string }>;
 
-// Memoized service image component with performance optimization
-const LazyServiceImage = memo(({ src, alt, onClick, index }: { 
-  src: string; 
-  alt: string; 
-  onClick?: () => void;
-  index: number;
-}) => {
-  // First 3 service cards are above the fold on desktop, load eagerly
-  const isAboveFold = index < 3;
+/* -------------------- Image Card -------------------- */
 
+const LazyServiceImage = memo(
+  ({
+    src,
+    alt,
+    onClick,
+    index
+  }: {
+    src: string;
+    alt: string;
+    onClick?: () => void;
+    index: number;
+  }) => {
+    const isAboveFold = index < 3;
+
+    return (
+      <div
+        onClick={onClick}
+        className="cursor-pointer w-full h-full overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+      >
+        <OptimizedImage
+          src={src}
+          alt={`${alt} - InsAPI Marketing Service`}
+          width={1000}
+          height={750}
+          priority={isAboveFold}
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+        />
+      </div>
+    );
+  }
+);
+
+/* -------------------- Services Section -------------------- */
+
+export const ServicesSection = memo(function ServicesSection({
+  onCardClick
+}: ServicesSectionProps) {
   return (
-    <div
-      onClick={onClick}
-      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105"
+    <section
+      className="bg-[#E8E8E8] py-16 md:py-24"
+      data-testid="services-section"
     >
-      <OptimizedImage
-        src={src}
-        alt={`${alt} - InsAPI Marketing Service`}
-        width={1000}
-        height={750}
-        priority={isAboveFold}
-        className="w-full h-auto object-contain"
-      />
-    </div>
-  );
-});
-
-export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
-  return (
-    <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
       <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10">
 
-        {/* Section Title */}
+        {/* Title */}
+
         <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 md:mb-16">
           Our Services
         </h2>
 
-        {/* Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+        {/* Grid */}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
           {services.map((service, index) => {
-
             const imagePath =
               serviceImages[
                 `../../assets/home/services/${service.id}.webp`
@@ -71,23 +86,19 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
             if (!imagePath) return null;
 
             return (
-              <div className="w-full max-w-[650px] mx-auto">
+              <div
+                key={service.id}
+                className="w-full max-w-[700px] mx-auto h-[320px] md:h-[420px] lg:h-[460px]"
+              >
                 <LazyServiceImage
-                  key={service.id}
                   src={imagePath}
                   alt={service.id}
                   index={index}
-                  onClick={() => {
-                    // All cards scroll to hero section
-                    if (onCardClick) {
-                      onCardClick();
-                    }
-                  }}
+                  onClick={() => onCardClick?.()}
                 />
               </div>
             );
           })}
-
         </div>
       </div>
     </section>
