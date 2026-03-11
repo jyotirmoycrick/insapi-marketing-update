@@ -34,7 +34,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105"
+      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105 overflow-hidden rounded-lg"
     >
       <OptimizedImage
         src={src}
@@ -42,7 +42,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
         width={1000}
         height={750}
         priority={isAboveFold}
-        className="w-full h-auto object-contain"
+        className="w-full h-full object-cover scale-[1.08] md:scale-[1.05]"
       />
     </div>
   );
@@ -51,7 +51,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
 export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
   return (
     <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
-      <div className="max-w-[2000px] mx-auto px-2 sm:px-4 lg:px-8">
+      <div className="max-w-[1900px] mx-auto px-2 sm:px-3 lg:px-6">
 
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 md:mb-16">
@@ -59,7 +59,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
         </h2>
 
         {/* Responsive Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
 
           {services.map((service, index) => {
 
@@ -71,7 +71,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
             if (!imagePath) return null;
 
             return (
-              <div className="w-full max-w-[540px] lg:max-w-[620px] mx-auto">
+              <div className="w-full aspect-[4/3] mx-auto">
                 <LazyServiceImage
                   key={service.id}
                   src={imagePath}
