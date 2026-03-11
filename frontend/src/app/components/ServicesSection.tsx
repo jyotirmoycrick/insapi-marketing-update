@@ -51,7 +51,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
 export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
   return (
     <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10">
 
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 md:mb-16">
@@ -71,7 +71,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
             if (!imagePath) return null;
 
             return (
-              <div className="w-full max-w-[460px] mx-auto">
+              <div className="w-full max-w-[650px] mx-auto">
                 <LazyServiceImage
                   key={service.id}
                   src={imagePath}
