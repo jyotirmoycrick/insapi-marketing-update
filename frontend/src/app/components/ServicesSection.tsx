@@ -21,87 +21,74 @@ const serviceImages = import.meta.glob(
   { eager: true }
 ) as Record<string, { default: string }>;
 
-/* -------------------- Image Card -------------------- */
+// Memoized service image component with performance optimization
+const LazyServiceImage = memo(({ src, alt, onClick, index }: { 
+  src: string; 
+  alt: string; 
+  onClick?: () => void;
+  index: number;
+}) => {
+  // First 3 service cards are above the fold on desktop, load eagerly
+  const isAboveFold = index < 3;
 
-const LazyServiceImage = memo(
-  ({
-    src,
-    alt,
-    onClick,
-    index
-  }: {
-    src: string;
-    alt: string;
-    onClick?: () => void;
-    index: number;
-  }) => {
-    const isAboveFold = index < 3;
-
-    return (
-      <div
-        onClick={onClick}
-        className="cursor-pointer w-full h-full overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-      >
-        <OptimizedImage
-          src={src}
-          alt={`${alt} - InsAPI Marketing Service`}
-          width={1000}
-          height={750}
-          priority={isAboveFold}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        />
-      </div>
-    );
-  }
-);
-
-/* -------------------- Services Section -------------------- */
-
-export const ServicesSection = memo(function ServicesSection({
-  onCardClick
-}: ServicesSectionProps) {
   return (
-    <section
-      className="bg-[#E8E8E8] py-16 md:py-24"
-      data-testid="services-section"
+    <div
+      onClick={onClick}
+      className="cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105"
     >
-      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10">
+      <OptimizedImage
+        src={src}
+        alt={`${alt} - InsAPI Marketing Service`}
+        width={1000}
+        height={750}
+        priority={isAboveFold}
+        className="w-full h-auto object-contain"
+      />
+    </div>
+  );
+});
 
-        {/* Title */}
+export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
+  return (
+    <section className="bg-[#E8E8E8] py-16 md:py-24" data-testid="services-section">
+      <div className="max-w-[1900px] mx-auto px-4 sm:px-6 lg:px-10">
 
+        {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 md:mb-16">
           Our Services
         </h2>
 
-        {/* Grid */}
+        {/* Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {services.map((service, index) => {
 
-  {services.map((service, index) => {
+            const imagePath =
+              serviceImages[
+                `../../assets/home/services/${service.id}.webp`
+              ]?.default;
 
-    const imagePath =
-      serviceImages[
-        `../../assets/home/services/${service.id}.webp`
-      ]?.default;
+            if (!imagePath) return null;
 
-    if (!imagePath) return null;
+            return (
+              <div className="w-full max-w-[420px] sm:max-w-[480px] lg:max-w-[560px] mx-auto">
+                <LazyServiceImage
+                  key={service.id}
+                  src={imagePath}
+                  alt={service.id}
+                  index={index}
+                  onClick={() => {
+                    // All cards scroll to hero section
+                    if (onCardClick) {
+                      onCardClick();
+                    }
+                  }}
+                />
+              </div>
+            );
+          })}
 
-    return (
-      <div
-        key={service.id}
-        className="w-full h-[320px] md:h-[420px] lg:h-[460px]"
-      >
-        <LazyServiceImage
-          src={imagePath}
-          alt={service.id}
-          index={index}
-          onClick={() => onCardClick?.()}
-        />
-      </div>
-    );
-  })}
-
-</div>
+        </div>
       </div>
     </section>
   );
