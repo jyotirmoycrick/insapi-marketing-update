@@ -170,6 +170,7 @@ export function HeroSection() {
     >
       {/* Reserve space to prevent layout shift - aspect ratio based on actual image dimensions */}
       <section 
+        id='form12344'
         className="relative w-full block m-0 p-0 leading-none" 
         data-testid="hero-section"
         style={{ 
