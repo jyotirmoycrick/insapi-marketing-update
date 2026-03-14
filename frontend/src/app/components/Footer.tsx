@@ -51,7 +51,7 @@ export function Footer() {
         {/* Social Media Icons Overlay - Positioned at bottom */}
         <div className="absolute bottom-[30%] md:bottom-[15%] left-[50%] transform -translate-x-[50%] flex gap-2 md:gap-3">
           <a 
-            href="https://facebook.com" 
+            href="https://www.facebook.com/insapimarketing" 
             target="_blank" 
             rel="noopener noreferrer"
             className="w-7 h-7 md:w-8 md:h-8 bg-[#1877F2] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
@@ -62,7 +62,7 @@ export function Footer() {
           </a>
           
           <a 
-            href="https://instagram.com" 
+            href="https://www.instagram.com/insapimarketing" 
             target="_blank" 
             rel="noopener noreferrer"
             className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
@@ -73,7 +73,7 @@ export function Footer() {
           </a>
           
           <a 
-            href="https://youtube.com" 
+            href="https://youtube.com/@insapimarketing" 
             target="_blank" 
             rel="noopener noreferrer"
             className="w-7 h-7 md:w-8 md:h-8 bg-[#FF0000] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
@@ -84,7 +84,7 @@ export function Footer() {
           </a>
           
           <a 
-            href="https://wa.me/" 
+            href="https://wa.me/917872631936?text=Hi,%20I%20want%20to%20know%20about%20your%20digital%20marketing%20services" 
             target="_blank" 
             rel="noopener noreferrer"
             className="w-7 h-7 md:w-8 md:h-8 bg-[#25D366] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
