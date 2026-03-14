@@ -162,9 +162,7 @@ export function WhyChooseSection() {
         <div className="block md:hidden relative px-5 py-10">
 
           {/* Curl – top right */}
-          <div className="absolute top-4 right-4 opacity-70 scale-75">
-            <CurlSVG />
-          </div>
+          
 
           {/* Heading */}
           <div className="text-center mb-7">
@@ -177,7 +175,7 @@ export function WhyChooseSection() {
           </div>
 
           {/* Girl image — centered, full width-ish */}
-          <div className="text-yellow-350 text-2xl sm:text-4xl font-bold leading-tight">
+          <div className="relative mx-auto w-[260px] sm:w-[290px] mb-10">
             
 
             
@@ -194,11 +192,11 @@ export function WhyChooseSection() {
         />
 
             {/* Chat bubbles — bottom right of image */}
-            <div className="absolute z-20 right-[-28px] bottom-[18%] flex flex-col gap-1.5">
-              <div className="bg-white rounded-xl shadow-lg px-3 py-1.5">
+            <div className="absolute z-20 right-[-6px] bottom-[14%] flex flex-col gap-1.5">
+              <div className="bg-white rounded-xl shadow-lg px-3 py-1.5 max-w-[165px]">
                 <span className="text-gray-800 font-semibold text-xs whitespace-nowrap">Hello 👋</span>
               </div>
-              <div className="bg-white rounded-xl shadow-lg px-3 py-1.5">
+              <div className="bg-white rounded-xl shadow-lg px-3 py-1.5 max-w-[190px]">
                 <span className="text-gray-800 font-semibold text-xs whitespace-nowrap">Can i try the project first?</span>
               </div>
             </div>
