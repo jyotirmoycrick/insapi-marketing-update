@@ -17,7 +17,7 @@ export const removeAuthToken = () => {
 
 // API request helper
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
-  const token = getAuthToken();
+  const token = localStorage.getItem('authToken') || localStorage.getItem('admin_token');
   
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
@@ -34,8 +34,14 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'API request failed');
+    let errorMessage = 'API request failed';
+    try {
+      const error = await response.json();
+      errorMessage = error.message || error.detail || errorMessage;
+    } catch {
+      // Ignore JSON parse errors and keep default error message.
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
@@ -68,7 +74,12 @@ export const authAPI = {
 
 export const contentAPI = {
   getPageContent: async (page: string) => {
-    return apiRequest(`/content?page=${page}`);
+    try {
+      return await apiRequest(`/content?page=${page}`);
+    } catch {
+      // Express fallback route.
+      return apiRequest(`/content/page/${page}`);
+    }
   },
 
   getContent: async (page: string, section: string, key: string) => {
@@ -76,9 +87,11 @@ export const contentAPI = {
   },
 
   createOrUpdateContent: async (data: any) => {
+    const token = localStorage.getItem('authToken') || localStorage.getItem('admin_token');
     return apiRequest('/content', {
       method: 'POST',
-      body: JSON.stringify(data),
+      // Include token for FastAPI backend; Express backend ignores it.
+      body: JSON.stringify({ ...data, token }),
     });
   },
 
