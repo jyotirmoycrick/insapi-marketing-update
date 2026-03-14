@@ -124,7 +124,7 @@ export function FAQSection() {
         setA5(data.answer5);
       }}
     >
-      <section className="relative w-full">
+      <section className="relative w-full overflow-hidden bg-white">
         {/* Desktop Image with Interactive FAQ */}
         <div className="hidden md:block relative">
           <EditableImage
@@ -137,14 +137,15 @@ export function FAQSection() {
             onImageChange={setFaqimagedesktopSrc}
           />
 
-          <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">
-            <div className="w-full md:w-1/2 lg:w-2/5 p-4 md:p-6 lg:p-8">
+          <div className="absolute inset-0 flex items-center justify-center px-6 md:px-10 lg:px-16">
+            <div className="w-full max-w-6xl flex justify-center">
+              <div className="w-full md:w-1/2 lg:w-2/5 p-4 md:p-6 lg:p-8">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-black">{heading}</h2>
               <p className="text-black mb-4 md:mb-5 text-xs sm:text-sm md:text-base">{subheading}</p>
 
               <div className="space-y-1 md:space-y-1.5">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="border-b border-gray-300">
+                  <div key={index} className="border-b border-black/40">
                     <button
                       onClick={() => setOpenIndex(openIndex === index ? null : index)}
                       className="w-full py-2 md:py-2.5 flex justify-between items-center text-left hover:text-gray-700 transition-colors"
@@ -165,6 +166,7 @@ export function FAQSection() {
                 ))}
               </div>
             </div>
+            </div>
           </div>
         </div>
 
@@ -180,7 +182,7 @@ export function FAQSection() {
             onImageChange={setFaqimagemobileSrc}
           />
 
-          <div className="px-4 pb-6">
+          <div className="mx-auto w-full max-w-screen-sm px-4 pb-6">
             <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900">{heading}</h2>
             <p className="text-gray-700 mb-4 text-xs sm:text-sm">{subheading}</p>
 
@@ -189,9 +191,9 @@ export function FAQSection() {
                 <div key={index} className="border-b border-gray-300">
                   <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    className="w-full py-2.5 flex justify-between items-start text-left"
+                    className="w-full py-2.5 flex justify-between items-start text-left overflow-hidden"
                   >
-                    <span className="font-semibold text-sm sm:text-base text-gray-800 pr-3 leading-snug break-words">
+                    <span className="font-semibold text-sm sm:text-base text-gray-800 pr-3 leading-snug break-words min-w-0">
                       {faq.question}
                     </span>
                     <span className="text-xl sm:text-2xl text-gray-600 flex-shrink-0 leading-none">
