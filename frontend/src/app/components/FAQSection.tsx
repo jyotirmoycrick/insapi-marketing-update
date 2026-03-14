@@ -175,14 +175,14 @@ export function FAQSection() {
           <EditableImage
             src={faqImageMobileSrc}
             alt="FAQ"
-            className="w-full h-auto"
+            className="w-full h-[430px] object-cover object-top"
             imageKey="image-1"
             page="home"
             section="faq-section"
             onImageChange={setFaqimagemobileSrc}
           />
 
-          <div className="relative z-10 mx-auto w-full max-w-screen-sm px-4 pb-6 -mt-40 sm:-mt-48">
+          <div className="mx-auto w-full max-w-screen-sm px-4 pt-4 pb-10">
             <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900">{heading}</h2>
             <p className="text-gray-700 mb-4 text-xs sm:text-sm">{subheading}</p>
 
