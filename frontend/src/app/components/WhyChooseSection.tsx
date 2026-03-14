@@ -177,7 +177,7 @@ export function WhyChooseSection() {
           </div>
 
           {/* Girl image — centered, full width-ish */}
-          <div className="text-yellow-500 text-3xl sm:text-4xl font-bold leading-tight">
+          <div className="text-yellow-350 text-2xl sm:text-4xl font-bold leading-tight">
             
 
             
