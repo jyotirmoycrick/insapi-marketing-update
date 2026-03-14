@@ -171,19 +171,20 @@ export function FAQSection() {
         </div>
 
         {/* Mobile Image with FAQ Content */}
-        <div className="block md:hidden">
-          <EditableImage
-            src={faqImageMobileSrc}
-            alt="FAQ"
-            className="w-full"
-            style={{ height: '430px', objectFit: 'cover', objectPosition: 'top' }}
-            imageKey="image-1"
-            page="home"
-            section="faq-section"
-            onImageChange={setFaqimagemobileSrc}
-          />
+        <div className="block md:hidden bg-[#c2c0df]">
+          <div className="w-full px-4 pt-2 pb-10">
+            <EditableImage
+              src={faqImageMobileSrc}
+              alt="FAQ"
+              className="w-full"
+              style={{ height: '430px', objectFit: 'cover', objectPosition: 'top' }}
+              imageKey="image-1"
+              page="home"
+              section="faq-section"
+              onImageChange={setFaqimagemobileSrc}
+            />
 
-          <div className="mx-auto w-full max-w-screen-sm px-4 pt-4 pb-10">
+            <div className="pt-4">
             <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-[#1f2a4a]">{heading}</h2>
             <p className="text-[#3f4b6b] mb-4 text-xs sm:text-sm">{subheading}</p>
 
@@ -208,6 +209,7 @@ export function FAQSection() {
                   )}
                 </div>
               ))}
+            </div>
             </div>
           </div>
         </div>
