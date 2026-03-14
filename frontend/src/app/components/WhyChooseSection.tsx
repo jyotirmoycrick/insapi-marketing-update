@@ -68,7 +68,7 @@ export function WhyChooseSection() {
         <div key={reason.number} className="flex items-center gap-4 md:gap-6">
           <span
             className={`font-bold transition-all duration-500 min-w-[34px] md:min-w-[40px] text-center
-              ${isMobile ? 'text-4xl' : 'text-3xl md:text-4xl lg:text-5xl'}
+              ${isMobile ? 'text-6xl' : 'text-3xl md:text-4xl lg:text-5xl'}
               ${activeNumber === reason.number ? 'text-yellow-500 scale-125 animate-pulse-glow' : 'text-gray-500'}`}
           >
             {reason.number}
