@@ -1,27 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-const REDIRECT_SECONDS = 5;
+ 
 
 export function ThankYouPage() {
-  const navigate = useNavigate();
-  const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-
-    const timeoutId = window.setTimeout(() => {
-      navigate('/', { replace: true });
-    }, REDIRECT_SECONDS * 1000);
-
-    return () => {
-      window.clearInterval(intervalId);
-      window.clearTimeout(timeoutId);
-    };
-  }, [navigate]);
-
   return (
     <section className="min-h-[65vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-xl rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center shadow-lg">
@@ -38,10 +17,6 @@ export function ThankYouPage() {
 
         <h1 className="text-2xl font-bold text-gray-900">Thank You!</h1>
         <p className="mt-3 text-gray-700">Your form has been submitted successfully.</p>
-        <p className="mt-2 text-sm text-gray-600">
-          Redirecting to home in <span className="font-semibold">{secondsLeft}</span> second
-          {secondsLeft === 1 ? '' : 's'}.
-        </p>
       </div>
     </section>
   );
