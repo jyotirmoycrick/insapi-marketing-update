@@ -65,10 +65,10 @@ export function WhyChooseSection() {
   const ReasonsList = ({ isMobile = false }) => (
     <div className={`${isMobile ? 'space-y-5' : 'space-y-4'}`}>
       {reasons.map((reason) => (
-        <div key={reason.number} className="flex items-center gap-4 md:gap-5">
+        <div key={reason.number} className="flex items-center gap-4 md:gap-6">
           <span
-            className={`font-bold transition-all duration-500 min-w-[28px] text-center
-              ${isMobile ? 'text-3xl' : 'text-2xl md:text-3xl lg:text-4xl'}
+            className={`font-bold transition-all duration-500 min-w-[34px] md:min-w-[40px] text-center
+              ${isMobile ? 'text-4xl' : 'text-3xl md:text-4xl lg:text-5xl'}
               ${activeNumber === reason.number ? 'text-yellow-500 scale-125 animate-pulse-glow' : 'text-gray-500'}`}
           >
             {reason.number}
@@ -82,7 +82,7 @@ export function WhyChooseSection() {
 
           <span
             className={`font-semibold transition-all duration-500
-              ${isMobile ? 'text-sm' : 'text-sm md:text-sm lg:text-base'}
+              ${isMobile ? 'text-base' : 'text-base md:text-lg lg:text-xl'}
               ${activeNumber === reason.number ? 'text-yellow-500 animate-color-shift' : 'text-gray-300'}`}
           >
             {reason.text}
@@ -126,7 +126,7 @@ export function WhyChooseSection() {
           </div>
 
           {/* ✅ DESKTOP: justify-between — image left, reasons right */}
-          <div className="flex items-center justify-between max-w-6xl mx-auto">
+          <div className="flex items-center justify-center gap-12 lg:gap-16 xl:gap-20 max-w-6xl mx-auto">
 
             {/* LEFT – Girl image with decorations */}
             <div className="relative flex-shrink-0 w-[280px] lg:w-[320px] xl:w-[360px]">
@@ -151,7 +151,7 @@ export function WhyChooseSection() {
             </div>
 
             {/* RIGHT – Reasons list */}
-            <div className="w-[55%] xl:w-[52%]">
+            <div className="w-[52%] xl:w-[50%]">
               <ReasonsList />
             </div>
           </div>
