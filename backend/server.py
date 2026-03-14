@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -12,6 +12,7 @@ import smtplib
 import json
 import uuid
 import copy
+import asyncio
 import jwt
 from io import BytesIO
 from email.mime.text import MIMEText
@@ -182,26 +183,28 @@ async def get_smtp_settings():
         }
     return None
 
+def send_email_sync(settings: Dict[str, Any], to_email: str, subject: str, html_content: str):
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"{settings['sender_name']} <{settings['smtp_user']}>"
+    msg["To"] = to_email
+    msg.attach(MIMEText(html_content, "html"))
+
+    with smtplib.SMTP(settings["smtp_host"], settings["smtp_port"]) as server:
+        server.starttls()
+        server.login(settings["smtp_user"], settings["smtp_pass"])
+        server.sendmail(settings["smtp_user"], to_email, msg.as_string())
+
 async def send_email_async(to_email: str, subject: str, html_content: str):
-    """Send email using SMTP settings from database"""
+    """Send email using SMTP settings from database without blocking the event loop"""
     settings = await get_smtp_settings()
-    
+
     if not settings or not settings["smtp_host"] or not settings["smtp_user"]:
         print(f"[SIMULATED] Email to: {to_email}, Subject: {subject}")
         return True
-    
+
     try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"] = f"{settings['sender_name']} <{settings['smtp_user']}>"
-        msg["To"] = to_email
-        msg.attach(MIMEText(html_content, "html"))
-        
-        with smtplib.SMTP(settings["smtp_host"], settings["smtp_port"]) as server:
-            server.starttls()
-            server.login(settings["smtp_user"], settings["smtp_pass"])
-            server.sendmail(settings["smtp_user"], to_email, msg.as_string())
-        
+        await asyncio.to_thread(send_email_sync, settings, to_email, subject, html_content)
         print(f"Email sent to: {to_email}")
         return True
     except Exception as e:
@@ -719,7 +722,7 @@ async def delete_upload(filename: str, token: str):
 # ============== CONTACT FORM ==============
 
 @app.post("/api/contact/submit")
-async def submit_contact_form(form_data: ContactFormRequest):
+async def submit_contact_form(form_data: ContactFormRequest, background_tasks: BackgroundTasks):
     try:
         if len(form_data.phone.replace(" ", "")) < 10:
             raise HTTPException(status_code=400, detail="Valid phone required")
@@ -755,7 +758,12 @@ async def submit_contact_form(form_data: ContactFormRequest):
             </div>
         </div>
         """
-        await send_email_async(admin_email, f"New Lead: {form_data.name}", admin_html)
+        background_tasks.add_task(
+            send_email_async,
+            admin_email,
+            f"New Lead: {form_data.name}",
+            admin_html
+        )
         
         # Send user confirmation
         user_html = f"""
@@ -769,7 +777,12 @@ async def submit_contact_form(form_data: ContactFormRequest):
             </div>
         </div>
         """
-        await send_email_async(form_data.email, "Thank you - InsAPI Marketing", user_html)
+        background_tasks.add_task(
+            send_email_async,
+            form_data.email,
+            "Thank you - InsAPI Marketing",
+            user_html
+        )
         
         return {
             "status": "success",
