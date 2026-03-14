@@ -168,7 +168,7 @@ export function WhyChooseSection() {
 
           {/* Heading */}
           <div className="text-center mb-7">
-            <h2 className="text-white text-2xl font-bold leading-tight">
+            <h2 className="text-white text-3xl sm:text-4xl font-bold leading-tight">
               Why Businesses Choose
             </h2>
             <h2 className="text-yellow-500 text-2xl font-bold leading-tight">
@@ -177,7 +177,7 @@ export function WhyChooseSection() {
           </div>
 
           {/* Girl image — centered, full width-ish */}
-          <div className="relative mx-auto w-[200px] mb-10">
+          <div className="text-yellow-500 text-3xl sm:text-4xl font-bold leading-tight">
             
 
             
