@@ -128,22 +128,22 @@ export function FAQSection() {
         setA5(data.answer5);
       }}
     >
-      <section className="relative w-full overflow-hidden bg-[#c2c0df]">
-        {/* Desktop Image with Interactive FAQ */}
-        <div className="hidden md:block relative">
-          <EditableImage
-            src={faqImageDesktopSrc}
-            alt="FAQ"
-            className="w-full h-auto block"
-            imageKey="image-0"
-            page="home"
-            section="faq-section"
-            onImageChange={setFaqimagedesktopSrc}
-          />
+      <section className="relative w-full overflow-hidden bg-[#cfcfeb]">
+        {/* Desktop FAQ as two elements: image + content */}
+        <div className="hidden md:block py-12 lg:py-16">
+          <div className="w-full max-w-6xl mx-auto px-6 md:px-10 lg:px-16 grid grid-cols-2 gap-10 lg:gap-14 xl:gap-16 items-center">
+            <div className="w-full">
+              <EditableImage
+                src={faqImageDesktopSrc}
+                alt="FAQ"
+                className="w-full h-auto block rounded-2xl"
+                imageKey="image-0"
+                page="home"
+                section="faq-section"
+                onImageChange={setFaqimagedesktopSrc}
+              />
+            </div>
 
-          <div className="absolute inset-0 px-6 md:px-10 lg:px-16 flex items-center">
-          <div className="w-full max-w-6xl mx-auto grid grid-cols-2 gap-10 lg:gap-14 xl:gap-16">
-            <div />
             <div className="w-full p-2 md:p-4 lg:p-6 flex flex-col justify-center">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-black">{heading}</h2>
               <p className="text-black mb-4 md:mb-5 text-xs sm:text-sm md:text-base">{subheading}</p>
@@ -170,7 +170,6 @@ export function FAQSection() {
                   </div>
                 ))}
               </div>
-            </div>
             </div>
           </div>
         </div>
