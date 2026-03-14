@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
 import { EditableSection } from '@/components/EditableSection';
-import readyToGrowImageDesktop from '@/assets/home/growDesktop.png';
+import readyToGrowImageDesktop from '@/assets/home/growDesktop.webp';
 import readyToGrowImageMobile from '@/assets/home/grow-mobile.png';
 
 export function ReadyToGrowSection() {
