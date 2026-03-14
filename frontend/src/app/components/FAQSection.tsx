@@ -174,14 +174,15 @@ export function FAQSection() {
         <div className="block md:hidden bg-[#cfcfeb]">
           <div className="w-full px-4 pt-2 pb-10 bg-[#cfcfeb]">
             <EditableImage
-            src={faqImageMobileSrc}
-            alt="FAQ"
-            className="w-full h-[260px] sm:h-[300px] object-cover object-top"
-            imageKey="image-1"
-            page="home"
-            section="faq-section"
-            onImageChange={setFaqimagemobileSrc}
-          />
+              src={faqImageMobileSrc}
+              alt="FAQ"
+              className="w-full"
+              style={{ height: '370px', objectFit: 'cover', objectPosition: 'top' }}
+              imageKey="image-1"
+              page="home"
+              section="faq-section"
+              onImageChange={setFaqimagemobileSrc}
+            />
 
             <div className="pt-4 px-3 sm:px-4 bg-[#cfcfeb]">
             <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-[#1f2a4a]">{heading}</h2>
