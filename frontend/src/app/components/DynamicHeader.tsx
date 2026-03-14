@@ -159,7 +159,7 @@ export function DynamicHeader(_props: HeaderProps) {
                   >
                     <button 
                       onClick={() => toggleDropdown(item.order)}
-                      className={`text-sm xl:text-base flex items-center gap-1 transition-colors ${
+                    className={`text-sm xl:text-base flex items-center gap-1 transition-colors cursor-pointer ${
                         isDropdownActive(item) 
                           ? 'text-[#4A90E2] font-semibold' 
                           : 'text-[#1E3A5F] hover:text-[#4A90E2]'
@@ -180,7 +180,7 @@ export function DynamicHeader(_props: HeaderProps) {
                         <button
                           key={child.path}
                           onClick={() => handleNavClick(child.path)}
-                          className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                          className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer ${
                             isActive(child.path)
                               ? 'text-[#4A90E2] bg-blue-50 font-semibold' 
                               : 'text-[#1E3A5F] hover:bg-gray-50 hover:text-[#4A90E2]'
@@ -199,7 +199,7 @@ export function DynamicHeader(_props: HeaderProps) {
                   <button
                     key={item.order}
                     onClick={() => handleNavClick(item.path, item.openInNewTab)}
-                    className="px-4 py-2 bg-[#4A90E2] text-white rounded-lg hover:bg-[#3A7BC2] transition-colors text-sm xl:text-base font-medium"
+                    className="px-4 py-2 bg-[#4A90E2] text-white rounded-lg hover:bg-[#3A7BC2] transition-colors text-sm xl:text-base font-medium cursor-pointer"
                   >
                     {item.label}
                   </button>
@@ -210,7 +210,7 @@ export function DynamicHeader(_props: HeaderProps) {
                 <button
                   key={item.order}
                   onClick={() => handleNavClick(item.path, item.openInNewTab)}
-                  className={`text-sm xl:text-base transition-colors ${
+                  className={`text-sm xl:text-base transition-colors cursor-pointer ${
                     isActive(item.path)
                       ? 'text-[#4A90E2] font-semibold' 
                       : 'text-[#1E3A5F] hover:text-[#4A90E2]'
@@ -228,7 +228,7 @@ export function DynamicHeader(_props: HeaderProps) {
               {settings.contactPhone && (
                 <a 
                   href={`tel:${settings.contactPhone}`} 
-                  className="flex items-center gap-2 text-xs lg:text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors"
+                  className="flex items-center gap-2 text-xs lg:text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors cursor-pointer"
                 >
                   <Phone className="w-3 h-3 lg:w-4 lg:h-4" />
                   <span className="hidden lg:inline">{settings.contactPhone}</span>
@@ -237,7 +237,7 @@ export function DynamicHeader(_props: HeaderProps) {
               {settings.contactEmail && (
                 <a 
                   href={`mailto:${settings.contactEmail}`} 
-                  className="flex items-center gap-2 text-xs lg:text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors"
+                  className="flex items-center gap-2 text-xs lg:text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors cursor-pointer"
                 >
                   <Mail className="w-3 h-3 lg:w-4 lg:h-4" />
                   <span className="hidden lg:inline">{settings.contactEmail}</span>
@@ -248,7 +248,7 @@ export function DynamicHeader(_props: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button 
-            className="lg:hidden text-[#1E3A5F] p-2"
+            className="lg:hidden text-[#1E3A5F] p-2 cursor-pointer"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-btn"
           >
@@ -268,7 +268,7 @@ export function DynamicHeader(_props: HeaderProps) {
                     <div key={item.order} className="border-t border-b my-1">
                       <button
                         onClick={() => toggleMobileDropdown(item.order)}
-                        className={`w-full flex items-center justify-between px-4 py-3 transition-colors ${
+                        className={`w-full flex items-center justify-between px-4 py-3 transition-colors cursor-pointer ${
                           isDropdownActive(item) ? 'text-[#4A90E2] font-semibold' : 'text-[#1E3A5F]'
                         }`}
                       >
@@ -286,7 +286,7 @@ export function DynamicHeader(_props: HeaderProps) {
                             <button
                               key={child.path}
                               onClick={() => handleNavClick(child.path)}
-                              className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors ${
+                              className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
                                 isActive(child.path)
                                   ? 'text-[#4A90E2] bg-blue-50 font-semibold'
                                   : 'text-[#1E3A5F] hover:bg-gray-50 hover:text-[#4A90E2]'
@@ -306,7 +306,7 @@ export function DynamicHeader(_props: HeaderProps) {
                     <button
                       key={item.order}
                       onClick={() => handleNavClick(item.path, item.openInNewTab)}
-                      className="mx-4 my-2 px-4 py-3 bg-[#4A90E2] text-white rounded-lg hover:bg-[#3A7BC2] transition-colors text-center font-medium"
+                      className="mx-4 my-2 px-4 py-3 bg-[#4A90E2] text-white rounded-lg hover:bg-[#3A7BC2] transition-colors text-center font-medium cursor-pointer"
                     >
                       {item.label}
                     </button>
@@ -317,7 +317,7 @@ export function DynamicHeader(_props: HeaderProps) {
                   <button
                     key={item.order}
                     onClick={() => handleNavClick(item.path, item.openInNewTab)}
-                    className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
                       isActive(item.path)
                         ? 'text-[#4A90E2] bg-blue-50 font-semibold' 
                         : 'text-[#1E3A5F] hover:bg-gray-50'
@@ -334,7 +334,7 @@ export function DynamicHeader(_props: HeaderProps) {
                   {settings.contactPhone && (
                     <a 
                       href={`tel:${settings.contactPhone}`} 
-                      className="flex items-center gap-3 text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors"
+                      className="flex items-center gap-3 text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors cursor-pointer"
                     >
                       <Phone className="w-4 h-4" />
                       <span>{settings.contactPhone}</span>
@@ -343,7 +343,7 @@ export function DynamicHeader(_props: HeaderProps) {
                   {settings.contactEmail && (
                     <a 
                       href={`mailto:${settings.contactEmail}`} 
-                      className="flex items-center gap-3 text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors"
+                      className="flex items-center gap-3 text-sm text-[#1E3A5F] hover:text-[#4A90E2] transition-colors cursor-pointer"
                     >
                       <Mail className="w-4 h-4" />
                       <span>{settings.contactEmail}</span>
