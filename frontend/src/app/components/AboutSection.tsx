@@ -25,7 +25,7 @@ export function AboutSection() {
   }, []);
 
   return (
-    <section className="relative bg-white">
+    <section className="relative bg-white" id='about-name-us-insapi'>
       
       {/* Desktop Image */}
       <div className="hidden md:block">
