@@ -171,8 +171,8 @@ export function FAQSection() {
         </div>
 
         {/* Mobile Image with FAQ Content */}
-        <div className="block md:hidden bg-[#c2c0df]">
-          <div className="w-full px-4 pt-2 pb-10">
+        <div className="block md:hidden bg-[#cfcfeb]">
+          <div className="w-full px-4 pt-2 pb-10 bg-[#cfcfeb]">
             <EditableImage
               src={faqImageMobileSrc}
               alt="FAQ"
@@ -184,7 +184,7 @@ export function FAQSection() {
               onImageChange={setFaqimagemobileSrc}
             />
 
-            <div className="pt-4">
+            <div className="pt-4 bg-[#cfcfeb]">
             <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-[#1f2a4a]">{heading}</h2>
             <p className="text-[#3f4b6b] mb-4 text-xs sm:text-sm">{subheading}</p>
 
