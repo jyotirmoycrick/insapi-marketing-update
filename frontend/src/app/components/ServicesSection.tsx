@@ -48,7 +48,7 @@ const LazyServiceImage = memo(({ src, alt, onClick, index }: {
 
 export const ServicesSection = memo(function ServicesSection({ onCardClick }: ServicesSectionProps) {
   return (
-    <section className="bg-[#E8E8E8] py-16 md:py-12" data-testid="services-section">
+    <section className="bg-[#E8E8E8] py-16 md:py-6" data-testid="services-section">
       <div className="max-w-[1900px] mx-auto px-3 sm:px-3 lg:px-6">
 
         {/* Section Title */}
