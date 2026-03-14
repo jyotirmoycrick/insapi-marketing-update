@@ -125,8 +125,8 @@ export function FAQSection() {
         { key: 'answer5', label: 'Answer 5', type: 'textarea', value: a5 }
       ]}
       onSave={(data) => {
-        setFaqimagedesktopSrc(data.desktopImage);
-        setFaqimagemobileSrc(data.mobileImage);
+        setFaqimagedesktopSrc(data.desktopImage || faqImageDesktopSrc);
+        setFaqimagemobileSrc(data.mobileImage || faqImageMobileSrc);
         setHeading(data.heading);
         setSubheading(data.subheading);
         setQ1(data.question1);

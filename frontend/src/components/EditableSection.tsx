@@ -47,12 +47,15 @@ export const EditableSection = ({
     try {
       // Save each field to the backend
       for (const field of fields) {
+        const normalizedType = field.type === 'textarea' ? 'text' : field.type;
+        const normalizedValue = formData[field.key] ?? '';
+
         await contentAPI.createOrUpdateContent({
           page,
           section: sectionId,
           key: field.key,
-          value: formData[field.key],
-          type: field.type
+          value: normalizedValue,
+          type: normalizedType
         });
       }
       
