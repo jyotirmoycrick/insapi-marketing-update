@@ -84,7 +84,7 @@ export function Footer() {
           </a>
           
           <a 
-            href="https://wa.me/917872631936?text=Hi,%20I%20want%20to%20know%20about%20your%20digital%20marketing%20services" 
+            href="#" 
             target="_blank" 
             rel="noopener noreferrer"
             className="w-7 h-7 md:w-8 md:h-8 bg-[#25D366] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
