@@ -388,10 +388,8 @@ export function LivePageRenderer() {
                     source: page?.page_name || 'website'
                   })
                 });
-                
-                const result = await res.json();
-                
-                if (result.status === 'success') {
+
+                if (res.ok) {
                   navigate('/thank-you');
                 } else {
                   alert('Failed to submit form. Please try again.');

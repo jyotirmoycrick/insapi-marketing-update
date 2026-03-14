@@ -66,8 +66,6 @@ export function UniversalForm({ formHeading, buttonText, pageId }: UniversalForm
         }),
       });
 
-      const data = await response.json();
-
       if (response.ok) {
         setFormData({
           fullName: '',
@@ -78,6 +76,7 @@ export function UniversalForm({ formHeading, buttonText, pageId }: UniversalForm
         toast.success('Form submitted successfully!');
         navigate('/thank-you');
       } else {
+        const data = await response.json();
         toast.error(data.message || 'Failed to submit form. Please try again.');
       }
     } catch (error) {

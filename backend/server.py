@@ -211,6 +211,40 @@ async def send_email_async(to_email: str, subject: str, html_content: str):
         print(f"Email error: {e}")
         return False
 
+async def send_contact_emails(name: str, email: str, phone: str, source: str):
+    """Build and send contact emails fully in background after response is returned."""
+    settings = await get_smtp_settings()
+    admin_email = settings["admin_email"] if settings else "malojyotirmoy@gmail.com"
+
+    admin_html = f"""
+    <div style="font-family:Arial;max-width:600px;margin:0 auto;">
+        <div style="background:linear-gradient(135deg,#1E3A5F,#4A90E2);color:white;padding:30px;text-align:center;border-radius:10px 10px 0 0;">
+            <h2>New Lead Received!</h2>
+        </div>
+        <div style="background:#f9f9f9;padding:30px;border:1px solid #e0e0e0;">
+            <p><strong>Name:</strong> {name}</p>
+            <p><strong>Email:</strong> {email}</p>
+            <p><strong>Phone:</strong> +91 {phone}</p>
+            <p><strong>Source:</strong> {source}</p>
+        </div>
+    </div>
+    """
+
+    user_html = f"""
+    <div style="font-family:Arial;max-width:600px;margin:0 auto;">
+        <div style="background:linear-gradient(135deg,#1E3A5F,#4A90E2);color:white;padding:40px;text-align:center;border-radius:10px 10px 0 0;">
+            <h2>Thank You!</h2>
+        </div>
+        <div style="background:#fff;padding:40px;border:1px solid #e0e0e0;">
+            <p>Hello {name},</p>
+            <p>Thank you for reaching out! Our team will contact you within 24-48 hours.</p>
+        </div>
+    </div>
+    """
+
+    await send_email_async(admin_email, f"New Lead: {name}", admin_html)
+    await send_email_async(email, "Thank you - InsAPI Marketing", user_html)
+
 
 # ============== AUTH ROUTES ==============
 
@@ -739,49 +773,14 @@ async def submit_contact_form(form_data: ContactFormRequest, background_tasks: B
         
         result = await db.contacts.insert_one(contact_doc)
         submission_id = str(result.inserted_id)
-        
-        # Get admin email from settings
-        settings = await get_smtp_settings()
-        admin_email = settings["admin_email"] if settings else "malojyotirmoy@gmail.com"
-        
-        # Send admin notification
-        admin_html = f"""
-        <div style="font-family:Arial;max-width:600px;margin:0 auto;">
-            <div style="background:linear-gradient(135deg,#1E3A5F,#4A90E2);color:white;padding:30px;text-align:center;border-radius:10px 10px 0 0;">
-                <h2>New Lead Received!</h2>
-            </div>
-            <div style="background:#f9f9f9;padding:30px;border:1px solid #e0e0e0;">
-                <p><strong>Name:</strong> {form_data.name}</p>
-                <p><strong>Email:</strong> {form_data.email}</p>
-                <p><strong>Phone:</strong> +91 {form_data.phone}</p>
-                <p><strong>Source:</strong> {form_data.source}</p>
-            </div>
-        </div>
-        """
+
+        # Return response quickly after DB save; send both emails in the background.
         background_tasks.add_task(
-            send_email_async,
-            admin_email,
-            f"New Lead: {form_data.name}",
-            admin_html
-        )
-        
-        # Send user confirmation
-        user_html = f"""
-        <div style="font-family:Arial;max-width:600px;margin:0 auto;">
-            <div style="background:linear-gradient(135deg,#1E3A5F,#4A90E2);color:white;padding:40px;text-align:center;border-radius:10px 10px 0 0;">
-                <h2>Thank You!</h2>
-            </div>
-            <div style="background:#fff;padding:40px;border:1px solid #e0e0e0;">
-                <p>Hello {form_data.name},</p>
-                <p>Thank you for reaching out! Our team will contact you within 24-48 hours.</p>
-            </div>
-        </div>
-        """
-        background_tasks.add_task(
-            send_email_async,
+            send_contact_emails,
+            form_data.name,
             form_data.email,
-            "Thank you - InsAPI Marketing",
-            user_html
+            form_data.phone,
+            form_data.source or "home"
         )
         
         return {
