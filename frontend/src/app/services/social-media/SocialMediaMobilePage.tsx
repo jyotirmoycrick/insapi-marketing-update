@@ -84,6 +84,13 @@ export function SocialMediaMobilePage() {
           page="social-media"
           section="social-media-mobile-page"
           onImageChange={setHeromobileimageSrc}
+          width={360}
+          height={923}
+          loading="eager"
+          priority={true}
+          fetchPriority="high"
+          decoding="sync"
+          sizes="100vw"
         />
         </div>
         

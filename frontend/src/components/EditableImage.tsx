@@ -6,6 +6,78 @@ import { getAbsoluteUploadUrl } from '../utils/urlHelper';
 import { preloadImage, isImageCached } from '../utils/imagePreloader';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const MAX_IMAGE_UPLOAD_SIZE = 5 * 1024 * 1024;
+const MAX_IMAGE_UPLOAD_INPUT_SIZE = 20 * 1024 * 1024;
+const MAX_UPLOAD_DIMENSION = 1600;
+const WEBP_QUALITY = 0.82;
+
+async function loadImageElement(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Failed to load image'));
+    };
+
+    image.src = objectUrl;
+  });
+}
+
+async function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), type, quality);
+  });
+}
+
+async function optimizeImageForUpload(file: File): Promise<File> {
+  if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') {
+    return file;
+  }
+
+  if (file.size <= 350 * 1024) {
+    return file;
+  }
+
+  try {
+    const image = await loadImageElement(file);
+    const maxSide = Math.max(image.width, image.height);
+    const scale = maxSide > MAX_UPLOAD_DIMENSION ? MAX_UPLOAD_DIMENSION / maxSide : 1;
+    const width = Math.max(1, Math.round(image.width * scale));
+    const height = Math.max(1, Math.round(image.height * scale));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      return file;
+    }
+
+    ctx.drawImage(image, 0, 0, width, height);
+
+    const webpBlob = await canvasToBlob(canvas, 'image/webp', WEBP_QUALITY);
+    if (!webpBlob) {
+      return file;
+    }
+
+    if (webpBlob.size >= file.size * 0.9) {
+      return file;
+    }
+
+    const optimizedName = `${file.name.replace(/\.[^/.]+$/, '')}.webp`;
+    return new File([webpBlob], optimizedName, { type: 'image/webp' });
+  } catch {
+    return file;
+  }
+}
 
 interface EditableImageProps {
   src: string;
@@ -73,8 +145,8 @@ export function EditableImage({
   }, [priority, currentSrc]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const inputFile = e.target.files?.[0];
+    if (!inputFile) return;
     
     // Check for token with helpful message
     if (!token) {
@@ -82,14 +154,14 @@ export function EditableImage({
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('❌ Image too large! Maximum size is 5MB');
+    // Validate raw input size before client-side optimization.
+    if (inputFile.size > MAX_IMAGE_UPLOAD_INPUT_SIZE) {
+      toast.error('❌ Image too large! Maximum size is 20MB');
       return;
     }
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
+    if (!inputFile.type.startsWith('image/')) {
       toast.error('❌ Please upload an image file');
       return;
     }
@@ -98,6 +170,13 @@ export function EditableImage({
     toast.loading('Uploading image...', { id: 'upload' });
 
     try {
+      const file = await optimizeImageForUpload(inputFile);
+
+      if (file.size > MAX_IMAGE_UPLOAD_SIZE) {
+        toast.error('❌ Image too large after optimization! Maximum size is 5MB', { id: 'upload' });
+        return;
+      }
+
       // Upload image
       const formData = new FormData();
       formData.append('file', file);
@@ -249,8 +328,8 @@ export function EditableImage({
         width={width}
         height={height}
         loading={priority ? 'eager' : loading}
-        decoding={decoding}
-        fetchPriority={fetchPriority || (priority ? 'high' : 'auto')}
+        decoding={priority ? 'sync' : decoding}
+        fetchPriority={fetchPriority || (priority ? 'high' : loading === 'lazy' ? 'low' : 'auto')}
         sizes={sizes}
         className={`w-full h-auto block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         style={{ verticalAlign: 'bottom', ...style }}
@@ -301,3 +380,7 @@ export function EditableImage({
     </div>
   );
 }
+
+
+
+
