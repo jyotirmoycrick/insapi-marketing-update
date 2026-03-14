@@ -184,25 +184,25 @@ export function FAQSection() {
           />
 
           <div className="mx-auto w-full max-w-screen-sm px-4 pt-4 pb-10">
-            <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900">{heading}</h2>
-            <p className="text-gray-700 mb-4 text-xs sm:text-sm">{subheading}</p>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-[#1f2a4a]">{heading}</h2>
+            <p className="text-[#3f4b6b] mb-4 text-xs sm:text-sm">{subheading}</p>
 
             <div className="space-y-1">
               {faqs.map((faq, index) => (
-                <div key={index} className="border-b border-gray-500/60">
+                <div key={index} className="border-b border-[#8f95ad]">
                   <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
                     className="w-full py-2.5 flex justify-between items-start text-left overflow-hidden"
                   >
-                    <span className="font-semibold text-sm sm:text-base text-gray-800 pr-3 leading-snug break-words min-w-0">
+                    <span className="font-medium text-[16px] sm:text-[17px] text-[#1f2a4a] pr-3 leading-snug break-words min-w-0">
                       {faq.question}
                     </span>
-                    <span className="text-xl sm:text-2xl text-gray-600 flex-shrink-0 leading-none">
-                      {openIndex === index ? '-' : '+'}
+                    <span className="text-2xl text-[#3f4b6b] flex-shrink-0 leading-none">
+                      {openIndex === index ? '⌃' : '⌄'}
                     </span>
                   </button>
                   {openIndex === index && (
-                    <div className="pb-2 text-xs sm:text-sm text-gray-600 leading-relaxed break-words">
+                    <div className="pb-2 text-[16px] sm:text-[17px] text-[#3f4b6b] leading-relaxed break-words">
                       {faq.answer}
                     </div>
                   )}
