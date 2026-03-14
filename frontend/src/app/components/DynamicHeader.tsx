@@ -8,8 +8,9 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'; // 
 interface NavItem {
   label: string;
   path: string;
+  sectionId?: string;
   type: 'link' | 'dropdown' | 'button';
-  children?: Array<{ label: string; path: string; order: number }>;
+  children?: Array<{ label: string; path: string; sectionId?: string; order: number }>;
   isVisible: boolean;
   openInNewTab?: boolean;
   order: number;
@@ -101,15 +102,66 @@ export function DynamicHeader(_props: HeaderProps) {
     setMobileOpenDropdowns(newDropdowns);
   };
 
-  const handleNavClick = (path: string, openInNewTab?: boolean) => {
+  const normalizeSectionId = (value?: string) => (value || '').trim().replace(/^#/, '');
+
+  const scrollToSection = (sectionId?: string) => {
+    const id = normalizeSectionId(sectionId);
+    if (!id) return false;
+
+    const element = document.getElementById(id);
+    if (!element) return false;
+
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return true;
+  };
+
+  const buildTargetPath = (path: string, sectionId?: string) => {
+    const cleanPath = (path || '').trim() || '/';
+    const cleanSectionId = normalizeSectionId(sectionId);
+    if (!cleanSectionId) return cleanPath;
+    const basePath = cleanPath.split('#')[0] || '/';
+    return `${basePath}#${cleanSectionId}`;
+  };
+
+  const handleNavClick = (path: string, openInNewTab?: boolean, sectionId?: string) => {
+    const target = buildTargetPath(path, sectionId);
+    const [targetPathnameRaw, targetHashRaw] = target.split('#');
+    const targetPathname = targetPathnameRaw || '/';
+    const targetHash = normalizeSectionId(targetHashRaw);
+
     if (openInNewTab) {
-      window.open(path, '_blank');
+      window.open(target, '_blank');
     } else {
-      navigate(path);
+      if (targetHash && location.pathname === targetPathname) {
+        const scrolled = scrollToSection(targetHash);
+        if (scrolled && window.location.hash !== `#${targetHash}`) {
+          window.history.replaceState(null, '', `${location.pathname}#${targetHash}`);
+        } else if (!scrolled) {
+          navigate(target);
+        }
+      } else {
+        navigate(target);
+      }
     }
+
     setMobileMenuOpen(false);
     setOpenDropdowns(new Set());
+    setMobileOpenDropdowns(new Set());
   };
+
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const hashId = normalizeSectionId(location.hash);
+    if (!hashId) return;
+
+    // Retry after render because some sections mount after route transition.
+    const timer = window.setTimeout(() => {
+      scrollToSection(hashId);
+    }, 120);
+
+    return () => window.clearTimeout(timer);
+  }, [location.pathname, location.hash]);
 
   const isActive = (path: string) => location.pathname === path;
   const isDropdownActive = (item: NavItem) => {
@@ -179,7 +231,7 @@ export function DynamicHeader(_props: HeaderProps) {
                       {item.children.sort((a, b) => a.order - b.order).map((child) => (
                         <button
                           key={child.path}
-                          onClick={() => handleNavClick(child.path)}
+                          onClick={() => handleNavClick(child.path, false, child.sectionId)}
                           className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer ${
                             isActive(child.path)
                               ? 'text-[#4A90E2] bg-blue-50 font-semibold' 
@@ -198,7 +250,7 @@ export function DynamicHeader(_props: HeaderProps) {
                 return (
                   <button
                     key={item.order}
-                    onClick={() => handleNavClick(item.path, item.openInNewTab)}
+                    onClick={() => handleNavClick(item.path, item.openInNewTab, item.sectionId)}
                     className="px-4 py-2 bg-[#4A90E2] text-white rounded-lg hover:bg-[#3A7BC2] transition-colors text-sm xl:text-base font-medium cursor-pointer"
                   >
                     {item.label}
@@ -209,7 +261,7 @@ export function DynamicHeader(_props: HeaderProps) {
               return (
                 <button
                   key={item.order}
-                  onClick={() => handleNavClick(item.path, item.openInNewTab)}
+                  onClick={() => handleNavClick(item.path, item.openInNewTab, item.sectionId)}
                   className={`text-sm xl:text-base transition-colors cursor-pointer ${
                     isActive(item.path)
                       ? 'text-[#4A90E2] font-semibold' 
@@ -285,7 +337,7 @@ export function DynamicHeader(_props: HeaderProps) {
                           {item.children.sort((a, b) => a.order - b.order).map((child) => (
                             <button
                               key={child.path}
-                              onClick={() => handleNavClick(child.path)}
+                              onClick={() => handleNavClick(child.path, false, child.sectionId)}
                               className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
                                 isActive(child.path)
                                   ? 'text-[#4A90E2] bg-blue-50 font-semibold'
@@ -305,7 +357,7 @@ export function DynamicHeader(_props: HeaderProps) {
                   return (
                     <button
                       key={item.order}
-                      onClick={() => handleNavClick(item.path, item.openInNewTab)}
+                      onClick={() => handleNavClick(item.path, item.openInNewTab, item.sectionId)}
                       className="mx-4 my-2 px-4 py-3 bg-[#4A90E2] text-white rounded-lg hover:bg-[#3A7BC2] transition-colors text-center font-medium cursor-pointer"
                     >
                       {item.label}
@@ -316,7 +368,7 @@ export function DynamicHeader(_props: HeaderProps) {
                 return (
                   <button
                     key={item.order}
-                    onClick={() => handleNavClick(item.path, item.openInNewTab)}
+                    onClick={() => handleNavClick(item.path, item.openInNewTab, item.sectionId)}
                     className={`w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
                       isActive(item.path)
                         ? 'text-[#4A90E2] bg-blue-50 font-semibold' 

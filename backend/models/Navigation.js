@@ -11,6 +11,10 @@ const navigationItemSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  sectionId: {
+    type: String,
+    trim: true
+  },
   type: {
     type: String,
     enum: ['link', 'dropdown', 'button'],
@@ -19,6 +23,7 @@ const navigationItemSchema = new mongoose.Schema({
   children: [{
     label: String,
     path: String,
+    sectionId: String,
     order: Number
   }],
   icon: {

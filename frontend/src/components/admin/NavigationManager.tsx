@@ -8,8 +8,9 @@ interface NavItem {
   _id?: string;
   label: string;
   path: string;
+  sectionId?: string;
   type: 'link' | 'dropdown' | 'button';
-  children?: Array<{ label: string; path: string; order: number }>;
+  children?: Array<{ label: string; path: string; sectionId?: string; order: number }>;
   icon?: string;
   order: number;
   isVisible: boolean;
@@ -76,6 +77,7 @@ export function NavigationManager({ token }: NavigationManagerProps) {
     const newItem: NavItem = {
       label: 'New Item',
       path: '/',
+      sectionId: '',
       type: 'link',
       order: items.length,
       isVisible: true,
@@ -137,6 +139,7 @@ export function NavigationManager({ token }: NavigationManagerProps) {
     const newChild = {
       label: 'New Sub-item',
       path: '/',
+      sectionId: '',
       order: (parent.children || []).length
     };
 
@@ -260,7 +263,10 @@ export function NavigationManager({ token }: NavigationManagerProps) {
               
               <div className="flex-1 grid grid-cols-4 gap-3 items-center">
                 <div className="font-medium">{item.label}</div>
-                <div className="text-sm text-gray-600">{item.path}</div>
+                <div className="text-sm text-gray-600">
+                  {item.path}
+                  {item.sectionId ? `  ->  #${item.sectionId}` : ''}
+                </div>
                 <div>
                   <span className={`px-2 py-1 rounded text-xs ${
                     item.type === 'dropdown' ? 'bg-purple-100 text-purple-700' :
@@ -365,6 +371,20 @@ export function NavigationManager({ token }: NavigationManagerProps) {
                       className="flex-1 px-3 py-1 border rounded"
                       placeholder="Path"
                     />
+                    <input
+                      type="text"
+                      value={child.sectionId || ''}
+                      onChange={(e) => {
+                        const newItems = [...items];
+                        const parentItem = newItems.find(i => i.order === item.order);
+                        if (parentItem && parentItem.children) {
+                          parentItem.children[childIdx].sectionId = e.target.value;
+                          setItems(newItems);
+                        }
+                      }}
+                      className="flex-1 px-3 py-1 border rounded"
+                      placeholder="Section ID (e.g. faq)"
+                    />
                     <button
                       onClick={() => removeChildItem(item.order, child.order)}
                       className="p-2 hover:bg-red-100 text-red-600 rounded"
@@ -411,6 +431,20 @@ export function NavigationManager({ token }: NavigationManagerProps) {
                   onChange={(e) => setEditingItem({ ...editingItem, path: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Section ID (Optional)</label>
+                <input
+                  type="text"
+                  value={editingItem.sectionId || ''}
+                  onChange={(e) => setEditingItem({ ...editingItem, sectionId: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  placeholder="faq"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter only the ID without #. Example: faq
+                </p>
               </div>
 
               <div>
