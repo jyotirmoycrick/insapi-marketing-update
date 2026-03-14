@@ -124,7 +124,7 @@ export function FAQSection() {
         setA5(data.answer5);
       }}
     >
-      <section className="relative w-full overflow-hidden bg-white">
+      <section className="relative w-full overflow-hidden bg-[#c2c0df]">
         {/* Desktop Image with Interactive FAQ */}
         <div className="hidden md:block relative">
           <EditableImage
@@ -137,15 +137,15 @@ export function FAQSection() {
             onImageChange={setFaqimagedesktopSrc}
           />
 
-          <div className="absolute inset-0 flex items-center justify-center px-6 md:px-10 lg:px-16">
-            <div className="w-full max-w-6xl flex justify-center">
+          <div className="absolute inset-0 flex items-center justify-end px-6 md:px-10 lg:px-16">
+            <div className="w-full max-w-6xl flex justify-end">
               <div className="w-full md:w-1/2 lg:w-2/5 p-4 md:p-6 lg:p-8">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-black">{heading}</h2>
               <p className="text-black mb-4 md:mb-5 text-xs sm:text-sm md:text-base">{subheading}</p>
 
               <div className="space-y-1 md:space-y-1.5">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="border-b border-black/40">
+                  <div key={index} className="border-b-2 border-black/45">
                     <button
                       onClick={() => setOpenIndex(openIndex === index ? null : index)}
                       className="w-full py-2 md:py-2.5 flex justify-between items-center text-left hover:text-gray-700 transition-colors"
@@ -182,13 +182,13 @@ export function FAQSection() {
             onImageChange={setFaqimagemobileSrc}
           />
 
-          <div className="mx-auto w-full max-w-screen-sm px-4 pb-6">
+          <div className="relative z-10 mx-auto w-full max-w-screen-sm px-4 pb-6 -mt-40 sm:-mt-48">
             <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900">{heading}</h2>
             <p className="text-gray-700 mb-4 text-xs sm:text-sm">{subheading}</p>
 
             <div className="space-y-1">
               {faqs.map((faq, index) => (
-                <div key={index} className="border-b border-gray-300">
+                <div key={index} className="border-b border-gray-500/60">
                   <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
                     className="w-full py-2.5 flex justify-between items-start text-left overflow-hidden"
