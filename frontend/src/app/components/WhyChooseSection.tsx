@@ -58,7 +58,7 @@ export function WhyChooseSection() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveNumber((prev) => (prev === 6 ? 1 : prev + 1));
-    }, 2000);
+    }, 1200);
     return () => clearInterval(interval);
   }, []);
 
@@ -117,7 +117,6 @@ export function WhyChooseSection() {
 
           {/* Heading – centered */}
           <div className="text-center mb-12 lg:mb-14">
-            <p className="text-gray-400 text-sm tracking-widest uppercase mb-2">Why Choose Us?</p>
             <h2 className="text-white text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight">
               Why Businesses Choose
             </h2>
@@ -169,7 +168,6 @@ export function WhyChooseSection() {
 
           {/* Heading */}
           <div className="text-center mb-7">
-            <p className="text-gray-400 text-xs tracking-widest uppercase mb-1">Why Choose Us?</p>
             <h2 className="text-white text-2xl font-bold leading-tight">
               Why Businesses Choose
             </h2>
@@ -228,8 +226,8 @@ export function WhyChooseSection() {
             50%       { color: #d97706; text-shadow: 0 0 20px rgba(217,119,6,0.7); }
             75%       { color: #f59e0b; text-shadow: 0 0 15px rgba(245,158,11,0.6); }
           }
-          .animate-pulse-glow  { animation: pulse-glow  2s ease-in-out infinite; }
-          .animate-color-shift { animation: color-shift 2s ease-in-out infinite; }
+          .animate-pulse-glow  { animation: pulse-glow  1s ease-in-out infinite; }
+          .animate-color-shift { animation: color-shift 1s ease-in-out infinite; }
           .shadow-glow { box-shadow: 0 0 10px rgba(234,179,8,0.8), 0 0 20px rgba(234,179,8,0.6); }
         `
       }} />
