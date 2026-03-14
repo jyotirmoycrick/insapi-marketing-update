@@ -137,10 +137,10 @@ export function FAQSection() {
             onImageChange={setFaqimagedesktopSrc}
           />
 
-          <div className="absolute inset-0 px-6 md:px-10 lg:px-16">
-            <div className="w-full h-full max-w-6xl mx-auto grid grid-cols-2 md:items-center gap-10 lg:gap-14 xl:gap-16">
-              <div className="h-full" />
-              <div className="w-full h-full p-2 md:p-4 lg:p-6 md:flex md:flex-col md:justify-center">
+          <div className="absolute inset-0 px-6 md:px-10 lg:px-16 flex items-center">
+          <div className="w-full max-w-6xl mx-auto grid grid-cols-2 gap-10 lg:gap-14 xl:gap-16">
+            <div />
+            <div className="w-full p-2 md:p-4 lg:p-6 flex flex-col justify-center">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-black">{heading}</h2>
               <p className="text-black mb-4 md:mb-5 text-xs sm:text-sm md:text-base">{subheading}</p>
 
