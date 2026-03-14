@@ -6,7 +6,7 @@ import section02 from '@/assets/services/social-media/section-02.png';
 import resultsSection from '@/assets/services/social-media/results-section.png';
 import faqImage from '@/assets/services/social-media/faq-mobile.png';
 import { UniversalFormMobile } from '@/components/UniversalFormMobile';
-import { Facebook, Instagram, Youtube, Linkedin, CheckCircle2, Check } from 'lucide-react';
+import { CheckCircle2, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
@@ -110,37 +110,6 @@ export function SocialMediaMobilePage() {
           section="social-media-mobile-page"
           onImageChange={setPlatformsmobileSrc}
         />
-        
-        {/* Text Overlay */}
-        <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center px-6 pt-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-2">
-            Platforms We Work With
-          </h2>
-          <p className="text-sm text-gray-700 text-center mb-6 max-w-[340px]">
-            We manage and grow brands across the platforms that matter most for business:
-          </p>
-          
-          {/* Social Media Icons */}
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
-              <Facebook className="w-6 h-6 text-white fill-white" />
-            </div>
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 flex items-center justify-center">
-              <Instagram className="w-6 h-6 text-white" />
-            </div>
-            <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center">
-              <Youtube className="w-6 h-6 text-white fill-white" />
-            </div>
-            <div className="w-12 h-12 rounded-full bg-blue-700 flex items-center justify-center">
-              <Linkedin className="w-6 h-6 text-white fill-white" />
-            </div>
-            <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
-              <svg className="w-6 h-6 text-white fill-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-              </svg>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Our Social Media Process Section */}

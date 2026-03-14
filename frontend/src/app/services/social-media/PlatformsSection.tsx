@@ -71,16 +71,6 @@ export function PlatformsSection() {
           section="platforms-section"
           onImageChange={setPlatformsimageSrc}
         />
-        
-        <div className="absolute top-1/2 right-[400px] transform -translate-y-1/2 w-full max-w-[400px] md:max-w-[450px] lg:max-w-[500px] px-4 md:px-0">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
-            {heading}
-          </h2>
-          
-          <p className="text-gray-700 text-xs md:text-sm">
-            {platforms}
-          </p>
-        </div>
       </section>
     </EditableSection>
   );
