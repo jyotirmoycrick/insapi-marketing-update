@@ -82,7 +82,7 @@ export function WhyChooseSection() {
 
                 <span
           className={`font-semibold transition-all duration-500
-          ${isMobile ? 'text-lg' : 'text-base md:text-lg lg:text-xl'}
+          ${isMobile ? 'text-xl' : 'text-base md:text-lg lg:text-xl'}
           ${activeNumber === reason.number ? 'text-yellow-500 animate-color-shift' : 'text-gray-300'}`}
       >
             {reason.text}
