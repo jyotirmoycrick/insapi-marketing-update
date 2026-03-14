@@ -75,7 +75,7 @@ export function ReadyToGrowSection() {
       <div className="hidden md:flex absolute inset-0 items-end justify-center pb-12 md:pb-16 lg:pb-20">
         <button 
           onClick={handleButtonClick}
-          className="bg-[#4A5FD9] hover:bg-[#3A4FC9] text-white font-semibold px-8 py-3 rounded-lg text-base md:text-lg transition-colors shadow-lg"
+          className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 hover:from-yellow-500 hover:via-yellow-600 hover:to-orange-600 text-gray-900 font-semibold px-8 py-3 rounded-lg text-base md:text-lg transition-colors shadow-lg"
         >
           {buttonText}
         </button>
@@ -85,7 +85,7 @@ export function ReadyToGrowSection() {
       <div className="flex md:hidden absolute inset-0 items-center justify-center pt-32">
         <button 
           onClick={handleButtonClick}
-          className="bg-[#4A5FD9] hover:bg-[#3A4FC9] text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors shadow-lg"
+          className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 hover:from-yellow-500 hover:via-yellow-600 hover:to-orange-600 text-gray-900 font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors shadow-lg"
         >
           {buttonText}
         </button>
