@@ -175,7 +175,8 @@ export function FAQSection() {
           <EditableImage
             src={faqImageMobileSrc}
             alt="FAQ"
-            className="w-full h-[430px] object-cover object-top"
+            className="w-full"
+            style={{ height: '430px', objectFit: 'cover', objectPosition: 'top' }}
             imageKey="image-1"
             page="home"
             section="faq-section"
