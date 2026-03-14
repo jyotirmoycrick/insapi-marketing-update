@@ -1,7 +1,6 @@
 import heroMobileImage from '@/assets/services/social-media/hero-mobile.png';
 import platformsMobile from '@/assets/services/social-media/platforms-mobile.png';
 import processMobile from '@/assets/services/social-media/process-mobile.png';
-import section01 from '@/assets/services/social-media/section-01.png';
 import section02 from '@/assets/services/social-media/section-02.png';
 import resultsSection from '@/assets/services/social-media/results-section.png';
 import faqImage from '@/assets/services/social-media/faq-mobile.png';
@@ -10,12 +9,12 @@ import { CheckCircle2, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { EditableImage } from '@/components/EditableImage';
 import { contentAPI } from '@/services/api';
+import { WhyChooseSection } from './WhyChooseSection';
 
 export function SocialMediaMobilePage() {
   const [heroMobileImageSrc, setHeromobileimageSrc] = useState(heroMobileImage);
   const [platformsMobileSrc, setPlatformsmobileSrc] = useState(platformsMobile);
   const [processMobileSrc, setProcessmobileSrc] = useState(processMobile);
-  const [section01Src, setSection01Src] = useState(section01);
   const [section02Src, setSection02Src] = useState(section02);
   const [resultsSectionSrc, setResultssectionSrc] = useState(resultsSection);
   const [faqImageSrc, setFaqimageSrc] = useState(faqImage);
@@ -31,8 +30,6 @@ export function SocialMediaMobilePage() {
         if (platformsMobileSaved?.value) setPlatformsmobileSrc(platformsMobileSaved.value);
         const processMobileSaved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-2');
         if (processMobileSaved?.value) setProcessmobileSrc(processMobileSaved.value);
-        const section01Saved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-3');
-        if (section01Saved?.value) setSection01Src(section01Saved.value);
         const section02Saved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-4');
         if (section02Saved?.value) setSection02Src(section02Saved.value);
         const resultsSectionSaved = content.find((c: any) => c.section === 'social-media-mobile-page' && c.key === 'image-5');
@@ -195,18 +192,8 @@ export function SocialMediaMobilePage() {
         />
       </section>
 
-      {/* Section 01 */}
-      <section className="bg-white">
-        <EditableImage
-          src={section01Src}
-          alt="Section 01"
-          className="w-full block"
-          imageKey="image-3"
-          page="social-media"
-          section="social-media-mobile-page"
-          onImageChange={setSection01Src}
-        />
-      </section>
+      {/* Why Choose Section */}
+      <WhyChooseSection />
 
       {/* What Results We Focus On Section */}
       <section className="relative bg-white">

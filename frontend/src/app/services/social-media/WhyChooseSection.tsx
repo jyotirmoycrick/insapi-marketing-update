@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { EditableImage } from '@/components/EditableImage';
 import { EditableSection } from '@/components/EditableSection';
 import { contentAPI } from '@/services/api';
 import whyChooseImage from '@/assets/services/social-media/social-media-004-why-choose-new.png';
 
 const SECTION_ID = 'why-choose-section';
+const DEFAULT_REASONS = [
+  'Platform-first growth planning',
+  'Content built for reach and leads',
+  'Creative + media buying in one team',
+  'Weekly optimization and reporting',
+  'Fast execution without template strategies',
+  'Clear focus on measurable business outcomes',
+];
 
 const ChatBubble = ({ text, className = '' }: { text: string; className?: string }) => (
   <div className={`bg-white rounded-xl shadow-lg px-4 py-2.5 ${className}`}>
@@ -12,20 +20,41 @@ const ChatBubble = ({ text, className = '' }: { text: string; className?: string
   </div>
 );
 
+function normalizeReasons(raw: string[] | undefined): string[] {
+  const filtered = (raw || []).map((item) => item.trim()).filter(Boolean);
+  return filtered.length ? filtered : DEFAULT_REASONS;
+}
+
+function parseReasons(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return normalizeReasons(value.map((item) => String(item)));
+  }
+
+  if (typeof value !== 'string') {
+    return DEFAULT_REASONS;
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      return normalizeReasons(parsed.map((item) => String(item)));
+    }
+  } catch {
+    // Fall through to newline parser.
+  }
+
+  return normalizeReasons(value.split('\n'));
+}
+
 export function WhyChooseSection() {
   const [whyChooseImageSrc, setWhychooseimageSrc] = useState(whyChooseImage);
-  const [activeNumber, setActiveNumber] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const [headingLine1, setHeadingLine1] = useState('Why Brands Choose');
   const [headingLine2, setHeadingLine2] = useState('Insapi Marketing');
   const [bubbleText1, setBubbleText1] = useState('Hello');
   const [bubbleText2, setBubbleText2] = useState('Can we grow faster on social media?');
-  const [reason1, setReason1] = useState('Platform-first growth planning');
-  const [reason2, setReason2] = useState('Content built for reach and leads');
-  const [reason3, setReason3] = useState('Creative + media buying in one team');
-  const [reason4, setReason4] = useState('Weekly optimization and reporting');
-  const [reason5, setReason5] = useState('Fast execution without template strategies');
-  const [reason6, setReason6] = useState('Clear focus on measurable business outcomes');
+  const [reasons, setReasons] = useState<string[]>(DEFAULT_REASONS);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -34,17 +63,22 @@ export function WhyChooseSection() {
         const getValue = (key: string) =>
           content.find((c: any) => c.section === SECTION_ID && c.key === key)?.value;
 
+        const reasonsValue = getValue('reasons');
+        const legacyReasons = [
+          getValue('reason1'),
+          getValue('reason2'),
+          getValue('reason3'),
+          getValue('reason4'),
+          getValue('reason5'),
+          getValue('reason6'),
+        ].filter(Boolean) as string[];
+
         setWhychooseimageSrc(getValue('image') || whyChooseImage);
         setHeadingLine1(getValue('headingLine1') || 'Why Brands Choose');
         setHeadingLine2(getValue('headingLine2') || 'Insapi Marketing');
         setBubbleText1(getValue('bubbleText1') || 'Hello');
         setBubbleText2(getValue('bubbleText2') || 'Can we grow faster on social media?');
-        setReason1(getValue('reason1') || 'Platform-first growth planning');
-        setReason2(getValue('reason2') || 'Content built for reach and leads');
-        setReason3(getValue('reason3') || 'Creative + media buying in one team');
-        setReason4(getValue('reason4') || 'Weekly optimization and reporting');
-        setReason5(getValue('reason5') || 'Fast execution without template strategies');
-        setReason6(getValue('reason6') || 'Clear focus on measurable business outcomes');
+        setReasons(reasonsValue ? parseReasons(reasonsValue) : normalizeReasons(legacyReasons));
       } catch {
         // Use defaults
       }
@@ -53,20 +87,21 @@ export function WhyChooseSection() {
   }, []);
 
   useEffect(() => {
+    if (!reasons.length) return;
+
     const interval = setInterval(() => {
-      setActiveNumber((prev) => (prev === 6 ? 1 : prev + 1));
+      setActiveIndex((prev) => (prev + 1) % reasons.length);
     }, 1200);
     return () => clearInterval(interval);
-  }, []);
+  }, [reasons.length]);
 
-  const reasons = [
-    { number: 1, text: reason1 },
-    { number: 2, text: reason2 },
-    { number: 3, text: reason3 },
-    { number: 4, text: reason4 },
-    { number: 5, text: reason5 },
-    { number: 6, text: reason6 },
-  ];
+  useEffect(() => {
+    if (activeIndex >= reasons.length) {
+      setActiveIndex(0);
+    }
+  }, [activeIndex, reasons.length]);
+
+  const reasonsText = useMemo(() => reasons.join('\n'), [reasons]);
 
   return (
     <>
@@ -79,24 +114,14 @@ export function WhyChooseSection() {
           { key: 'headingLine2', label: 'Heading Line 2', type: 'text', value: headingLine2 },
           { key: 'bubbleText1', label: 'Chat Bubble 1', type: 'text', value: bubbleText1 },
           { key: 'bubbleText2', label: 'Chat Bubble 2', type: 'text', value: bubbleText2 },
-          { key: 'reason1', label: 'Reason 1', type: 'text', value: reason1 },
-          { key: 'reason2', label: 'Reason 2', type: 'text', value: reason2 },
-          { key: 'reason3', label: 'Reason 3', type: 'text', value: reason3 },
-          { key: 'reason4', label: 'Reason 4', type: 'text', value: reason4 },
-          { key: 'reason5', label: 'Reason 5', type: 'text', value: reason5 },
-          { key: 'reason6', label: 'Reason 6', type: 'text', value: reason6 },
+          { key: 'reasons', label: 'Features (one per line)', type: 'textarea', value: reasonsText },
         ]}
         onSave={(data) => {
           setHeadingLine1(data.headingLine1);
           setHeadingLine2(data.headingLine2);
           setBubbleText1(data.bubbleText1);
           setBubbleText2(data.bubbleText2);
-          setReason1(data.reason1);
-          setReason2(data.reason2);
-          setReason3(data.reason3);
-          setReason4(data.reason4);
-          setReason5(data.reason5);
-          setReason6(data.reason6);
+          setReasons(parseReasons(data.reasons));
         }}
       >
         <section className="relative overflow-hidden bg-[#0d1b2e]" style={{ fontFamily: "'Barlow', sans-serif" }}>
@@ -137,32 +162,86 @@ export function WhyChooseSection() {
               </div>
 
               <div className="w-[52%] xl:w-[50%] space-y-4">
-                {reasons.map((reason) => (
-                  <div key={reason.number} className="flex items-center gap-4 md:gap-6">
+                {reasons.map((reason, index) => (
+                  <div key={`${reason}-${index}`} className="flex items-center gap-4 md:gap-6">
                     <span
                       className={`font-bold transition-all duration-500 min-w-[40px] text-center text-3xl md:text-4xl lg:text-5xl ${
-                        activeNumber === reason.number ? 'text-yellow-500 scale-125 animate-pulse-glow' : 'text-gray-500'
+                        activeIndex === index ? 'text-yellow-500 scale-125 animate-pulse-glow' : 'text-gray-500'
                       }`}
                     >
-                      {reason.number}
+                      {index + 1}
                     </span>
 
                     <div
                       className={`w-0.5 h-8 md:h-9 lg:h-10 transition-all duration-500 ${
-                        activeNumber === reason.number ? 'bg-yellow-500 shadow-glow' : 'bg-gray-600'
+                        activeIndex === index ? 'bg-yellow-500 shadow-glow' : 'bg-gray-600'
                       }`}
                     />
 
                     <span
                       className={`font-semibold transition-all duration-500 text-base md:text-lg lg:text-xl ${
-                        activeNumber === reason.number ? 'text-yellow-500 animate-color-shift' : 'text-gray-300'
+                        activeIndex === index ? 'text-yellow-500 animate-color-shift' : 'text-gray-300'
                       }`}
                     >
-                      {reason.text}
+                      {reason}
                     </span>
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+
+          <div className="block md:hidden relative px-5 py-10">
+            <div className="text-center mb-7">
+              <h2 className="text-white text-3xl sm:text-4xl font-bold leading-tight">{headingLine1}</h2>
+              <h2 className="text-yellow-500 text-2xl font-bold leading-tight">{headingLine2}</h2>
+            </div>
+
+            <div className="relative mx-auto w-[260px] sm:w-[290px] mb-10">
+              <EditableImage
+                src={whyChooseImageSrc}
+                alt={`${headingLine1} ${headingLine2}`}
+                className="relative z-10 w-full object-cover rounded-2xl"
+                imageKey="image"
+                page="social-media"
+                section={SECTION_ID}
+                onImageChange={setWhychooseimageSrc}
+              />
+
+              <div className="absolute z-20 right-[-6px] bottom-[14%] flex flex-col gap-1.5">
+                <div className="bg-white rounded-xl shadow-lg px-3 py-1.5 max-w-[190px]">
+                  <span className="text-gray-800 font-semibold text-xs whitespace-nowrap">{bubbleText1}</span>
+                </div>
+                <div className="bg-white rounded-xl shadow-lg px-3 py-1.5 max-w-[230px]">
+                  <span className="text-gray-800 font-semibold text-xs whitespace-nowrap">{bubbleText2}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="px-1 space-y-5">
+              {reasons.map((reason, index) => (
+                <div key={`mobile-${reason}-${index}`} className="flex items-center gap-4">
+                  <span
+                    className={`font-bold transition-all duration-500 min-w-[34px] text-center text-5xl ${
+                      activeIndex === index ? 'text-yellow-500 scale-125 animate-pulse-glow' : 'text-gray-500'
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  <div
+                    className={`w-0.5 h-9 transition-all duration-500 ${
+                      activeIndex === index ? 'bg-yellow-500 shadow-glow' : 'bg-gray-600'
+                    }`}
+                  />
+                  <span
+                    className={`font-semibold transition-all duration-500 text-xl ${
+                      activeIndex === index ? 'text-yellow-500 animate-color-shift' : 'text-gray-300'
+                    }`}
+                  >
+                    {reason}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
