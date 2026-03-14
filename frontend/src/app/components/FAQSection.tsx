@@ -8,12 +8,12 @@ import faqImageMobile from '@/assets/home/home-010-faq-mobile.png';
 export function FAQSection() {
   const [faqImageDesktopSrc, setFaqimagedesktopSrc] = useState(faqImageDesktop);
   const [faqImageMobileSrc, setFaqimagemobileSrc] = useState(faqImageMobile);
-  
+
   useEffect(() => {
     const loadImages = async () => {
       try {
         const content = await contentAPI.getPageContent('home');
-        
+
         const faqImageDesktopSaved = content.find((c: any) => c.section === 'faq-section' && c.key === 'image-0');
         if (faqImageDesktopSaved?.value) setFaqimagedesktopSrc(faqImageDesktopSaved.value);
         const faqImageMobileSaved = content.find((c: any) => c.section === 'faq-section' && c.key === 'image-1');
@@ -29,7 +29,7 @@ export function FAQSection() {
   const [heading, setHeading] = useState('FAQs');
   const [subheading, setSubheading] = useState('Find answers to common questions');
   const [q1, setQ1] = useState('How Do You Decide The Right Strategy For My Business?');
-  const [a1, setA1] = useState('We study your business, audience, and goals, then create a plan built for your market—so nothing is wasted');
+  const [a1, setA1] = useState('We study your business, audience, and goals, then create a plan built for your market-so nothing is wasted');
   const [q2, setQ2] = useState('Do You Provide Social Media Marketing And Meta Ads Together?');
   const [a2, setA2] = useState('Yes, we offer integrated social media marketing and Meta Ads campaigns that work together to maximize your reach and conversions.');
   const [q3, setQ3] = useState('How Much Budget Do I Need For Meta Ads?');
@@ -56,7 +56,7 @@ export function FAQSection() {
         const fa4 = content.find((c: any) => c.section === 'faq' && c.key === 'answer4');
         const fq5 = content.find((c: any) => c.section === 'faq' && c.key === 'question5');
         const fa5 = content.find((c: any) => c.section === 'faq' && c.key === 'answer5');
-        
+
         if (h) setHeading(h.value);
         if (sh) setSubheading(sh.value);
         if (fq1) setQ1(fq1.value);
@@ -128,34 +128,36 @@ export function FAQSection() {
         {/* Desktop Image with Interactive FAQ */}
         <div className="hidden md:block relative">
           <EditableImage
-          src={faqImageDesktopSrc}
-          alt="FAQ"
-          className="w-full h-auto block"
-          imageKey="image-0"
-          page="home"
-          section="faq-section"
-          onImageChange={setFaqimagedesktopSrc}
-        />
-          
+            src={faqImageDesktopSrc}
+            alt="FAQ"
+            className="w-full h-auto block"
+            imageKey="image-0"
+            page="home"
+            section="faq-section"
+            onImageChange={setFaqimagedesktopSrc}
+          />
+
           <div className="absolute inset-0 flex items-center justify-end pr-8 md:pr-16 lg:pr-24">
-            <div className="w-full md:w-1/2 lg:w-2/5 p-6 md:p-8 lg:p-10">
+            <div className="w-full md:w-1/2 lg:w-2/5 p-4 md:p-6 lg:p-8">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-black">{heading}</h2>
-              <p className="text-black mb-8 md:mb-8 text-xs sm:text-sm md:text-base">{subheading}</p>
-              
-              <div className="space-y-2 md:space-y-3 lg:space-y-4">
+              <p className="text-black mb-4 md:mb-5 text-xs sm:text-sm md:text-base">{subheading}</p>
+
+              <div className="space-y-1 md:space-y-1.5">
                 {faqs.map((faq, index) => (
                   <div key={index} className="border-b border-gray-300">
                     <button
                       onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                      className="w-full py-3 md:py-6 flex justify-between items-center text-left hover:text-gray-700 transition-colors"
+                      className="w-full py-2 md:py-2.5 flex justify-between items-center text-left hover:text-gray-700 transition-colors"
                     >
-                      <span className="font-semibold pr-4 text-xs sm:text-sm md:text-base text-black">{faq.question}</span>
+                      <span className="font-semibold pr-3 text-[11px] sm:text-xs md:text-sm lg:text-base text-black leading-snug break-words">
+                        {faq.question}
+                      </span>
                       <span className="text-lg sm:text-xl md:text-2xl font-light text-black flex-shrink-0">
-                        {openIndex === index ? '−' : '+'}
+                        {openIndex === index ? '-' : '+'}
                       </span>
                     </button>
                     {openIndex === index && (
-                      <div className="pb-3 md:pb-6 text-black text-xs sm:text-sm md:text-base">
+                      <div className="pb-2 md:pb-3 text-black text-[11px] sm:text-xs md:text-sm lg:text-base leading-relaxed break-words">
                         {faq.answer}
                       </div>
                     )}
@@ -165,103 +167,44 @@ export function FAQSection() {
             </div>
           </div>
         </div>
-        
-        {/* Mobile Image with Text Overlay */}
-        <div className="block md:hidden relative">
+
+        {/* Mobile Image with FAQ Content */}
+        <div className="block md:hidden">
           <EditableImage
-          src={faqImageMobileSrc}
-          alt="FAQ"
-          className="w-full h-auto"
-          imageKey="image-1"
-          page="home"
-          section="faq-section"
-          onImageChange={setFaqimagemobileSrc}
-        />
-          
-          {/* FAQ Text Overlay for Mobile - Positioned in lower half */}
-          <div className="absolute left-0 right-0 px-6" style={{ top: '42%' }}>
-            <h2 className="text-2xl font-bold mb-10 text-gray-900">FAQS</h2>
-            
-            <div className="space-y-6">
-              {/* Question 1 */}
-              <div className="border-b border-gray-300 pb-8">
-                <button
-                  onClick={() => setOpenIndex(openIndex === 0 ? null : 0)}
-                  className="w-full flex justify-between items-start text-left"
-                >
-                  <span className="font-semibold text-base text-gray-800 pr-4 leading-snug">
-                    {q1}
-                  </span>
-                  <span className="text-2xl text-gray-600 flex-shrink-0">
-                    {openIndex === 0 ? '−' : '∨'}
-                  </span>
-                </button>
-                {openIndex === 0 && (
-                  <div className="mt-4 text-sm text-gray-600 leading-relaxed">
-                    {a1}
-                  </div>
-                )}
-              </div>
-              
-              {/* Question 2 */}
-              <div className="border-b border-gray-300 pb-8">
-                <button
-                  onClick={() => setOpenIndex(openIndex === 1 ? null : 1)}
-                  className="w-full flex justify-between items-start text-left"
-                >
-                  <span className="font-semibold text-base text-gray-800 pr-4 leading-snug">
-                    {q2}
-                  </span>
-                  <span className="text-2xl text-gray-600 flex-shrink-0">
-                    {openIndex === 1 ? '−' : '∨'}
-                  </span>
-                </button>
-                {openIndex === 1 && (
-                  <div className="mt-4 text-sm text-gray-600 leading-relaxed">
-                    {a2}
-                  </div>
-                )}
-              </div>
-              
-              {/* Question 3 */}
-              <div className="border-b border-gray-300 pb-8">
-                <button
-                  onClick={() => setOpenIndex(openIndex === 2 ? null : 2)}
-                  className="w-full flex justify-between items-start text-left"
-                >
-                  <span className="font-semibold text-base text-gray-800 pr-4 leading-snug">
-                    {q3}
-                  </span>
-                  <span className="text-2xl text-gray-600 flex-shrink-0">
-                    {openIndex === 2 ? '−' : '∨'}
-                  </span>
-                </button>
-                {openIndex === 2 && (
-                  <div className="mt-4 text-sm text-gray-600 leading-relaxed">
-                    {a3}
-                  </div>
-                )}
-              </div>
-              
-              {/* Question 4 */}
-              <div className="border-b border-gray-300 pb-8">
-                <button
-                  onClick={() => setOpenIndex(openIndex === 3 ? null : 3)}
-                  className="w-full flex justify-between items-start text-left"
-                >
-                  <span className="font-semibold text-base text-gray-800 pr-4 leading-snug">
-                    {q4}
-                  </span>
-                  <span className="text-2xl text-gray-600 flex-shrink-0">
-                    {openIndex === 3 ? '−' : '∨'}
-                  </span>
-                </button>
-                {openIndex === 3 && (
-                  <div className="mt-4 text-sm text-gray-600 leading-relaxed">
-                    {a4}
-                  </div>
-                )}
-              </div>
+            src={faqImageMobileSrc}
+            alt="FAQ"
+            className="w-full h-auto"
+            imageKey="image-1"
+            page="home"
+            section="faq-section"
+            onImageChange={setFaqimagemobileSrc}
+          />
+
+          <div className="px-4 pb-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900">{heading}</h2>
+            <p className="text-gray-700 mb-4 text-xs sm:text-sm">{subheading}</p>
+
+            <div className="space-y-1">
+              {faqs.map((faq, index) => (
+                <div key={index} className="border-b border-gray-300">
+                  <button
+                    onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                    className="w-full py-2.5 flex justify-between items-start text-left"
+                  >
+                    <span className="font-semibold text-sm sm:text-base text-gray-800 pr-3 leading-snug break-words">
+                      {faq.question}
+                    </span>
+                    <span className="text-xl sm:text-2xl text-gray-600 flex-shrink-0 leading-none">
+                      {openIndex === index ? '-' : '+'}
+                    </span>
+                  </button>
+                  {openIndex === index && (
+                    <div className="pb-2 text-xs sm:text-sm text-gray-600 leading-relaxed break-words">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -269,4 +212,3 @@ export function FAQSection() {
     </EditableSection>
   );
 }
-
