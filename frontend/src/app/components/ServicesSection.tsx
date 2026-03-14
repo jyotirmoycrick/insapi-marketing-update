@@ -52,7 +52,7 @@ export const ServicesSection = memo(function ServicesSection({ onCardClick }: Se
       <div className="max-w-[1900px] mx-auto px-3 sm:px-3 lg:px-6">
 
         {/* Section Title */}
-        <h2 className="text-4xl md:text-4xl font-semibold text-center mb-8 md:mb-12">
+        <h2 className="text-4xl md:text-4xl font-semibold text-center mb-8 md:mb-10">
           Our Services
         </h2>
 
