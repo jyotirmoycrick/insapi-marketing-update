@@ -14,10 +14,23 @@ export function FAQSection() {
       try {
         const content = await contentAPI.getPageContent('home');
 
+        const faqDesktopImageFromFaq = content.find((c: any) => c.section === 'faq' && c.key === 'desktopImage');
+        const faqMobileImageFromFaq = content.find((c: any) => c.section === 'faq' && c.key === 'mobileImage');
+
         const faqImageDesktopSaved = content.find((c: any) => c.section === 'faq-section' && c.key === 'image-0');
-        if (faqImageDesktopSaved?.value) setFaqimagedesktopSrc(faqImageDesktopSaved.value);
         const faqImageMobileSaved = content.find((c: any) => c.section === 'faq-section' && c.key === 'image-1');
-        if (faqImageMobileSaved?.value) setFaqimagemobileSrc(faqImageMobileSaved.value);
+
+        if (faqDesktopImageFromFaq?.value) {
+          setFaqimagedesktopSrc(faqDesktopImageFromFaq.value);
+        } else if (faqImageDesktopSaved?.value) {
+          setFaqimagedesktopSrc(faqImageDesktopSaved.value);
+        }
+
+        if (faqMobileImageFromFaq?.value) {
+          setFaqimagemobileSrc(faqMobileImageFromFaq.value);
+        } else if (faqImageMobileSaved?.value) {
+          setFaqimagemobileSrc(faqImageMobileSaved.value);
+        }
       } catch (error) {
         // Use defaults
       }
@@ -96,6 +109,8 @@ export function FAQSection() {
       sectionName="FAQ Section"
       page="home"
       fields={[
+        { key: 'desktopImage', label: 'Desktop FAQ Image URL', type: 'text', value: faqImageDesktopSrc },
+        { key: 'mobileImage', label: 'Mobile FAQ Image URL', type: 'text', value: faqImageMobileSrc },
         { key: 'heading', label: 'Heading', type: 'text', value: heading },
         { key: 'subheading', label: 'Subheading', type: 'text', value: subheading },
         { key: 'question1', label: 'Question 1', type: 'text', value: q1 },
@@ -110,6 +125,8 @@ export function FAQSection() {
         { key: 'answer5', label: 'Answer 5', type: 'textarea', value: a5 }
       ]}
       onSave={(data) => {
+        setFaqimagedesktopSrc(data.desktopImage);
+        setFaqimagemobileSrc(data.mobileImage);
         setHeading(data.heading);
         setSubheading(data.subheading);
         setQ1(data.question1);
