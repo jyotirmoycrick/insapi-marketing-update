@@ -1,6 +1,26 @@
  
+import { useEffect } from 'react';
 
 export function ThankYouPage() {
+  useEffect(() => {
+    const conversionScript = document.createElement('script');
+    conversionScript.text = `
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17998920771/nO7TCIT12YYcEMP4xoZD',
+          'value': 1.0,
+          'currency': 'INR'
+        });
+      }
+    `;
+
+    document.head.appendChild(conversionScript);
+
+    return () => {
+      document.head.removeChild(conversionScript);
+    };
+  }, []);
+
   return (
     <section className="min-h-[65vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-xl rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center shadow-lg">
